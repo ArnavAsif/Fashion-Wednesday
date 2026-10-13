@@ -32,8 +32,12 @@ export default function HomePage() {
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smoothWheel: true,
     });
+    (window as any).__lenis = lenis;
 
-    lenis.on('scroll', ScrollTrigger.update);
+    lenis.on('scroll', () => {
+      ScrollTrigger.update();
+      window.dispatchEvent(new Event('scroll'));
+    });
 
     const rafCallback = (time: number) => {
       lenis.raf(time * 1000);

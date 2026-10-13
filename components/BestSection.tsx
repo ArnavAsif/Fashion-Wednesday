@@ -107,7 +107,7 @@ export default function BestSection() {
         style={{
           position: 'relative',
           width: '100%',
-          height: 'clamp(480px, 75vh, 800px)',
+          height: '100vh',
           overflow: 'hidden',
           display: 'flex',
         }}

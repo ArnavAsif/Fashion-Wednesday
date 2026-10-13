@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.12.2/lottie.min.js"></script>
+  <style>
+    @font-face {
+      font-family: 'Thunder';
+      src: url('/fonts/Thunder-BoldLC.woff2') format('woff2');
+    }
+    @font-face {
+      font-family: 'PP Fraktion Mono';
+      src: url('/fonts/PPFraktionMono-Regular-BF675904a6a1564.otf') format('opentype');
+    }
+    body {
+      background: #fff9f7;
+      margin: 0;
+      padding: 50px;
+      font-family: 'PP Fraktion Mono', monospace;
+      color: #000;
+    }
+    .test-row {
+      display: flex;
+      align-items: center;
+      gap: 30px;
+      margin-bottom: 40px;
+    }
+    .serotonin-btn {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      cursor: pointer;
+      font-size: 1.4rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      user-select: none;
+      line-height: 1;
+    }
+    .serotonin-btn .bracket {
+      font-weight: 100;
+      color: #777;
+    }
+    .serotonin-btn .inner-text {
+      position: relative;
+      display: inline-block;
+      padding: 0 4px;
+    }
+    .serotonin-btn .marker-lottie {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 110%;
+      height: 70%;
+      pointer-events: none;
+      z-index: 2;
+    }
+    .char-clone {
+      display: inline-block;
+      opacity: 0.85;
+    }
+  </style>
+</head>
+<body>
+  <h1>Serotonin Button Hover Test</h1>
+  <div class="test-row">
+    <div id="btn-size-m" class="serotonin-btn">
+      <span class="bracket">[</span>
+      <span class="inner-text">
+        <span class="label">M</span>
+        <span class="marker-lottie"></span>
+      </span>
+      <span class="bracket">]</span>
+    </div>
+
+    <div id="btn-guide" class="serotonin-btn">
+      <span class="inner-text">
+        <span class="label">SIZE GUIDE</span>
+        <span class="marker-lottie"></span>
+      </span>
+    </div>
+
+    <div id="btn-details" class="serotonin-btn">
+      <span class="inner-text">
+        <span class="label">01. DETAILS</span>
+        <span class="marker-lottie"></span>
+      </span>
+      <span style="font-weight: 100; margin-left: 6px;">+</span>
+    </div>
+  </div>
+
+  <script>
+    let markerData = null;
+    fetch('/lottie/LOTTIE_MARKER_v1.json')
+      .then(r => r.json())
+      .then(d => {
+        markerData = d;
+        initButtons();
+      });
+
+    function initButtons() {
+      document.querySelectorAll('.serotonin-btn').forEach(btn => {
+        const textWrapper = btn.querySelector('.inner-text');
+        const labelEl = btn.querySelector('.label');
+        const lottieEl = btn.querySelector('.marker-lottie');
+        const originalText = labelEl.textContent;
+        const lastChar = originalText[originalText.length - 1];
+
+        let anim = null;
+        let cloneTimeouts = [];
+        let clones = [];
+
+        function clearTimeouts() {
+          cloneTimeouts.forEach(t => clearTimeout(t));
+          cloneTimeouts = [];
+        }
+
+        btn.addEventListener('mouseenter', () => {
+          clearTimeouts();
+          // 1. Play lottie forward
+          if (!anim) {
+            anim = lottie.loadAnimation({
+              container: lottieEl,
+              renderer: 'svg',
+              loop: false,
+              autoplay: false,
+              animationData: markerData
+            });
+            anim.setSpeed(2.2);
+          }
+          anim.setDirection(1);
+          anim.play();
+
+          // 2. Clone last character
+          for (let i = 0; i < 2; i++) {
+            const t = setTimeout(() => {
+              if (clones.length < 2) {
+                const span = document.createElement('span');
+                span.className = 'char-clone';
+                span.textContent = lastChar;
+                labelEl.appendChild(span);
+                clones.push(span);
+              }
+            }, (i + 1) * 150);
+            cloneTimeouts.push(t);
+          }
+        });
+
+        btn.addEventListener('mouseleave', () => {
+          clearTimeouts();
+          // 1. Rewind lottie
+          if (anim) {
+            anim.setDirection(-1);
+            anim.play();
+          }
+
+          // 2. Remove clones in reverse
+          const toRemove = [...clones];
+          toRemove.reverse().forEach((c, idx) => {
+            const t = setTimeout(() => {
+              c.remove();
+              clones = clones.filter(x => x !== c);
+            }, idx * 150);
+            cloneTimeouts.push(t);
+          });
+        });
+      });
+      window.inited = true;
+    }
+  </script>
+</body>
+</html>

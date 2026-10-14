@@ -1,13 +1,25 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
 
 export default function CampaignSection() {
+  const videoRef = useRef<HTMLVideoElement>(null);
+
   useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.muted = true;
+      videoRef.current.defaultMuted = true;
+      videoRef.current.playsInline = true;
+      const playPromise = videoRef.current.play();
+      if (playPromise && typeof playPromise.catch === 'function') {
+        playPromise.catch(() => {});
+      }
+    }
+
     const ctx = gsap.context(() => {
       // Text line reveal animation matching We() in main.js
       gsap.fromTo(
@@ -42,21 +54,6 @@ export default function CampaignSection() {
         }
       );
 
-      // Subtle video scale parallax
-      gsap.fromTo(
-        '.campaign-section__bg video',
-        { scale: 1.25 },
-        {
-          scale: 1.05,
-          ease: 'none',
-          scrollTrigger: {
-            trigger: '.campaign-section',
-            start: 'top bottom',
-            end: 'bottom top',
-            scrub: true,
-          },
-        }
-      );
     });
 
     return () => ctx.revert();
@@ -65,15 +62,24 @@ export default function CampaignSection() {
   return (
     <section className="campaign-section" id="campaign">
       <div className="campaign-section__content">
-        <div className="campaign-section__bg">
+        <div className="campaign-section__bg" style={{ overflow: 'hidden' }}>
           <video
+            ref={videoRef}
             autoPlay
             muted
             loop
             playsInline
-            preload="metadata"
+            preload="auto"
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              objectPosition: 'top center',
+              transform: 'none',
+              display: 'block',
+            }}
           >
-            <source src="/videos/nastia.mp4" type="video/mp4" />
+            <source src="/videos/campaign_model.mp4" type="video/mp4" />
           </video>
         </div>
 

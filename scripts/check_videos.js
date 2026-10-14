@@ -1,0 +1,31 @@
+const fs = require('fs');
+const path = require('path');
+
+const html = `<!DOCTYPE html>
+<html>
+<head>
+<style>
+  body { margin: 0; background: #fff; display: flex; gap: 20px; }
+  video { width: 45vw; height: auto; display: block; }
+</style>
+</head>
+<body>
+  <div>
+    <h3>Video 1: Model_posing_in_fashion_video_20261014160128</h3>
+    <video id="v1" src="/videos/best_video_1.mp4" muted playsinline></video>
+  </div>
+  <div>
+    <h3>Video 2: Model_showcasing_Y2K_fashion_edi…_20261014155022</h3>
+    <video id="v2" src="/videos/best_video_2.mp4" muted playsinline></video>
+  </div>
+  <script>
+    const v1 = document.getElementById('v1');
+    const v2 = document.getElementById('v2');
+    v1.currentTime = 1;
+    v2.currentTime = 1;
+  </script>
+</body>
+</html>`;
+
+fs.writeFileSync(path.join(__dirname, '../public/test_videos.html'), html);
+console.log('test_videos.html created');

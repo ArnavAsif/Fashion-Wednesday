@@ -6429,10 +6429,12 @@ html.lenis body {
   height: 100%;
   -o-object-fit: cover;
   object-fit: cover;
+  -o-object-position: top center;
+  object-position: top center;
   width: 100%;
 }
 .campaign-section__bg video {
-  transform: scale(1.2);
+  transform: none !important;
 }
 .campaign-section__title {
   left: 1.6rem;

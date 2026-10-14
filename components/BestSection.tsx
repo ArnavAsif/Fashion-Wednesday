@@ -29,6 +29,17 @@ export default function BestSection() {
       video2Ref.current.playsInline = true;
     }
 
+    if (typeof window !== 'undefined' && window.innerWidth < 1024) {
+      if (video1Ref.current) {
+        const p1 = video1Ref.current.play();
+        if (p1 && typeof p1.catch === 'function') p1.catch(() => {});
+      }
+      if (video2Ref.current) {
+        const p2 = video2Ref.current.play();
+        if (p2 && typeof p2.catch === 'function') p2.catch(() => {});
+      }
+    }
+
     const ctx = gsap.context(() => {
       const title = document.querySelector('.best-section__title');
       if (title) {
@@ -146,21 +157,6 @@ export default function BestSection() {
         {/* Layer 1: Bottom Layer (Right - Corsets) */}
         <div className="best-section__bottom">
           <div className="best-section__media-right">
-            {/* Fallback Poster Image: ALWAYS VISIBLE */}
-            <img
-              src="/images/best_img_2.webp"
-              alt="Corsets Collection"
-              style={{
-                position: 'absolute',
-                inset: 0,
-                width: '100%',
-                height: '100%',
-                objectFit: 'cover',
-                objectPosition: 'center',
-                zIndex: 1,
-                display: 'block',
-              }}
-            />
             {/* Corset Video */}
             <video
               ref={video2Ref}
@@ -168,19 +164,19 @@ export default function BestSection() {
               muted
               playsInline
               preload="auto"
-              poster="/images/best_img_2.webp"
               style={{
                 position: 'absolute',
                 inset: 0,
                 width: '100%',
                 height: '100%',
                 objectFit: 'cover',
-                objectPosition: 'center',
+                objectPosition: 'top center',
                 zIndex: 2,
                 display: 'block',
+                backgroundColor: '#111',
               }}
             >
-              <source src="/videos/corset.mp4" type="video/mp4" />
+              <source src="/videos/best_video_2.mp4" type="video/mp4" />
             </video>
           </div>
         </div>
@@ -198,21 +194,6 @@ export default function BestSection() {
           }}
         >
           <div className="best-section__media-left">
-            {/* Fallback Poster Image: ALWAYS VISIBLE */}
-            <img
-              src="/images/best_img_1.webp"
-              alt="Dresses Collection"
-              style={{
-                position: 'absolute',
-                inset: 0,
-                width: '100%',
-                height: '100%',
-                objectFit: 'cover',
-                objectPosition: 'center',
-                zIndex: 1,
-                display: 'block',
-              }}
-            />
             {/* Dresses Video */}
             <video
               ref={video1Ref}
@@ -220,19 +201,19 @@ export default function BestSection() {
               muted
               playsInline
               preload="auto"
-              poster="/images/best_img_1.webp"
               style={{
                 position: 'absolute',
                 inset: 0,
                 width: '100%',
                 height: '100%',
                 objectFit: 'cover',
-                objectPosition: 'center',
+                objectPosition: 'top center',
                 zIndex: 2,
                 display: 'block',
+                backgroundColor: '#111',
               }}
             >
-              <source src="/videos/campaign_video.webm" type="video/webm" />
+              <source src="/videos/best_video_1.mp4" type="video/mp4" />
             </video>
           </div>
         </div>

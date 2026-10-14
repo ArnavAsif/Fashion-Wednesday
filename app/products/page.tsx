@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Header from '@/components/Header';
 import FooterSection from '@/components/FooterSection';
@@ -15,14 +15,26 @@ import { useCart } from '@/lib/cartContext';
 
 export default function CatalogPage() {
   const { addToCart, setIsCartOpen } = useCart();
-  const [filter, setFilter] = useState<'ALL' | 'DRESSES' | 'CORSETS' | 'TOPS'>('ALL');
+  const [filter, setFilter] = useState<'ALL' | 'DRESSES' | 'CORSETS' | 'TOPS' | 'JACKETS'>('ALL');
   const [creditsOpen, setCreditsOpen] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const cat = params.get('category')?.toUpperCase();
+      if (cat && (['ALL', 'DRESSES', 'CORSETS', 'TOPS', 'JACKETS'] as const).includes(cat as any)) {
+        setFilter(cat as 'ALL' | 'DRESSES' | 'CORSETS' | 'TOPS' | 'JACKETS');
+      }
+    }
+  }, []);
 
   const filtered = PRODUCTS.filter((p) => {
     if (filter === 'ALL') return true;
-    if (filter === 'DRESSES') return p.title.toLowerCase().includes('dress');
-    if (filter === 'CORSETS') return p.title.toLowerCase().includes('corset');
-    if (filter === 'TOPS') return p.title.toLowerCase().includes('top') || p.title.toLowerCase().includes('shirt');
+    const t = p.title.toLowerCase();
+    if (filter === 'DRESSES') return t.includes('dress') || t.includes('skirt');
+    if (filter === 'CORSETS') return t.includes('corset') || t.includes('bustier');
+    if (filter === 'TOPS') return t.includes('top') || t.includes('tee') || t.includes('shrug') || t.includes('sweater') || t.includes('hoodie') || t.includes('bodysuit') || t.includes('cardigan') || t.includes('longsleeve');
+    if (filter === 'JACKETS') return t.includes('jacket') || t.includes('bomber') || t.includes('biker');
     return true;
   });
 
@@ -59,7 +71,7 @@ export default function CatalogPage() {
 
           {/* Filter Pills */}
           <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap' }}>
-            {(['ALL', 'DRESSES', 'CORSETS', 'TOPS'] as const).map((cat) => (
+            {(['ALL', 'DRESSES', 'CORSETS', 'TOPS', 'JACKETS'] as const).map((cat) => (
               <MarkerButton
                 key={cat}
                 text={cat}
@@ -82,7 +94,7 @@ export default function CatalogPage() {
         >
           {filtered.map((product) => {
             const slug = getProductSlug(product);
-            const img = product.images?.[0]?.[0] || '/images/arrivals/Sunna-Dress_01W.webp';
+            const img = product.images?.[0]?.[0] || '/images/products/product-3/image_01.jpg';
             const hoverImg = product.images?.[1]?.[0] || img;
 
             return (

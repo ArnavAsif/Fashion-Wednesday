@@ -196,10 +196,10 @@ export default function MenuModal() {
           fontSize: '1.1rem',
         }}
       >
-        <div>© 2026 SEROTONINN</div>
+        <div>© 2026 BONEZ</div>
         <div style={{ display: 'flex', gap: '2rem' }}>
           <a
-            href="https://www.instagram.com/serotoninn_official/"
+            href="https://www.instagram.com/bonez_official/"
             target="_blank"
             rel="noopener noreferrer"
             style={{ color: '#fff', textDecoration: 'none' }}

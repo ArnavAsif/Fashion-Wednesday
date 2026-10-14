@@ -149,9 +149,9 @@ export default function FooterSection({ onOpenCredits }: { onOpenCredits?: () =>
         <img src="/images/img_166.webp" alt="" />
       </picture>
 
-      {/* Model Cutout (Blue backless dress) */}
+      {/* Model Cutout */}
       <picture className="footer__img" style={{ pointerEvents: 'none' }}>
-        <img src="/images/img_167.webp" alt="Model" />
+        <img src="/images/footer_model.png" alt="BONEZ Model" />
       </picture>
 
       {/* DISCOUNT 10% Torn Paper Badge - Interactive Hover Controlled Lottie */}
@@ -273,8 +273,12 @@ export default function FooterSection({ onOpenCredits }: { onOpenCredits?: () =>
 
         {/* Mid Section: Logo, Title, and Form */}
         <div className="footer__mid">
-          <a href="/" className="footer__logo">
-            <img src="/images/img_168.svg" alt="SEROTONINN" />
+          <a href="/" className="footer__logo" style={{ justifyContent: 'center' }}>
+            <img
+              src="/images/bonez-logo-white.png"
+              alt="BONEZ"
+              style={{ maxWidth: '420px', width: '100%', height: 'auto', display: 'block', margin: '0 auto' }}
+            />
           </a>
 
           <p className="footer__title">
@@ -302,7 +306,7 @@ export default function FooterSection({ onOpenCredits }: { onOpenCredits?: () =>
 
         {/* Bottom Bar */}
         <div className="footer__bottom">
-          <div>©2026_SEROTONINN</div>
+          <div>©2026_BONEZ</div>
 
           <a href="#">
             <span aria-hidden="true" />
@@ -320,7 +324,7 @@ export default function FooterSection({ onOpenCredits }: { onOpenCredits?: () =>
           </button>
 
           <a
-            href="https://www.instagram.com/serotoninn_official/"
+            href="https://www.instagram.com/bonez_official/"
             target="_blank"
             rel="noopener noreferrer"
           >

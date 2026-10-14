@@ -3,10 +3,10 @@ import './globals.css';
 import { CartProvider } from '@/lib/cartContext';
 
 export const metadata: Metadata = {
-  title: 'Serotoninn',
-  description: 'Where Glam Meets Grunge - Serotoninn Official Store',
+  title: 'BONEZ',
+  description: 'Where Glam Meets Grunge - BONEZ Official Store',
   icons: {
-    icon: '/images/favicon.png',
+    icon: '/images/bonez-logo.png',
   },
 };
 

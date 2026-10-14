@@ -143,7 +143,7 @@ export default function MotionSection() {
               letterSpacing: '-0.05rem',
               textTransform: 'uppercase',
             }}>
-              07. SEROTONINN FILM
+              07. BONEZ FILM
             </h2>
             <div className="motion-section__icons" style={{ display: 'flex', gap: '0.6rem' }}>
               <img src="/images/img_164.svg" alt="care" style={{ width: '2.8rem', height: '2.8rem' }} />
@@ -177,7 +177,7 @@ export default function MotionSection() {
               maxWidth: '62rem',
               margin: '0 auto',
             }}>
-              EXPERIENCE THE ESSENCE OF <strong style={{ color: '#ed3833' }}>SEROTONINN</strong> THROUGH FILM. OUR <strong style={{ color: '#ed3833' }}>CINEMATIC</strong> JOURNEY BRINGS TO LIFE THE BOLD, ARTISTIC SPIRIT BEHIND EACH COLLECTION. <strong style={{ color: '#ed3833' }}>WATCH</strong> AS OUR DESIGNS MOVE, <strong style={{ color: '#ed3833' }}>INSPIRE,</strong> AND TELL STORIES OF INDIVIDUALITY, STRENGTH, AND REBELLION.
+              EXPERIENCE THE ESSENCE OF <strong style={{ color: '#ed3833' }}>BONEZ</strong> THROUGH FILM. OUR <strong style={{ color: '#ed3833' }}>CINEMATIC</strong> JOURNEY BRINGS TO LIFE THE BOLD, ARTISTIC SPIRIT BEHIND EACH COLLECTION. <strong style={{ color: '#ed3833' }}>WATCH</strong> AS OUR DESIGNS MOVE, <strong style={{ color: '#ed3833' }}>INSPIRE,</strong> AND TELL STORIES OF INDIVIDUALITY, STRENGTH, AND REBELLION.
             </p>
           </div>
         </div>

@@ -143,7 +143,7 @@ export default function CartDrawer() {
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
               {cart.map((item, idx) => {
-                const img = item.product.images?.[0]?.[0] || '/images/img_102.jpg';
+                const img = item.product.images?.[0]?.[0] || '/images/products/product-3/image_01.jpg';
                 return (
                   <div
                     key={`${item.product.id}-${item.selectedSize}-${idx}`}

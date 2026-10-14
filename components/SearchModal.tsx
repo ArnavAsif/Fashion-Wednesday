@@ -148,7 +148,7 @@ export default function SearchModal() {
           >
             {filtered.map((product) => {
               const slug = getProductSlug(product);
-              const img = product.images?.[0]?.[0] || '/images/img_102.jpg';
+              const img = product.images?.[0]?.[0] || '/images/products/product-3/image_01.jpg';
               return (
                 <div
                   key={product.id}

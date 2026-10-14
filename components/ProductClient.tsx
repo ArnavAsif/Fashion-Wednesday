@@ -35,12 +35,7 @@ export default function ProductClient({ product, slug }: ProductClientProps) {
 
   // Extract images
   const rawImages: string[] = [];
-  if (arrivalMatch) {
-    rawImages.push(arrivalMatch.images.col1[0]);
-    rawImages.push(arrivalMatch.images.col2[0]);
-    rawImages.push(arrivalMatch.images.col3[0]);
-    rawImages.push(arrivalMatch.images.col1[1]);
-  } else if (Array.isArray(product.images)) {
+  if (Array.isArray(product.images) && product.images.length > 0) {
     product.images.forEach((imgItem: any) => {
       let url = '';
       if (Array.isArray(imgItem) && typeof imgItem[0] === 'string') {
@@ -49,16 +44,16 @@ export default function ProductClient({ product, slug }: ProductClientProps) {
         url = imgItem;
       }
       if (url) {
-        const basename = url.split('/').pop()?.split('?')[0] || '';
-        if (basename.toLowerCase().includes('classic-knit-maxi-dress')) {
-          rawImages.push(`/images/products/${basename}`);
-        } else {
-          rawImages.push(url);
-        }
+        rawImages.push(url);
       }
     });
+  } else if (arrivalMatch) {
+    rawImages.push(arrivalMatch.images.col1[0]);
+    rawImages.push(arrivalMatch.images.col2[0]);
+    rawImages.push(arrivalMatch.images.col3[0]);
+    rawImages.push(arrivalMatch.images.col1[1]);
   }
-  const images = rawImages.length > 0 ? rawImages : ['/images/arrivals/Sunna-Dress_01W.webp'];
+  const images = rawImages.length > 0 ? rawImages : ['/images/products/product-3/image_01.jpg'];
 
   const [activeImgIndex, setActiveImgIndex] = useState(0);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
@@ -306,7 +301,7 @@ export default function ProductClient({ product, slug }: ProductClientProps) {
                   textTransform: 'uppercase',
                   lineHeight: 0.9,
                   margin: '0 0 1rem 0',
-                  letterSpacing: '-0.02em',
+                  letterSpacing: '0.01em',
                 }}
               >
                 {product.title}
@@ -643,7 +638,7 @@ export default function ProductClient({ product, slug }: ProductClientProps) {
           >
             {related.map((item) => {
               const itemSlug = getProductSlug(item);
-              const itemImg = item.images?.[0]?.[0] || '/images/arrivals/Sunna-Dress_01W.webp';
+              const itemImg = item.images?.[0]?.[0] || '/images/products/product-3/image_01.jpg';
               return (
                 <Link
                   key={item.id}

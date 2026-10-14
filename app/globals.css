@@ -415,6 +415,13 @@ html {
   }
 }
 
+.footer__img img {
+  height: auto !important;
+  width: 100% !important;
+  display: block !important;
+  object-fit: contain !important;
+}
+
 /* Motion section overrides to prevent text overlap and enforce initial shape */
 .motion-section {
   padding-top: 0 !important;
@@ -589,13 +596,10 @@ html {
 
 .best-section__top {
   position: absolute !important;
-  top: 0 !important;
-  right: 0 !important;
-  bottom: 0 !important;
-  left: 0 !important;
+  inset: 0 !important;
   width: 100% !important;
   height: 100% !important;
-  z-index: 3 !important;
+  z-index: 2 !important;
   pointer-events: none !important;
   -webkit-mask-image: url(/images/best_mask_mob.webp) !important;
   mask-image: url(/images/best_mask_mob.webp) !important;
@@ -623,62 +627,251 @@ html {
 
 .best-section__bottom {
   position: absolute !important;
-  top: 0 !important;
-  right: 0 !important;
-  bottom: 0 !important;
-  left: 0 !important;
+  inset: 0 !important;
   width: 100% !important;
   height: 100% !important;
   z-index: 1 !important;
-  display: flex !important;
-  align-items: flex-end !important;
+}
+
+.best-section__inner {
+  position: relative !important;
+  width: 100% !important;
+  height: 120rem !important;
+  overflow: hidden !important;
+  cursor: none !important;
 }
 
 @media (min-width: 1024px) {
-  .best-section__bottom {
-    justify-content: flex-end !important;
+  .best-section__inner {
+    height: clamp(680px, 100vh, 810px) !important;
   }
 }
 
-.best-card {
-  pointer-events: auto !important;
+.best-section__inner * {
+  cursor: none !important;
 }
 
-.best-card__text {
-  mix-blend-mode: difference !important;
-  color: #fff !important;
-  font-family: Inter, sans-serif !important;
-}
-
-.best-card__text span {
-  display: block !important;
+/* Media containers for left & right halves */
+.best-section__media-left {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
   width: 100% !important;
+  height: 55% !important;
+  overflow: hidden !important;
 }
 
-.best-card__bottom {
-  mix-blend-mode: difference !important;
-  color: #fff !important;
+.best-section__media-right {
+  position: absolute !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  width: 100% !important;
+  height: 55% !important;
+  overflow: hidden !important;
 }
 
-.best-card__title {
-  font-family: Thunder, sans-serif !important;
-  color: #fff !important;
+@media (min-width: 1024px) {
+  .best-section__media-left {
+    top: 0 !important;
+    left: 0 !important;
+    width: 55% !important;
+    height: 100% !important;
+  }
+  .best-section__media-right {
+    top: 0 !important;
+    bottom: auto !important;
+    left: auto !important;
+    right: 0 !important;
+    width: 55% !important;
+    height: 100% !important;
+  }
 }
 
-.best-card__count {
-  font-family: 'PP Fraktion Mono', monospace !important;
-  color: #fff !important;
+/* Interactive Links */
+.best-section__link-dresses {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 50% !important;
+  display: block !important;
+  cursor: none !important;
+}
+
+.best-section__link-corsets {
+  position: absolute !important;
+  top: 50% !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 50% !important;
+  display: block !important;
+  cursor: none !important;
+}
+
+@media (min-width: 1024px) {
+  .best-section__link-dresses {
+    top: 0 !important;
+    left: 0 !important;
+    width: 50% !important;
+    height: 100% !important;
+  }
+  .best-section__link-corsets {
+    top: 0 !important;
+    left: auto !important;
+    right: 0 !important;
+    width: 50% !important;
+    height: 100% !important;
+  }
+}
+
+.best-card__video {
+  z-index: 2 !important;
 }
 
 .best-section__cursor {
-  mix-blend-mode: difference !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
   pointer-events: none !important;
-  z-index: 20 !important;
+  z-index: 30 !important;
+  mix-blend-mode: difference !important;
+  color: #ffffff !important;
+  display: block !important;
+  opacity: 0 !important;
+  transition: opacity 0.2s ease !important;
+}
+
+.best-section__cursor.visible {
+  opacity: 1 !important;
 }
 
 .best-section__cursor p {
   font-family: 'PP Fraktion Mono', monospace !important;
+  font-size: 1.4rem !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.04em !important;
+  text-transform: uppercase !important;
+  white-space: nowrap !important;
+  transform: translate(-50%, -50%) !important;
+  margin: 0 !important;
+  opacity: 1 !important;
+  color: #ffffff !important;
 }
+
+/* Bottom Category Titles & Item Counts */
+.best-bottom-row-left {
+  position: absolute !important;
+  bottom: calc(50% + 1.5rem) !important;
+  left: 2rem !important;
+  width: calc(100% - 4rem) !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: flex-end !important;
+  mix-blend-mode: difference !important;
+  z-index: 15 !important;
+  pointer-events: none !important;
+}
+
+.best-bottom-row-right {
+  position: absolute !important;
+  bottom: 2rem !important;
+  left: 2rem !important;
+  width: calc(100% - 4rem) !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: flex-end !important;
+  mix-blend-mode: difference !important;
+  z-index: 15 !important;
+  pointer-events: none !important;
+}
+
+/* Top Editorial Copy with difference blend mode for automatic contrast */
+.best-top-row-left {
+  position: absolute !important;
+  top: 2rem !important;
+  left: 2rem !important;
+  width: calc(100% - 4rem) !important;
+  text-align: left !important;
+  mix-blend-mode: difference !important;
+  z-index: 15 !important;
+  pointer-events: none !important;
+}
+
+.best-top-row-right {
+  position: absolute !important;
+  top: calc(50% + 2rem) !important;
+  right: 2rem !important;
+  width: calc(100% - 4rem) !important;
+  text-align: right !important;
+  mix-blend-mode: difference !important;
+  z-index: 15 !important;
+  pointer-events: none !important;
+}
+
+@media (min-width: 1024px) {
+  .best-bottom-row-left {
+    bottom: 2.5rem !important;
+    left: 4.5rem !important;
+    width: calc(50% - 9rem) !important;
+  }
+  .best-bottom-row-right {
+    bottom: 2.5rem !important;
+    left: calc(50% + 4.5rem) !important;
+    width: calc(50% - 9rem) !important;
+  }
+  .best-top-row-left {
+    top: 3.5rem !important;
+    left: 4.5rem !important;
+    width: calc(50% - 9rem) !important;
+    max-width: 34rem !important;
+  }
+  .best-top-row-right {
+    top: 3.5rem !important;
+    right: 4.5rem !important;
+    width: calc(50% - 9rem) !important;
+    max-width: 36rem !important;
+  }
+}
+
+.best-card__name {
+  font-family: Thunder, sans-serif !important;
+  font-size: clamp(3.8rem, 5.5vw, 8rem) !important;
+  font-weight: 800 !important;
+  line-height: 0.8 !important;
+  text-transform: uppercase !important;
+  color: #ffffff !important;
+  letter-spacing: -0.02em !important;
+  display: inline-block !important;
+}
+
+.best-card__tag {
+  font-style: italic !important;
+  font-weight: 800 !important;
+  font-size: clamp(1.6rem, 2.2vw, 2.8rem) !important;
+  line-height: 1 !important;
+  margin-bottom: 0.6rem !important;
+  color: #ffffff !important;
+  display: inline-block !important;
+}
+
+.best-card__count {
+  font-family: 'PP Fraktion Mono', monospace !important;
+  font-size: 1.6rem !important;
+  font-weight: 400 !important;
+  margin: 0 !important;
+  margin-bottom: 0.6rem !important;
+  letter-spacing: 0.04em !important;
+  color: #ffffff !important;
+  white-space: nowrap !important;
+}
+
+.best-bottom-row-left *,
+.best-bottom-row-right * {
+  color: #ffffff;
+}
+
+
 
 
 

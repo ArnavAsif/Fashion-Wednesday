@@ -53,7 +53,7 @@ export default function NewsletterModal() {
         <div style={{ width: '100%', height: '220px', position: 'relative', overflow: 'hidden' }}>
           <img
             src="/images/img_033.webp"
-            alt="Serotoninn Newsletter"
+            alt="BONEZ Newsletter"
             style={{ width: '100%', height: '100%', objectFit: 'cover' }}
           />
           <button

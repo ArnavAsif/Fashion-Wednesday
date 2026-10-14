@@ -14,11 +14,10 @@ interface HeroDrop {
 }
 
 const DROPS: HeroDrop[] = [
-  { name: 'NEW DROP', img: '/images/img_096.png', line: '/images/img_095.webp' },
-  { name: 'QUARPA CAPSULE', img: '/images/img_097.png', line: '/images/img_095.webp' },
-  { name: 'LIFE FORCE', img: '/images/img_098.png', line: '/images/img_095.webp' },
-  { name: 'BERLIN VIBES', img: '/images/img_099.png', line: '/images/img_095.webp' },
-  { name: 'BEAUTY WILL SAVE THE WORLD', img: '/images/img_100.png', line: '/images/img_095.webp' },
+  { name: 'NEW DROP', img: '/images/hero/hero_banner_1.jpg', line: '/images/img_095.webp' },
+  { name: 'QUARPA CAPSULE', img: '/images/hero/hero_banner_2.jpg', line: '/images/img_095.webp' },
+  { name: 'LIFE FORCE', img: '/images/hero/hero_banner_3.jpg', line: '/images/img_095.webp' },
+  { name: 'BERLIN VIBES', img: '/images/hero/hero_banner_4.jpg', line: '/images/img_095.webp' },
 ];
 
 export default function HeroSection() {
@@ -194,7 +193,7 @@ export default function HeroSection() {
         ))}
       </ul>
 
-      {/* Left Headline: SEROTONINN */}
+      {/* Left Headline: BONEZ */}
       <h1
         className="hero-side-title-left"
         style={{
@@ -212,7 +211,7 @@ export default function HeroSection() {
           color: '#000',
         }}
       >
-        SEROTONINN
+        BONEZ
       </h1>
 
       {/* Right Headline: WHERE GLAM MEETS GRUNGE */}

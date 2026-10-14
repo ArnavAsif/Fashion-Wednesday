@@ -11,11 +11,11 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: { params: { slug: string } }) {
   const product = getProductBySlug(params.slug);
   if (!product) {
-    return { title: 'Product Not Found — SEROTONINN' };
+    return { title: 'Product Not Found — BONEZ' };
   }
   return {
-    title: `${product.title} — SEROTONINN`,
-    description: `${product.title} available on SEROTONINN Berlin. High fashion, made in Ukraine.`,
+    title: `${product.title} — BONEZ`,
+    description: `${product.title} available on BONEZ Official Store. Where Glam Meets Grunge.`,
   };
 }
 

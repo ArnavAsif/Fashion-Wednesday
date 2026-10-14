@@ -114,7 +114,7 @@ export default function BestSection() {
   };
 
   return (
-    <section className="best-section" id="best" style={{ position: 'relative', width: '100%', padding: '4rem 0 6rem 0' }}>
+    <section className="best-section" id="best" style={{ position: 'relative', width: '100%', padding: '4rem 0 16rem 0' }}>
       <div className="container" style={{ marginBottom: '3rem', overflow: 'visible' }}>
         <h2
           className="best-section__title h2"

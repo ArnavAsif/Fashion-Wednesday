@@ -51,6 +51,8 @@ export default function Header({ isProductPage = false }: { isProductPage?: bool
         alignItems: isScrolled ? 'center' : 'flex-start',
         transition: 'padding 0.3s ease',
         pointerEvents: 'auto',
+        mixBlendMode: 'difference',
+        color: '#ffffff',
       }}
     >
       {/* Left Section: MENU +, SHOP ALL, CATEGORIES +, [ 5-HT ] */}
@@ -131,7 +133,7 @@ export default function Header({ isProductPage = false }: { isProductPage?: bool
       >
         <Link href="/" className="header__logo" style={{ display: 'block', visibility: 'inherit', opacity: 1, textAlign: 'center' }}>
           <img
-            src="/images/bonez-logo.png"
+            src="/images/bonez-logo-white.png"
             alt="BONEZ"
             style={{
               maxHeight: '32px',

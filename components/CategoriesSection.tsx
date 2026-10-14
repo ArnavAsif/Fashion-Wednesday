@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useRef, useState, useEffect, useCallback } from 'react';
+import Link from 'next/link';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import MarkerButton from '@/components/MarkerButton';
@@ -14,18 +15,18 @@ interface CatItem {
 }
 
 const CATEGORIES: CatItem[] = [
-  { title: 'SALE', count: '[ 0 ]', img: '/images/img_138.png' },
-  { title: 'ACCESSORIES', count: '[ 2 ]', img: '/images/img_140.png' },
-  { title: 'BODYS', count: '[ 3 ]', img: '/images/img_142.png' },
-  { title: 'BOTTOMS', count: '[ 9 ]', img: '/images/img_144.png' },
-  { title: 'COATS', count: '[ 1 ]', img: '/images/img_146.png' },
-  { title: 'CORSETS', count: '[ 7 ]', img: '/images/img_148.png' },
-  { title: 'DRESSES', count: '[ 25 ]', img: '/images/img_150.png' },
-  { title: 'JACKETS', count: '[ 4 ]', img: '/images/img_152.png' },
-  { title: 'SKIRTS', count: '[ 5 ]', img: '/images/img_154.png' },
-  { title: 'SPECIAL EDITION', count: '[ 2 ]', img: '/images/img_156.png' },
-  { title: 'TOPS', count: '[ 8 ]', img: '/images/img_127.png' },
-  { title: 'NEW DROP', count: '[ 12 ]', img: '/images/img_136.png' },
+  { title: 'SALE', count: '[ 5 ]', img: '/images/categories/cat_1.jpg' },
+  { title: 'ACCESSORIES', count: '[ 4 ]', img: '/images/categories/cat_2.jpg' },
+  { title: 'BODYS', count: '[ 3 ]', img: '/images/categories/cat_3.jpg' },
+  { title: 'BOTTOMS', count: '[ 4 ]', img: '/images/categories/cat_4.jpg' },
+  { title: 'COATS', count: '[ 3 ]', img: '/images/categories/cat_5.jpg' },
+  { title: 'CORSETS', count: '[ 7 ]', img: '/images/categories/cat_6.jpg' },
+  { title: 'DRESSES', count: '[ 8 ]', img: '/images/categories/cat_7.jpg' },
+  { title: 'JACKETS', count: '[ 5 ]', img: '/images/categories/cat_8.jpg' },
+  { title: 'SKIRTS', count: '[ 3 ]', img: '/images/categories/cat_9.jpg' },
+  { title: 'SPECIAL EDITION', count: '[ 4 ]', img: '/images/categories/cat_10.jpg' },
+  { title: 'TOPS', count: '[ 12 ]', img: '/images/categories/cat_11.jpg' },
+  { title: 'NEW DROP', count: '[ 10 ]', img: '/images/categories/cat_12.jpg' },
 ];
 
 export default function CategoriesSection() {
@@ -166,9 +167,9 @@ export default function CategoriesSection() {
             }}
           >
             {CATEGORIES.map((cat, idx) => (
-              <a
+              <Link
                 key={idx}
-                href="#arrivals"
+                href={`/products?category=${encodeURIComponent(cat.title)}`}
                 onClick={handleCardClick}
                 className="categories-card"
                 style={{
@@ -177,6 +178,7 @@ export default function CategoriesSection() {
                   position: 'relative',
                   display: 'block',
                   cursor: isGrabbing ? 'grabbing' : 'pointer',
+                  textDecoration: 'none',
                 }}
               >
                 <div className="categories-card__img-wrapper">
@@ -190,7 +192,7 @@ export default function CategoriesSection() {
                 <p className="categories-card__text">
                   <strong>{cat.count}</strong>
                 </p>
-              </a>
+              </Link>
             ))}
           </div>
 

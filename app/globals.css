@@ -8717,7 +8717,7 @@ html {
 
 @media (min-width: 1024px) {
   .best-section__inner {
-    height: clamp(680px, 100vh, 810px) !important;
+    height: 100vh !important;
   }
 }
 

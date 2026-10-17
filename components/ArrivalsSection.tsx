@@ -6,6 +6,8 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useCart } from '@/lib/cartContext';
 import MarkerButton from '@/components/MarkerButton';
+import Swiper from 'swiper';
+import 'swiper/css';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -14,7 +16,7 @@ export interface ArrivalItem {
   title: string;
   price: string;
   rawPrice: number;
-  collection: 'life force' | 'berlin';
+  collection: 'life force' | 'berlin' | 'new drop' | string;
   bestseller: boolean;
   sizes: string[];
   colorSwatch: string;
@@ -122,6 +124,7 @@ export default function ArrivalsSection() {
   const [slideDir, setSlideDir] = useState<'next' | 'prev'>('next');
   const [selectedSizes, setSelectedSizes] = useState<Record<number, string>>({});
   const [addedItem, setAddedItem] = useState<number | null>(null);
+  const [scrollProgress, setScrollProgress] = useState(0);
 
   // Drag interaction refs
   const groupRef = useRef<HTMLDivElement>(null);
@@ -136,97 +139,86 @@ export default function ArrivalsSection() {
 
   const total = ARRIVAL_PRODUCTS.length;
 
-  // Mobile & tablet drag and touch tracking
+  // Mobile Swiper & progress refs
   const mobileSwiperRef = useRef<HTMLDivElement>(null);
-  const isDraggingMobileRef = useRef(false);
-  const mobileStartXRef = useRef(0);
-  const mobileStartScrollLeftRef = useRef(0);
-  const hasMovedMobileRef = useRef(false);
-  const isMobileSwipingRef = useRef(false);
-  const mobileTouchStartXRef = useRef(0);
-  const mobileTouchStartYRef = useRef(0);
+  const swiperInstanceRef = useRef<Swiper | null>(null);
+  const mobileScrollRef = useRef<HTMLDivElement>(null);
+  const mobileFillRef = useRef<HTMLDivElement>(null);
 
-  const handleMobilePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
-    if (e.pointerType === 'mouse' && e.button !== 0) return;
-    const container = mobileSwiperRef.current;
-    if (!container) return;
-    isDraggingMobileRef.current = true;
-    hasMovedMobileRef.current = false;
-    mobileStartXRef.current = e.clientX;
-    mobileStartScrollLeftRef.current = container.scrollLeft;
-    container.style.cursor = 'grabbing';
-    container.style.scrollSnapType = 'none';
-    try {
-      e.currentTarget.setPointerCapture(e.pointerId);
-    } catch (_) {}
-  };
+  // Initialize Swiper for mobile (< 1024px) matching serotoninn.com exact physics
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
 
-  const handleMobilePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
-    if (!isDraggingMobileRef.current || !mobileSwiperRef.current) return;
-    const dx = e.clientX - mobileStartXRef.current;
-    if (Math.abs(dx) > 4) {
-      hasMovedMobileRef.current = true;
-      mobileSwiperRef.current.scrollLeft = mobileStartScrollLeftRef.current - dx;
-      handleMobileScroll();
-    }
-  };
+    const updateMobileProgress = (w: Swiper) => {
+      const totalSlides = w.slides ? w.slides.length : 0;
+      if (!totalSlides || !mobileScrollRef.current || !mobileFillRef.current) return;
 
-  const handleMobilePointerUp = (e?: React.PointerEvent<HTMLDivElement>) => {
-    if (!isDraggingMobileRef.current) return;
-    isDraggingMobileRef.current = false;
-    if (mobileSwiperRef.current) {
-      mobileSwiperRef.current.style.cursor = 'grab';
-      mobileSwiperRef.current.style.scrollSnapType = 'x mandatory';
-    }
-    if (e && e.currentTarget && e.currentTarget.hasPointerCapture && e.currentTarget.hasPointerCapture(e.pointerId)) {
-      try {
-        e.currentTarget.releasePointerCapture(e.pointerId);
-      } catch (_) {}
-    }
-    if (hasMovedMobileRef.current) {
-      setTimeout(() => {
-        hasMovedMobileRef.current = false;
-      }, 120);
-    }
-  };
+      const maxTranslate = Math.abs(w.maxTranslate());
+      const currentTranslate = Math.abs(w.translate);
+      const progress = maxTranslate === 0 ? 0 : Math.min(1, Math.max(0, currentTranslate / maxTranslate));
 
-  const handleMobileTouchStart = (e: React.TouchEvent) => {
-    if (e.touches.length === 1) {
-      mobileTouchStartXRef.current = e.touches[0].clientX;
-      mobileTouchStartYRef.current = e.touches[0].clientY;
-      isMobileSwipingRef.current = false;
-    }
-  };
+      const trackWidth = mobileScrollRef.current.clientWidth;
+      const fillWidth = mobileFillRef.current.offsetWidth;
+      const maxTravel = Math.max(0, trackWidth - fillWidth);
+      const translateX = progress * maxTravel;
 
-  const handleMobileTouchMove = (e: React.TouchEvent) => {
-    if (e.touches.length === 1) {
-      const dx = Math.abs(e.touches[0].clientX - mobileTouchStartXRef.current);
-      const dy = Math.abs(e.touches[0].clientY - mobileTouchStartYRef.current);
-      if (dx > 8 || dy > 8) {
-        isMobileSwipingRef.current = true;
+      mobileFillRef.current.style.transform = `translate3d(${translateX}px, 0, 0)`;
+    };
+
+    const setupSwiper = () => {
+      if (window.innerWidth >= 1024) {
+        if (swiperInstanceRef.current) {
+          swiperInstanceRef.current.destroy(true, true);
+          swiperInstanceRef.current = null;
+        }
+        return;
       }
-    }
-  };
 
-  const handleMobileCardClick = (e: React.MouseEvent) => {
-    if (hasMovedMobileRef.current || isDraggingMobileRef.current || isMobileSwipingRef.current) {
-      e.preventDefault();
-      e.stopPropagation();
-      return;
-    }
-  };
+      if (mobileSwiperRef.current && !swiperInstanceRef.current) {
+        const swiper = new Swiper(mobileSwiperRef.current, {
+          slidesPerView: 1.2,
+          spaceBetween: 10,
+          loop: false,
+          threshold: 4,
+          touchStartPreventDefault: false,
+          preventClicks: true,
+          preventClicksPropagation: true,
+          slideToClickedSlide: false,
+          grabCursor: true,
+          resistanceRatio: 0.85,
+          on: {
+            init(w) {
+              updateMobileProgress(w);
+              setActiveIndex(w.activeIndex || 0);
+            },
+            setTranslate(w) {
+              updateMobileProgress(w);
+            },
+            slideChange(w) {
+              setActiveIndex(w.activeIndex || 0);
+            },
+          },
+        });
 
-  const handleMobileScroll = () => {
-    if (!mobileSwiperRef.current) return;
-    const el = mobileSwiperRef.current;
-    const cardEl = el.firstElementChild?.firstElementChild as HTMLElement;
-    const cardWidth = cardEl ? cardEl.offsetWidth + 12 : 300;
-    const scrollPos = el.scrollLeft;
-    const newIdx = Math.min(total - 1, Math.max(0, Math.round(scrollPos / cardWidth)));
-    if (newIdx !== activeIndex) {
-      setActiveIndex(newIdx);
-    }
-  };
+        swiperInstanceRef.current = swiper;
+      }
+    };
+
+    setupSwiper();
+
+    const handleResize = () => {
+      setupSwiper();
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      if (swiperInstanceRef.current) {
+        swiperInstanceRef.current.destroy(true, true);
+        swiperInstanceRef.current = null;
+      }
+    };
+  }, [total]);
 
   // Navigate to slide using functional state updates to eliminate stale closures
   const goToSlide = useCallback((newIdx: number, dir: 'next' | 'prev') => {
@@ -236,14 +228,27 @@ export default function ArrivalsSection() {
       setSlideDir(dir);
       return newIdx;
     });
-    if (mobileSwiperRef.current) {
-      const container = mobileSwiperRef.current;
-      const cardEl = container.firstElementChild?.children[newIdx] as HTMLElement;
-      if (cardEl) {
-        container.scrollTo({ left: cardEl.offsetLeft - 16, behavior: 'smooth' });
-      }
+    if (swiperInstanceRef.current) {
+      swiperInstanceRef.current.slideTo(newIdx);
     }
   }, []);
+
+  const handleMobileProgressBarClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!swiperInstanceRef.current || !mobileScrollRef.current) return;
+    const rect = mobileScrollRef.current.getBoundingClientRect();
+    const clickX = e.clientX - rect.left;
+    const ratio = Math.min(1, Math.max(0, clickX / rect.width));
+    const targetIdx = Math.min(total - 1, Math.max(0, Math.round(ratio * (total - 1))));
+    swiperInstanceRef.current.slideTo(targetIdx);
+  };
+
+  const handleDesktopProgressBarClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const clickX = e.clientX - rect.left;
+    const ratio = clickX / rect.width;
+    const targetIdx = Math.min(total - 1, Math.max(0, Math.floor(ratio * total)));
+    goToSlide(targetIdx, targetIdx > activeIndex ? 'next' : 'prev');
+  };
 
   const goNext = useCallback(() => {
     console.log('[ArrivalsSection] goNext triggered');
@@ -599,34 +604,56 @@ export default function ArrivalsSection() {
   return (
     <section className="arrivals-section" id="arrivals">
       <div className="container">
-        {/* Section Title */}
-        <h2 className="arrivals-section__title h2">02. New Arrivals</h2>
+        {/* Header: Section Title and Collection Drop Indicator */}
+        <div className="arrivals-section__header-row">
+          <h2 className="arrivals-section__title h2">
+            <span style={{ color: '#ed3833' }}>02.</span>{' '}
+            <span style={{ color: '#000000' }}>NEW ARRIVALS</span>
+          </h2>
 
-        {/* See All Button */}
+          {/* Mobile single active collection indicator with 3D roll transition */}
+          <ul className="arrivals-section__text arrivals-section__text--mobile">
+            {ARRIVAL_PRODUCTS.map((prod, idx) => (
+              <li
+                key={idx}
+                className={idx === activeIndex ? 'active' : ''}
+              >
+                ({prod.collection})
+              </li>
+            ))}
+          </ul>
+
+          {/* Desktop collection indicator */}
+          <ul className="arrivals-section__text arrivals-section__text--desktop">
+            <li className={currentItem.collection === 'life force' ? 'active' : ''}>
+              <Link href="/collections/life-force" style={{ color: 'inherit', textDecoration: 'none' }}>
+                (life force)
+              </Link>
+            </li>
+            <li className={currentItem.collection === 'berlin' ? 'active' : ''}>
+              <Link href="/collections/berlin" style={{ color: 'inherit', textDecoration: 'none' }}>
+                (Berlin)
+              </Link>
+            </li>
+            <li className={currentItem.collection === 'new drop' ? 'active' : ''}>
+              <Link href="/collections" style={{ color: 'inherit', textDecoration: 'none' }}>
+                (new drop)
+              </Link>
+            </li>
+          </ul>
+        </div>
+
+        {/* Desktop See All Button (>= 1024px) */}
         <MarkerButton
           text="SEE ALL"
           brackets
           cloneLastChar
           href="/products"
-          className="arrivals-section__button link"
+          className="arrivals-section__button link arrivals-section__button--desktop"
         />
 
         {/* Region Tag */}
         <p className="arrivals-section__lang">(UA)</p>
-
-        {/* Collection Drop Indicator (Life Force vs Berlin) */}
-        <ul className="arrivals-section__text">
-          <li className={currentItem.collection === 'life force' ? 'active' : ''}>
-            <Link href="/collections/life-force" style={{ color: 'inherit', textDecoration: 'none' }}>
-              (life force)
-            </Link>
-          </li>
-          <li className={currentItem.collection === 'berlin' ? 'active' : ''}>
-            <Link href="/collections/berlin" style={{ color: 'inherit', textDecoration: 'none' }}>
-              (Berlin)
-            </Link>
-          </li>
-        </ul>
 
         {/* 3-Column Synchronized Desktop Track */}
         <div
@@ -653,49 +680,17 @@ export default function ArrivalsSection() {
         {/* Mobile Swipe Carousel (< 1024px) */}
         <div
           ref={mobileSwiperRef}
-          className="arrivals-section__swiper-mob"
-          onScroll={handleMobileScroll}
-          onPointerDown={handleMobilePointerDown}
-          onPointerMove={handleMobilePointerMove}
-          onPointerUp={handleMobilePointerUp}
-          onPointerCancel={handleMobilePointerUp}
-          onPointerLeave={handleMobilePointerUp}
-          onTouchStart={handleMobileTouchStart}
-          onTouchMove={handleMobileTouchMove}
-          style={{
-            overflowX: 'auto',
-            scrollSnapType: 'x mandatory',
-            scrollbarWidth: 'none',
-            WebkitOverflowScrolling: 'touch',
-            touchAction: 'pan-x pan-y',
-            marginTop: '3rem',
-            paddingBottom: '1rem',
-            cursor: 'grab',
-            userSelect: 'none',
-          }}
+          className="arrivals-section__swiper-mob swiper"
         >
-          <div
-            style={{
-              display: 'flex',
-              gap: '1.2rem',
-              padding: '0 1rem',
-            }}
-          >
+          <div className="swiper-wrapper">
             {ARRIVAL_PRODUCTS.map((item, idx) => (
               <div
                 key={item.id}
-                style={{
-                  flex: '0 0 80vw',
-                  maxWidth: '32rem',
-                  scrollSnapAlign: 'start',
-                  position: 'relative',
-                }}
+                className="swiper-slide"
               >
                 <Link
                   href={item.href}
-                  onClick={handleMobileCardClick}
                   className="arrivals-card"
-                  style={{ display: 'block' }}
                 >
                   {item.bestseller && (
                     <div className="arrivals-card__best">
@@ -704,54 +699,31 @@ export default function ArrivalsSection() {
                   )}
 
                   <div className="arrivals-card__inner">
-                    <div className="arrivals-card__img-wrapper">
-                      <picture className="arrivals-card__img">
-                        <img
-                          src={item.images.col1[0]}
-                          alt={item.title}
-                          draggable={false}
-                          loading="lazy"
-                        />
-                      </picture>
-                    </div>
+                    <picture className="arrivals-card__img">
+                      <img
+                        src={item.images.col1[0]}
+                        alt={item.title}
+                        draggable={false}
+                        loading={idx === 0 ? 'eager' : 'lazy'}
+                      />
+                    </picture>
+                    <img
+                      className="arrivals-card__icon"
+                      src="/images/plus_icon.svg"
+                      alt=""
+                    />
                   </div>
 
-                  <div className="arrivals-card__info" style={{ marginTop: '0.8rem' }}>
-                    <div className="arrivals-card__top" style={{ position: 'static', transform: 'none' }}>
-                      <h3 className="arrivals-card__title">{item.title}</h3>
+                  <div className="arrivals-card__info">
+                    <div className="arrivals-card__top">
+                      <h3 className="arrivals-card__title">
+                        {item.title}
+                      </h3>
                       <div className="arrivals-card__prices">
-                        <p className="arrivals-card__price">{item.price}</p>
+                        <p className="arrivals-card__price">
+                          {item.price.replace('_', ' ')}
+                        </p>
                       </div>
-                    </div>
-
-                    <div
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                        marginTop: '0.6rem',
-                      }}
-                    >
-                      <ul className="arrivals-card__size" style={{ display: 'flex' }}>
-                        {item.sizes.map(size => (
-                          <li
-                            key={size}
-                            onClick={e => handleSizeClick(e, item, size)}
-                          >
-                            <strong>(</strong>{size}<strong>)</strong>
-                          </li>
-                        ))}
-                      </ul>
-                      <span
-                        style={{
-                          display: 'inline-block',
-                          width: '1.4rem',
-                          height: '1.4rem',
-                          borderRadius: '50%',
-                          backgroundColor: item.colorSwatch,
-                          border: '1px solid rgba(0,0,0,0.2)',
-                        }}
-                      />
                     </div>
                   </div>
                 </Link>
@@ -760,16 +732,10 @@ export default function ArrivalsSection() {
           </div>
         </div>
 
-        {/* Scroll Progress Bar */}
+        {/* Desktop Scroll Progress Bar (>= 1024px) */}
         <div
-          className="arrivals-section__scroll scroll"
-          onClick={e => {
-            const rect = e.currentTarget.getBoundingClientRect();
-            const clickX = e.clientX - rect.left;
-            const ratio = clickX / rect.width;
-            const targetIdx = Math.min(total - 1, Math.max(0, Math.floor(ratio * total)));
-            goToSlide(targetIdx, targetIdx > activeIndex ? 'next' : 'prev');
-          }}
+          className="arrivals-section__scroll scroll arrivals-section__scroll--desktop"
+          onClick={handleDesktopProgressBarClick}
         >
           <div
             className="arrivals-section__fill scroll__fill"
@@ -777,6 +743,35 @@ export default function ArrivalsSection() {
               width: `${fillWidthPercent}%`,
               transform: `translate3d(${fillTranslatePercent}%, 0, 0)`,
             }}
+          >
+            <img src="/images/track_img.svg" alt="" />
+          </div>
+        </div>
+
+        {/* Mobile Bottom Row (< 1024px): Progress Bar & [SEE ALL] Button */}
+        <div className="arrivals-section__bottom-mob">
+          <div
+            ref={mobileScrollRef}
+            className="arrivals-section__scroll scroll arrivals-section__scroll--mob"
+            onClick={handleMobileProgressBarClick}
+          >
+            <div
+              ref={mobileFillRef}
+              className="arrivals-section__fill scroll__fill"
+              style={{
+                width: `${fillWidthPercent}%`,
+              }}
+            >
+              <img src="/images/track_img.svg" alt="" />
+            </div>
+          </div>
+
+          <MarkerButton
+            text="SEE ALL"
+            brackets
+            cloneLastChar
+            href="/products"
+            className="arrivals-section__button-mob"
           />
         </div>
       </div>

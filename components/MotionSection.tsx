@@ -13,9 +13,7 @@ export default function MotionSection() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const textGroupRef = useRef<HTMLDivElement>(null);
   const tipRef = useRef<HTMLParagraphElement>(null);
-  const discoverRef = useRef<HTMLAnchorElement>(null);
   const wingsRef = useRef<HTMLDivElement>(null);
-  const glassesRef = useRef<HTMLDivElement>(null);
 
   const [isFullScreen, setIsFullScreen] = useState(false);
 
@@ -102,23 +100,10 @@ export default function MotionSection() {
                 maskRef.current.style.transform = `translateY(${offsetY}px)`;
               }
 
-              // 4. Glasses doodle in stage 2 (progress 0.25 to 0.65)
-              if (glassesRef.current) {
-                const gOpacity = p > 0.2 && p < 0.7 ? Math.min(1, (p - 0.2) * 5) : Math.max(0, 1 - (p - 0.7) * 5);
-                glassesRef.current.style.opacity = `${gOpacity}`;
-              }
-
-              // 5. Wings doodle in stage 3 (progress > 0.5)
+              // 4. Wings doodle in stage 3 (progress > 0.5)
               if (wingsRef.current) {
                 const wOpacity = p > 0.5 ? Math.min(1, (p - 0.5) * 4) : 0;
                 wingsRef.current.style.opacity = `${wOpacity}`;
-              }
-
-              // 6. [ DISCOVER ] button fades in during dive (progress > 0.3)
-              if (discoverRef.current) {
-                const dOpacity = p > 0.25 ? Math.min(1, (p - 0.25) * 3) : 0;
-                discoverRef.current.style.opacity = `${dOpacity}`;
-                discoverRef.current.style.pointerEvents = p > 0.4 ? 'auto' : 'none';
               }
             },
           },
@@ -221,26 +206,6 @@ export default function MotionSection() {
             <source src="/videos/video_2.mp4" type="video/mp4" />
           </video>
 
-          {/* Doodle Sunglasses Overlay (Stage 2 - Screenshot 13) */}
-          <div
-            ref={glassesRef}
-            style={{
-              position: 'absolute',
-              top: '20%',
-              left: '32%',
-              pointerEvents: 'none',
-              opacity: 0,
-              transition: 'opacity 0.2s ease',
-              zIndex: 15,
-            }}
-          >
-            <svg width="140" height="60" viewBox="0 0 140 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-              {/* Chalk doodled sunglasses */}
-              <polygon points="10,15 55,10 60,35 25,48 10,25" fill="white" opacity="0.95" />
-              <polygon points="65,10 115,15 125,28 105,48 70,35" fill="white" opacity="0.95" />
-              <line x1="55" y1="12" x2="68" y2="12" stroke="white" strokeWidth="4" strokeLinecap="round" />
-            </svg>
-          </div>
 
           {/* Doodle Angel Wings Overlay (Stage 3 - Screenshot 14) */}
           <div
@@ -277,32 +242,6 @@ export default function MotionSection() {
             </svg>
           </div>
 
-          {/* [ DISCOVER ] interactive link button (Screenshot 13 & 14) */}
-          <a
-            ref={discoverRef}
-            href="#campaign"
-            style={{
-              position: 'absolute',
-              bottom: '30%',
-              right: '25%',
-              fontFamily: 'Thunder, sans-serif',
-              fontSize: 'clamp(2.4rem, 4vw, 4rem)',
-              fontWeight: 800,
-              textTransform: 'uppercase',
-              color: '#fff',
-              textDecoration: 'none',
-              letterSpacing: '0.1rem',
-              zIndex: 30,
-              opacity: 0,
-              pointerEvents: 'none',
-              transition: 'transform 0.2s ease, color 0.2s ease',
-              textShadow: '0 2px 10px rgba(0,0,0,0.5)',
-            }}
-            onMouseEnter={(e) => (e.currentTarget.style.color = '#ed3833')}
-            onMouseLeave={(e) => (e.currentTarget.style.color = '#fff')}
-          >
-            [ DISCOVER ]
-          </a>
         </div>
 
         {/* Tip: Scroll to dive message at bottom */}

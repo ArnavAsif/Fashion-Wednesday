@@ -8,7 +8,7 @@ import MarkerButton from '@/components/MarkerButton';
 
 export default function Header({ isProductPage = false }: { isProductPage?: boolean }) {
   const pathname = usePathname();
-  const { cartCount, setIsCartOpen, setIsSearchOpen, openMenu } = useCart();
+  const { cartCount, setIsCartOpen, setIsSearchOpen, isMenuOpen, setIsMenuOpen, menuTab, openMenu } = useCart();
   const [isScrolled, setIsScrolled] = useState(false);
 
   const isProd = isProductPage || (pathname && pathname.startsWith('/products/'));
@@ -43,7 +43,7 @@ export default function Header({ isProductPage = false }: { isProductPage?: bool
         left: 0,
         right: 0,
         width: '100%',
-        zIndex: 50,
+        zIndex: 900,
         padding: isScrolled ? '1.8rem 3.5rem' : '2.5rem 3.5rem 1rem 3.5rem',
         backgroundColor: 'transparent',
         display: 'flex',
@@ -75,9 +75,15 @@ export default function Header({ isProductPage = false }: { isProductPage?: bool
         >
           <MarkerButton
             text="MENU"
-            suffix={<span style={{ marginLeft: '4px', fontSize: '1.2rem', lineHeight: 1 }}>+</span>}
+            suffix={<span style={{ marginLeft: '4px', fontSize: '1.2rem', lineHeight: 1 }}>{isMenuOpen && menuTab === 'menu' ? '-' : '+'}</span>}
             cloneLastChar
-            onClick={() => openMenu('menu')}
+            onClick={() => {
+              if (isMenuOpen && menuTab === 'menu') {
+                setIsMenuOpen(false);
+              } else {
+                openMenu('menu');
+              }
+            }}
             fontSize={headerFontSize}
             style={{ fontWeight: 600 }}
           />
@@ -90,12 +96,18 @@ export default function Header({ isProductPage = false }: { isProductPage?: bool
               style={{ fontWeight: 600 }}
             />
           </div>
-          <div className="header-tablet-only">
+          <div>
             <MarkerButton
               text="CATEGORIES"
-              suffix={<span style={{ marginLeft: '4px', fontSize: '1.2rem', lineHeight: 1 }}>+</span>}
+              suffix={<span style={{ marginLeft: '4px', fontSize: '1.2rem', lineHeight: 1 }}>{isMenuOpen && menuTab === 'categories' ? '-' : '+'}</span>}
               cloneLastChar
-              onClick={() => openMenu('categories')}
+              onClick={() => {
+                if (isMenuOpen && menuTab === 'categories') {
+                  setIsMenuOpen(false);
+                } else {
+                  openMenu('categories');
+                }
+              }}
               fontSize={headerFontSize}
               style={{ fontWeight: 600 }}
             />
@@ -131,7 +143,12 @@ export default function Header({ isProductPage = false }: { isProductPage?: bool
           transition: 'top 0.3s ease, transform 0.3s ease',
         }}
       >
-        <Link href="/" className="header__logo" style={{ display: 'block', visibility: 'inherit', opacity: 1, textAlign: 'center' }}>
+        <Link
+          href="/"
+          onClick={() => setIsMenuOpen(false)}
+          className="header__logo"
+          style={{ display: 'block', visibility: 'inherit', opacity: 1, textAlign: 'center' }}
+        >
           <img
             src="/images/bonez-logo-white.png"
             alt="BONEZ"

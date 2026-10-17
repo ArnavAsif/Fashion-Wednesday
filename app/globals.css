@@ -2419,9 +2419,33 @@ meter {
   transition: visibility 0s;
   visibility: visible;
 }
+.menu:before {
+  content: "";
+  position: absolute;
+  background: #fff9f7;
+  display: block;
+  height: 100%;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  transform: scaleY(0);
+  transform-origin: top center;
+  transition: transform 0.8s cubic-bezier(0.75, 0, 0.25, 1) 0.65s;
+  width: 100%;
+  z-index: -1;
+}
+.menu.active:before {
+  transform: scaleY(1);
+  transform-origin: top center;
+  transition: transform 0.8s cubic-bezier(0.75, 0, 0.25, 1);
+}
 .menu.active .menu__contact-list li,
 .menu.active .menu__list li,
-.menu.active .menu__text,
+.menu.active .menu__text {
+  transform: scaleY(1);
+  transition: transform 0.6s cubic-bezier(0.75, 0, 0.25, 1) 0.7s;
+}
 .menu.active .menu__title {
   transform: scaleY(1);
   transition: transform 0.6s cubic-bezier(0.75, 0, 0.25, 1) 0.4s;
@@ -2442,6 +2466,8 @@ meter {
   overflow-y: auto;
   padding: 5.5rem 0.9rem 1.6rem 0.6rem;
   scrollbar-width: none;
+  position: relative;
+  z-index: 10;
 }
 .menu__inner::-webkit-scrollbar {
   display: none;
@@ -2450,7 +2476,6 @@ meter {
   display: flex;
   flex-direction: column;
   margin-bottom: 1.2rem;
-  mix-blend-mode: difference;
   overflow-x: auto;
   padding: 2rem 0 1rem;
   scrollbar-width: none;
@@ -2524,10 +2549,11 @@ meter {
   display: flex;
   justify-content: space-between;
   margin-top: auto;
-  mix-blend-mode: difference;
+  position: relative;
+  z-index: 10;
 }
 .menu__contact-list > li {
-  color: #fff;
+  color: #000;
   font-family:
     PP Fraktion Mono,
     monospace;
@@ -2569,13 +2595,64 @@ meter {
 .menu__contact-list > li button span:nth-of-type(2) {
   mix-blend-mode: difference;
 }
-.menu__item.active .menu__item-main {
+.menu__collection {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  z-index: 1;
+}
+.menu__item {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  list-style: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0s 0.3s;
+}
+.menu.active .menu__item.active {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transition: opacity 0.3s ease, visibility 0s;
+}
+.menu.active .menu__item.active .menu__item-main {
   transform: scaleX(1);
   transform-origin: left;
+  transition: transform 0.8s cubic-bezier(0.75, 0, 0.25, 1) 0.4s;
 }
-.menu__item.active .menu__item-list li {
+.menu.active .menu__item.active .menu__item-list li {
   transform: scaleX(1);
   transform-origin: right;
+  transition: transform 0.8s cubic-bezier(0.75, 0, 0.25, 1) 0.4s;
+}
+.menu.active .menu__item.active .menu__item-list li:first-of-type {
+  transition: transform 0.8s cubic-bezier(0.75, 0, 0.25, 1) 0.6s;
+}
+.menu.active .menu__item.active .menu__item-list li:nth-of-type(2),
+.menu.active .menu__item.active .menu__item-list li:nth-of-type(3) {
+  transition: transform 0.8s cubic-bezier(0.75, 0, 0.25, 1) 0.5s;
+}
+.menu:not(.active) .menu__item {
+  opacity: 0;
+  pointer-events: none;
+}
+.menu:not(.active) .menu__item-main {
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.8s cubic-bezier(0.75, 0, 0.25, 1);
+}
+.menu:not(.active) .menu__item-list li {
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.8s cubic-bezier(0.75, 0, 0.25, 1);
 }
 .menu__item-main {
   transform: scaleX(0);
@@ -2590,20 +2667,21 @@ meter {
   transform-origin: left;
 }
 .menu__title {
-  color: #fff;
+  color: #000;
+  font-family: Thunder, sans-serif;
   font-size: 6.4rem;
   font-style: normal;
   font-weight: 800;
   line-height: 5.1rem;
   margin-left: 1rem;
   margin-top: auto;
-  mix-blend-mode: difference;
   position: relative;
   text-transform: uppercase;
   text-wrap: nowrap;
   transform: scaleY(0);
   transform-origin: bottom;
   transition: transform 0.6s cubic-bezier(0.75, 0, 0.25, 1);
+  z-index: 10;
 }
 .menu__title strong {
   font-size: 3rem;
@@ -8588,7 +8666,7 @@ html {
   -webkit-backdrop-filter: none !important;
   mix-blend-mode: difference !important;
   color: #ffffff !important;
-  z-index: 50 !important;
+  z-index: 950 !important;
   pointer-events: auto !important;
 }
 

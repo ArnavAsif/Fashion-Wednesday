@@ -104,7 +104,7 @@ const DEFAULT_PRODUCTS = [
 ];
 
 const MENU_ITEMS = [
-  { label: 'COLLECTIONS', count: '01', href: '/products' },
+  { label: 'COLLECTIONS', count: '01', href: '/collections' },
   { label: 'CAMPAIGN', count: '02', href: '/#campaign' },
   { label: 'WHO WE ARE', count: '03', href: '/#bold' },
   { label: 'CONTACT', count: '04', href: '/#footer' },
@@ -310,6 +310,8 @@ export default function MenuModal() {
               <img
                 src="/images/img_148.png"
                 alt="BONEZ Model"
+                loading="lazy"
+                decoding="async"
                 style={{
                   height: '100%',
                   maxHeight: '85vh',
@@ -323,7 +325,7 @@ export default function MenuModal() {
               {DEFAULT_PRODUCTS.map((prod, pIdx) => (
                 <li key={pIdx} onClick={() => handleProductCardClick('NEW DROP')}>
                   <picture>
-                    <img src={prod} alt="BONEZ Product" />
+                    <img src={prod} alt="BONEZ Product" loading="lazy" decoding="async" />
                   </picture>
                 </li>
               ))}
@@ -490,6 +492,8 @@ export default function MenuModal() {
                   <img
                     src={cat.model}
                     alt={cat.name}
+                    loading="lazy"
+                    decoding="async"
                     style={{
                       height: '100%',
                       maxHeight: '85vh',
@@ -503,7 +507,7 @@ export default function MenuModal() {
                   {prods.map((prod, pIdx) => (
                     <li key={pIdx} onClick={() => handleProductCardClick(cat.name)}>
                       <picture>
-                        <img src={prod} alt={`${cat.name} Product ${pIdx + 1}`} />
+                        <img src={prod} alt={`${cat.name} Product ${pIdx + 1}`} loading="lazy" decoding="async" />
                       </picture>
                     </li>
                   ))}

@@ -14,21 +14,21 @@ export default function Header({ isProductPage = false }: { isProductPage?: bool
   const isProd = isProductPage || (pathname && pathname.startsWith('/products/'));
 
   useEffect(() => {
+    let ticking = false;
     const handleScroll = () => {
-      const y = window.scrollY || document.documentElement.scrollTop || 0;
-      setIsScrolled(y > 80);
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const y = window.scrollY || document.documentElement.scrollTop || 0;
+          setIsScrolled(y > 80);
+          ticking = false;
+        });
+        ticking = true;
+      }
     };
     handleScroll();
     window.addEventListener('scroll', handleScroll, { passive: true });
-    window.addEventListener('wheel', handleScroll, { passive: true });
-    window.addEventListener('touchmove', handleScroll, { passive: true });
-    const interval = setInterval(handleScroll, 100);
-
     return () => {
-      clearInterval(interval);
       window.removeEventListener('scroll', handleScroll);
-      window.removeEventListener('wheel', handleScroll);
-      window.removeEventListener('touchmove', handleScroll);
     };
   }, []);
 

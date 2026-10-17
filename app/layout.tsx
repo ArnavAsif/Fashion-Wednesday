@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import { CartProvider } from '@/lib/cartContext';
+import Preloader from '@/components/Preloader';
+import RouteProgressBar from '@/components/RouteProgressBar';
 
 export const metadata: Metadata = {
   title: 'BONEZ',
@@ -27,6 +29,8 @@ export default function RootLayout({
       </head>
       <body className="loaded">
         <CartProvider>
+          <Preloader />
+          <RouteProgressBar />
           {children}
         </CartProvider>
       </body>

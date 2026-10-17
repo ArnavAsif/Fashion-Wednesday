@@ -518,10 +518,14 @@ export default function ArrivalsSection() {
         {/* Collection Drop Indicator (Life Force vs Berlin) */}
         <ul className="arrivals-section__text">
           <li className={currentItem.collection === 'life force' ? 'active' : ''}>
-            (life force)
+            <Link href="/collections/life-force" style={{ color: 'inherit', textDecoration: 'none' }}>
+              (life force)
+            </Link>
           </li>
           <li className={currentItem.collection === 'berlin' ? 'active' : ''}>
-            (Berlin)
+            <Link href="/collections/berlin" style={{ color: 'inherit', textDecoration: 'none' }}>
+              (Berlin)
+            </Link>
           </li>
         </ul>
 

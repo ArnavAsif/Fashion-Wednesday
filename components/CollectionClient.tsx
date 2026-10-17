@@ -1,0 +1,57 @@
+'use client';
+
+import React, { useState, Suspense } from 'react';
+import Header from '@/components/Header';
+import FooterSection from '@/components/FooterSection';
+import CartDrawer from '@/components/CartDrawer';
+import MenuModal from '@/components/MenuModal';
+import SearchModal from '@/components/SearchModal';
+import CreditsModal from '@/components/CreditsModal';
+import NewsletterModal from '@/components/NewsletterModal';
+import CatalogGrid from '@/components/CatalogGrid';
+
+interface CollectionClientProps {
+  collectionSlug: string;
+}
+
+function CollectionFallback() {
+  return (
+    <div style={{ padding: '6rem 0', textAlign: 'center', fontFamily: 'PP Fraktion Mono, monospace' }}>
+      <p style={{ fontSize: '1.2rem', color: '#888', letterSpacing: '0.05em' }}>
+        [ LOADING COLLECTION... ]
+      </p>
+    </div>
+  );
+}
+
+export default function CollectionClient({ collectionSlug }: CollectionClientProps) {
+  const [creditsOpen, setCreditsOpen] = useState(false);
+
+  return (
+    <div style={{ backgroundColor: '#fff9f7', minHeight: '100vh', color: '#000' }}>
+      <Header />
+      <CartDrawer />
+      <MenuModal />
+      <SearchModal />
+      <CreditsModal isOpen={creditsOpen} onClose={() => setCreditsOpen(false)} />
+      <NewsletterModal />
+
+      <main
+        style={{
+          paddingTop: '11rem',
+          paddingBottom: '10rem',
+          maxWidth: '1580px',
+          margin: '0 auto',
+          paddingLeft: '3rem',
+          paddingRight: '3rem',
+        }}
+      >
+        <Suspense fallback={<CollectionFallback />}>
+          <CatalogGrid collectionSlug={collectionSlug} />
+        </Suspense>
+      </main>
+
+      <FooterSection onOpenCredits={() => setCreditsOpen(true)} />
+    </div>
+  );
+}

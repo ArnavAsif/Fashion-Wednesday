@@ -44,7 +44,7 @@ export default function HomePage() {
     };
 
     gsap.ticker.add(rafCallback);
-    gsap.ticker.lagSmoothing(0);
+    gsap.ticker.lagSmoothing(500, 33);
 
     return () => {
       lenis.destroy();

@@ -35,13 +35,17 @@ export default function CategoriesSection() {
   const trackRef = useRef<HTMLDivElement>(null);
   const [progress, setProgress] = useState(0);
 
-  // Drag interaction states
-  const isDraggingRef = useRef(false);
-  const startXRef = useRef(0);
-  const startYRef = useRef(0);
+  // Desktop mouse drag interaction states
+  const isMouseDownRef = useRef(false);
+  const mouseStartXRef = useRef(0);
   const scrollLeftStartRef = useRef(0);
   const hasMovedRef = useRef(false);
   const [isGrabbing, setIsGrabbing] = useState(false);
+
+  // Mobile touch swipe interaction states
+  const touchStartXRef = useRef(0);
+  const touchStartYRef = useRef(0);
+  const isTouchScrollingRef = useRef(false);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -88,63 +92,80 @@ export default function CategoriesSection() {
     }
   }, []);
 
-  const handlePointerDown = (e: React.PointerEvent) => {
-    if (e.button !== 0 && e.pointerType === 'mouse') return;
+  // Unified Pointer & Mouse Drag Handling
+  const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (e.pointerType === 'mouse' && e.button !== 0) return;
     if (!trackRef.current) return;
 
-    isDraggingRef.current = true;
+    isMouseDownRef.current = true;
     hasMovedRef.current = false;
-    startXRef.current = e.clientX;
-    startYRef.current = e.clientY;
+    mouseStartXRef.current = e.clientX;
     scrollLeftStartRef.current = trackRef.current.scrollLeft;
-
-    // Notice: Do NOT call setPointerCapture here.
-    // Capturing pointer on pointerdown blocks the synthetic 'click' event on child <a> links.
+    setIsGrabbing(true);
+    try {
+      e.currentTarget.setPointerCapture(e.pointerId);
+    } catch (_) {}
   };
 
-  const handlePointerMove = (e: React.PointerEvent) => {
-    if (!isDraggingRef.current || !trackRef.current) return;
+  const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!isMouseDownRef.current || !trackRef.current) return;
 
-    const dx = e.clientX - startXRef.current;
-    const dy = e.clientY - startYRef.current;
-
-    // Only initiate dragging if horizontal displacement exceeds threshold
-    if (Math.abs(dx) > 10 && Math.abs(dx) > Math.abs(dy)) {
-      if (!hasMovedRef.current) {
-        hasMovedRef.current = true;
-        // User has intentionally moved > 10px: capture pointer for the drag
-        try {
-          trackRef.current.setPointerCapture(e.pointerId);
-        } catch (_) {}
-      }
-      if (!isGrabbing) setIsGrabbing(true);
+    const dx = e.clientX - mouseStartXRef.current;
+    if (Math.abs(dx) > 4) {
+      hasMovedRef.current = true;
       trackRef.current.scrollLeft = scrollLeftStartRef.current - dx;
       updateProgress();
     }
   };
 
-  const handlePointerUp = (e: React.PointerEvent) => {
-    if (!isDraggingRef.current) return;
-    isDraggingRef.current = false;
+  const handlePointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!isMouseDownRef.current) return;
+    isMouseDownRef.current = false;
     setIsGrabbing(false);
 
-    if (trackRef.current && trackRef.current.hasPointerCapture(e.pointerId)) {
+    if (e.currentTarget && e.currentTarget.hasPointerCapture && e.currentTarget.hasPointerCapture(e.pointerId)) {
       try {
-        trackRef.current.releasePointerCapture(e.pointerId);
+        e.currentTarget.releasePointerCapture(e.pointerId);
       } catch (_) {}
     }
 
     if (hasMovedRef.current) {
-      // Hold hasMovedRef briefly so any trailing click event triggered by mouseup is intercepted
       setTimeout(() => {
         hasMovedRef.current = false;
       }, 120);
     }
   };
 
+  // Mobile Touch Swipe Handling (Native smooth 120fps inertia)
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (e.touches.length === 1) {
+      touchStartXRef.current = e.touches[0].clientX;
+      touchStartYRef.current = e.touches[0].clientY;
+      isTouchScrollingRef.current = false;
+    }
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (e.touches.length === 1) {
+      const dx = Math.abs(e.touches[0].clientX - touchStartXRef.current);
+      const dy = Math.abs(e.touches[0].clientY - touchStartYRef.current);
+      if (dx > 8 || dy > 8) {
+        isTouchScrollingRef.current = true;
+      }
+    }
+  };
+
+  const handleTouchEnd = () => {
+    if (isTouchScrollingRef.current) {
+      setTimeout(() => {
+        isTouchScrollingRef.current = false;
+      }, 120);
+    }
+  };
+
   const handleCardClick = (e: React.MouseEvent, catTitle: string) => {
-    // If user dragged horizontally to scroll, cancel navigation
-    if (hasMovedRef.current) {
+    // If dragging on desktop or actively swiping on mobile, prevent accidental navigation
+    if (hasMovedRef.current || isTouchScrollingRef.current) {
       e.preventDefault();
       e.stopPropagation();
       return;
@@ -173,6 +194,9 @@ export default function CategoriesSection() {
             onPointerMove={handlePointerMove}
             onPointerUp={handlePointerUp}
             onPointerCancel={handlePointerUp}
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
             className="categories-section__list"
             style={{
               display: 'flex',
@@ -180,10 +204,11 @@ export default function CategoriesSection() {
               overflowX: 'auto',
               scrollSnapType: isGrabbing ? 'none' : 'x proximity',
               scrollbarWidth: 'none',
+              WebkitOverflowScrolling: 'touch',
+              touchAction: 'pan-x pan-y',
               paddingBottom: '1.5rem',
               cursor: isGrabbing ? 'grabbing' : 'grab',
               userSelect: isGrabbing ? 'none' : 'auto',
-              touchAction: 'pan-y',
             }}
           >
             {CATEGORIES.map((cat, idx) => {

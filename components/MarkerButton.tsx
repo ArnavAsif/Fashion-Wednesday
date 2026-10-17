@@ -21,6 +21,8 @@ export interface MarkerButtonProps {
   style?: React.CSSProperties;
   textStyle?: React.CSSProperties;
   fontSize?: string;
+  target?: string;
+  rel?: string;
 }
 
 export default function MarkerButton({
@@ -39,6 +41,8 @@ export default function MarkerButton({
   style = {},
   textStyle = {},
   fontSize,
+  target,
+  rel,
 }: MarkerButtonProps) {
   const lottieContainerRef = useRef<HTMLDivElement>(null);
   const animRef = useRef<any>(null);
@@ -260,6 +264,8 @@ export default function MarkerButton({
     return (
       <Link
         href={href}
+        target={target}
+        rel={rel}
         style={{
           display: 'inline-flex',
           textDecoration: 'none',

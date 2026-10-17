@@ -1,21 +1,27 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useCart } from '@/lib/cartContext';
+import MarkerButton from '@/components/MarkerButton';
 
 gsap.registerPlugin(ScrollTrigger);
 
 export default function FooterSection({ onOpenCredits }: { onOpenCredits?: () => void }) {
+  const router = useRouter();
   const { setIsNewsletterOpen } = useCart();
   const [email, setEmail] = useState('');
   const [submitted, setSubmitted] = useState(false);
+  const footerRef = useRef<HTMLElement>(null);
   const discountLottieRef = useRef<HTMLDivElement>(null);
   const animRef = useRef<any>(null);
   const tweenRef = useRef<any>(null);
   const tweenObj = useRef({ frame: 58 });
 
+  // Lottie Discount Badge Animation
   useEffect(() => {
     let isMounted = true;
     let anim: any = null;
@@ -31,7 +37,10 @@ export default function FooterSection({ onOpenCredits }: { onOpenCredits?: () =>
           path: '/lottie/FOOTER_LOTTIE_v1.json',
         });
         animRef.current = anim;
-        const isMobile = typeof window !== 'undefined' && (window.innerWidth < 768 || !window.matchMedia('(hover: hover) and (pointer: fine)').matches);
+        const isMobile =
+          typeof window !== 'undefined' &&
+          (window.innerWidth < 768 || !window.matchMedia('(hover: hover) and (pointer: fine)').matches);
+
         anim.addEventListener('DOMLoaded', () => {
           if (isMobile) {
             anim.goToAndStop(118, true);
@@ -39,6 +48,7 @@ export default function FooterSection({ onOpenCredits }: { onOpenCredits?: () =>
             anim.goToAndStop(58, true);
           }
         });
+
         if (isMobile) {
           anim.goToAndStop(118, true);
         } else {
@@ -82,49 +92,81 @@ export default function FooterSection({ onOpenCredits }: { onOpenCredits?: () =>
     }
   };
 
+  // Dynamic Entrance Animation matching video and homepage motion
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      const footer = document.querySelector('.footer');
-      if (footer) {
-        const tl = gsap.timeline({
-          scrollTrigger: {
-            trigger: footer,
-            start: 'top 85%',
-            once: true,
-          },
-        });
+    const footerEl = footerRef.current;
+    if (!footerEl) return;
 
-        tl.fromTo(
-          '.footer__logo',
-          { yPercent: 40, opacity: 0 },
-          { yPercent: 0, opacity: 1, duration: 1.1, ease: 'power3.out' },
-          0
-        );
+    let hasAnimated = false;
 
-        tl.fromTo(
-          '.footer__img',
-          { yPercent: 30, opacity: 0 },
-          { yPercent: 0, opacity: 1, duration: 1.2, ease: 'power3.out' },
-          0.1
-        );
+    // Initial state: hidden for entrance slide-in
+    gsap.set('.footer__logo', { yPercent: 150, opacity: 0 });
+    gsap.set('.footer__img', { yPercent: 80, opacity: 0 });
+    gsap.set('.footer__form', { opacity: 0, y: 20 });
+    gsap.set('.footer__title', { scaleY: 0, transformOrigin: '50% 100%' });
 
-        tl.fromTo(
-          '.footer__form',
-          { opacity: 0, y: 20 },
-          { opacity: 1, y: 0, duration: 1.2, ease: 'power2.out' },
-          0.2
-        );
+    const triggerAnimation = () => {
+      if (hasAnimated) return;
+      hasAnimated = true;
 
-        tl.fromTo(
-          '.footer__title',
-          { scaleY: 0, transformOrigin: '50% 100%' },
-          { scaleY: 1, duration: 0.8, ease: 'power3.out' },
-          0.3
-        );
-      }
+      gsap.to('.footer__logo', {
+        yPercent: 0,
+        opacity: 1,
+        duration: 1.2,
+        ease: 'power3.out',
+      });
+
+      gsap.to('.footer__img', {
+        yPercent: 0,
+        opacity: 1,
+        duration: 1.2,
+        ease: 'power3.out',
+        delay: 0.05,
+      });
+
+      gsap.to('.footer__form', {
+        opacity: 1,
+        y: 0,
+        duration: 1.2,
+        ease: 'power2.out',
+        delay: 0.15,
+      });
+
+      gsap.to('.footer__title', {
+        scaleY: 1,
+        duration: 0.9,
+        ease: 'power3.out',
+        delay: 0.2,
+      });
+    };
+
+    // ScrollTrigger entrance (triggers when footer top enters 85% of viewport)
+    const st = ScrollTrigger.create({
+      trigger: footerEl,
+      start: 'top 88%',
+      once: true,
+      onEnter: () => triggerAnimation(),
     });
 
-    return () => ctx.revert();
+    // Secondary observer for pages without active ScrollTrigger updates
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            triggerAnimation();
+            observer.disconnect();
+          }
+        });
+      },
+      { threshold: 0.08 }
+    );
+
+    observer.observe(footerEl);
+
+    return () => {
+      st.kill();
+      observer.disconnect();
+    };
   }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -136,18 +178,62 @@ export default function FooterSection({ onOpenCredits }: { onOpenCredits?: () =>
     }
   };
 
+  const handleAnchorClick = (e: React.MouseEvent, sectionId: string) => {
+    e.preventDefault();
+    if (typeof window === 'undefined') return;
+
+    const el = document.getElementById(sectionId);
+    if (el) {
+      if ((window as any).__lenis) {
+        (window as any).__lenis.scrollTo(el, { duration: 1.2 });
+      } else {
+        el.scrollIntoView({ behavior: 'smooth' });
+      }
+    } else {
+      router.push(`/#${sectionId}`);
+    }
+  };
+
+  const handleComingSoon = (e: React.MouseEvent) => {
+    e.preventDefault(); // Prevents jump to top of page!
+  };
+
   return (
-    <footer className="footer" id="footer" style={{ position: 'relative', width: '100%', overflow: 'hidden' }}>
-      {/* Torn paper top doodles (lips and crown from Screenshot 15) - hidden on mobile */}
-      <div className="footer__doodle hidden md:block" style={{ position: 'absolute', top: '1.2rem', left: '26%', zIndex: 12, pointerEvents: 'none' }}>
+    <footer
+      ref={footerRef}
+      className="footer"
+      id="footer"
+      style={{ position: 'relative', width: '100%', overflow: 'hidden' }}
+    >
+      {/* Torn paper top doodles (lips and crown) - hidden on mobile */}
+      <div
+        className="footer__doodle hidden md:block"
+        style={{ position: 'absolute', top: '1.2rem', left: '26%', zIndex: 12, pointerEvents: 'none' }}
+      >
         <svg width="48" height="24" viewBox="0 0 48 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M4 12 C12 6, 20 6, 24 10 C28 6, 36 6, 44 12 C36 18, 28 18, 24 14 C20 18, 12 18, 4 12 Z" stroke="white" strokeWidth="2.5" fill="none" strokeLinecap="round" />
+          <path
+            d="M4 12 C12 6, 20 6, 24 10 C28 6, 36 6, 44 12 C36 18, 28 18, 24 14 C20 18, 12 18, 4 12 Z"
+            stroke="white"
+            strokeWidth="2.5"
+            fill="none"
+            strokeLinecap="round"
+          />
           <path d="M12 12 C20 10, 28 10, 36 12" stroke="white" strokeWidth="1.5" strokeLinecap="round" />
         </svg>
       </div>
-      <div className="footer__doodle hidden md:block" style={{ position: 'absolute', top: '0.8rem', left: '46%', zIndex: 12, pointerEvents: 'none' }}>
+      <div
+        className="footer__doodle hidden md:block"
+        style={{ position: 'absolute', top: '0.8rem', left: '46%', zIndex: 12, pointerEvents: 'none' }}
+      >
         <svg width="60" height="35" viewBox="0 0 60 35" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M5 28 L15 10 L28 20 L40 6 L52 28 Z" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+          <path
+            d="M5 28 L15 10 L28 20 L40 6 L52 28 Z"
+            stroke="white"
+            strokeWidth="3"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            fill="none"
+          />
         </svg>
       </div>
 
@@ -203,92 +289,119 @@ export default function FooterSection({ onOpenCredits }: { onOpenCredits?: () =>
         <div className="footer__top">
           <ul className="footer__nav">
             <li>
-              <a href="#arrivals">
-                <span aria-hidden="true" />
-                <span>Shop all</span>
-              </a>
+              <MarkerButton
+                text="Shop all"
+                cloneLastChar
+                href="/products"
+                fontSize="1.3rem"
+              />
             </li>
             <li>
-              <a href="#categories">
-                <span aria-hidden="true" />
-                <span>Categories</span>
-              </a>
+              <MarkerButton
+                text="Categories"
+                cloneLastChar
+                href="/#categories"
+                onClick={(e) => handleAnchorClick(e, 'categories')}
+                fontSize="1.3rem"
+              />
             </li>
             <li>
-              <a href="#bold">
-                <span aria-hidden="true" />
-                <span>Who we are</span>
-              </a>
+              <MarkerButton
+                text="Who we are"
+                cloneLastChar
+                href="/#bold"
+                onClick={(e) => handleAnchorClick(e, 'bold')}
+                fontSize="1.3rem"
+              />
             </li>
             <li>
-              <a href="#campaign">
-                <span aria-hidden="true" />
-                <span>Campaign</span>
-              </a>
+              <MarkerButton
+                text="Campaign"
+                cloneLastChar
+                href="/#campaign"
+                onClick={(e) => handleAnchorClick(e, 'campaign')}
+                fontSize="1.3rem"
+              />
             </li>
             <li>
-              <a href="#footer">
-                <span aria-hidden="true" />
-                <span>Contact</span>
-              </a>
+              <MarkerButton
+                text="Contact"
+                cloneLastChar
+                href="#footer"
+                onClick={(e) => handleAnchorClick(e, 'footer')}
+                fontSize="1.3rem"
+              />
             </li>
             <li>
-              <a href="#arrivals">
-                <span aria-hidden="true" />
-                <span>Collections</span>
-              </a>
+              <MarkerButton
+                text="Collections"
+                cloneLastChar
+                href="/collections"
+                fontSize="1.3rem"
+              />
             </li>
             <li>
-              <a href="#arrivals">
-                <span aria-hidden="true" />
-                <span>Sale</span>
-              </a>
+              <MarkerButton
+                text="Sale"
+                cloneLastChar
+                href="/products?category=SALE"
+                fontSize="1.3rem"
+              />
             </li>
             <li>
-              <a href="#" className="disable">
-                <span aria-hidden="true" />
-                <span>5-ht</span>
-              </a>
+              <MarkerButton
+                text="5-ht"
+                disabled
+                fontSize="1.3rem"
+              />
             </li>
           </ul>
 
           <ul className="footer__nav">
             <li>
-              <a href="#">
-                <span aria-hidden="true" />
-                <span>Return</span>
-              </a>
+              <MarkerButton
+                text="Return"
+                cloneLastChar
+                onClick={handleComingSoon}
+                fontSize="1.3rem"
+              />
             </li>
             <li>
-              <a href="#">
-                <span aria-hidden="true" />
-                <span>Impressum</span>
-              </a>
+              <MarkerButton
+                text="Impressum"
+                cloneLastChar
+                onClick={handleComingSoon}
+                fontSize="1.3rem"
+              />
             </li>
             <li>
-              <a href="#">
-                <span aria-hidden="true" />
-                <span>Shipping and Payment</span>
-              </a>
+              <MarkerButton
+                text="Shipping and Payment"
+                cloneLastChar
+                onClick={handleComingSoon}
+                fontSize="1.3rem"
+              />
             </li>
             <li>
-              <a href="#">
-                <span aria-hidden="true" />
-                <span>FAQ</span>
-              </a>
+              <MarkerButton
+                text="FAQ"
+                cloneLastChar
+                onClick={handleComingSoon}
+                fontSize="1.3rem"
+              />
             </li>
           </ul>
         </div>
 
         {/* Mid Section: Logo, Title, and Form */}
         <div className="footer__mid">
-          <a href="/" className="footer__logo">
+          <Link href="/" className="footer__logo">
             <img
               src="/images/bonez-logo-white.png"
               alt="BONEZ"
               className="footer__logo-img"
             />
-          </a>
+          </Link>
 
           <p className="footer__title">
             Subscribe <span><strong>(</strong>latest news<strong>)</strong></span>
@@ -317,29 +430,28 @@ export default function FooterSection({ onOpenCredits }: { onOpenCredits?: () =>
         <div className="footer__bottom">
           <div>©2026_BONEZ</div>
 
-          <a href="#">
-            <span aria-hidden="true" />
-            <span>PRIVACY POLICY (DSGVO)</span>
-          </a>
+          <MarkerButton
+            text="PRIVACY POLICY (DSGVO)"
+            cloneLastChar
+            onClick={handleComingSoon}
+            fontSize="1.3rem"
+          />
 
-          <button
-            type="button"
-            className="footer__dev"
+          <MarkerButton
+            text="Credits"
+            cloneLastChar
             onClick={onOpenCredits}
-            style={{ background: 'none', border: 'none', cursor: 'pointer', font: 'inherit', color: 'inherit' }}
-          >
-            <span aria-hidden="true" />
-            <span>Credits</span>
-          </button>
+            fontSize="1.3rem"
+          />
 
-          <a
+          <MarkerButton
+            text="IG"
+            cloneLastChar
             href="https://www.instagram.com/bonez_official/"
             target="_blank"
             rel="noopener noreferrer"
-          >
-            <span aria-hidden="true" />
-            <span>IG</span>
-          </a>
+            fontSize="1.3rem"
+          />
         </div>
       </div>
     </footer>

@@ -4000,20 +4000,27 @@ meter {
   position: relative;
   text-transform: uppercase;
   text-wrap: nowrap;
+  transition: color 0.25s ease;
 }
 .footer__nav li > a.disable {
   opacity: 0.5;
   pointer-events: none;
 }
-.footer__nav li > a span:first-of-type {
-  height: 60%;
-  left: 0;
-  pointer-events: none;
-  position: absolute;
-  top: 40%;
-  transform: translateY(-50%);
-  width: 100%;
-  z-index: 5;
+.footer .marker-btn-root,
+.footer .inner-label-box,
+.footer .bracket,
+.footer .char-clone,
+.footer .inner-label-box span {
+  color: #ffffff !important;
+  font-family: PP Fraktion Mono, monospace !important;
+  font-size: 1.3rem !important;
+  letter-spacing: -0.12rem !important;
+  line-height: 1.3rem !important;
+  text-transform: uppercase !important;
+  cursor: pointer !important;
+}
+.footer .marker-lottie-layer {
+  mix-blend-mode: normal !important;
 }
 .footer__mid {
   margin-bottom: 2.3rem;
@@ -4159,17 +4166,7 @@ meter {
   position: relative;
   width: -moz-max-content;
   width: max-content;
-}
-.footer__bottom a span:first-of-type,
-.footer__bottom button span:first-of-type {
-  height: 60%;
-  left: 0;
-  pointer-events: none;
-  position: absolute;
-  top: 30%;
-  transform: translateY(-50%);
-  width: 100%;
-  z-index: 5;
+  transition: color 0.25s ease;
 }
 .footer__bottom > span {
   align-items: center;
@@ -6831,7 +6828,8 @@ html.lenis body {
   align-items: center;
   display: flex;
   gap: 0.8rem;
-  touch-action: pan-y;
+  touch-action: pan-x pan-y;
+  -webkit-overflow-scrolling: touch;
   width: 100%;
 }
 .categories-section__list,
@@ -6995,7 +6993,15 @@ html.lenis body {
   top: 0;
 }
 .arrivals-section__swiper-mob {
-  overflow: visible !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  -webkit-overflow-scrolling: touch !important;
+  scroll-snap-type: x mandatory !important;
+  scrollbar-width: none !important;
+  touch-action: pan-x pan-y !important;
+}
+.arrivals-section__swiper-mob::-webkit-scrollbar {
+  display: none !important;
 }
 .arrivals-section__scroll {
   margin-top: 4.3rem;
@@ -7087,8 +7093,10 @@ html.lenis body {
     right: auto;
     top: 0;
   }
-  .arrivals-section__swiper-mob {
-    display: none !important;
+  @media (min-width: 1024px) {
+    .arrivals-section__swiper-mob {
+      display: none !important;
+    }
   }
   .arrivals-section__group {
     display: grid;
@@ -8409,18 +8417,7 @@ html {
     user-select: none;
   }
 }
-@media (min-width: 768px) and (max-width: 1023px) {
-  .arrivals-section__group {
-    display: grid !important;
-    grid-template-columns: 24.2rem 24.2rem !important;
-    gap: 1rem !important;
-    margin-left: 21rem !important;
-    position: relative !important;
-    cursor: grab;
-    user-select: none;
-  }
-}
-@media (max-width: 767px) {
+@media (max-width: 1023px) {
   .arrivals-section {
     padding: 8rem 0 6rem !important;
     position: relative !important;
@@ -8454,6 +8451,7 @@ html {
   }
   .arrivals-section__swiper-mob {
     display: block !important;
+    touch-action: pan-x pan-y !important;
   }
   .arrivals-card__best {
     top: 0.8rem !important;

@@ -28,7 +28,7 @@ export default function CollectionClient({ collectionSlug }: CollectionClientPro
   const [creditsOpen, setCreditsOpen] = useState(false);
 
   return (
-    <div style={{ backgroundColor: '#fff9f7', minHeight: '100vh', color: '#000' }}>
+    <div className="site-wrapper" style={{ position: 'relative', width: '100%', minHeight: '100vh', overflowX: 'clip', backgroundColor: '#fff9f7', color: '#000' }}>
       <Header />
       <CartDrawer />
       <MenuModal />
@@ -39,11 +39,13 @@ export default function CollectionClient({ collectionSlug }: CollectionClientPro
       <main
         style={{
           paddingTop: '11rem',
-          paddingBottom: '10rem',
+          paddingBottom: '2rem',
           maxWidth: '1580px',
           margin: '0 auto',
           paddingLeft: '3rem',
           paddingRight: '3rem',
+          position: 'relative',
+          zIndex: 1,
         }}
       >
         <Suspense fallback={<CollectionFallback />}>

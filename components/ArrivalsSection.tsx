@@ -136,6 +136,98 @@ export default function ArrivalsSection() {
 
   const total = ARRIVAL_PRODUCTS.length;
 
+  // Mobile & tablet drag and touch tracking
+  const mobileSwiperRef = useRef<HTMLDivElement>(null);
+  const isDraggingMobileRef = useRef(false);
+  const mobileStartXRef = useRef(0);
+  const mobileStartScrollLeftRef = useRef(0);
+  const hasMovedMobileRef = useRef(false);
+  const isMobileSwipingRef = useRef(false);
+  const mobileTouchStartXRef = useRef(0);
+  const mobileTouchStartYRef = useRef(0);
+
+  const handleMobilePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (e.pointerType === 'mouse' && e.button !== 0) return;
+    const container = mobileSwiperRef.current;
+    if (!container) return;
+    isDraggingMobileRef.current = true;
+    hasMovedMobileRef.current = false;
+    mobileStartXRef.current = e.clientX;
+    mobileStartScrollLeftRef.current = container.scrollLeft;
+    container.style.cursor = 'grabbing';
+    container.style.scrollSnapType = 'none';
+    try {
+      e.currentTarget.setPointerCapture(e.pointerId);
+    } catch (_) {}
+  };
+
+  const handleMobilePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!isDraggingMobileRef.current || !mobileSwiperRef.current) return;
+    const dx = e.clientX - mobileStartXRef.current;
+    if (Math.abs(dx) > 4) {
+      hasMovedMobileRef.current = true;
+      mobileSwiperRef.current.scrollLeft = mobileStartScrollLeftRef.current - dx;
+      handleMobileScroll();
+    }
+  };
+
+  const handleMobilePointerUp = (e?: React.PointerEvent<HTMLDivElement>) => {
+    if (!isDraggingMobileRef.current) return;
+    isDraggingMobileRef.current = false;
+    if (mobileSwiperRef.current) {
+      mobileSwiperRef.current.style.cursor = 'grab';
+      mobileSwiperRef.current.style.scrollSnapType = 'x mandatory';
+    }
+    if (e && e.currentTarget && e.currentTarget.hasPointerCapture && e.currentTarget.hasPointerCapture(e.pointerId)) {
+      try {
+        e.currentTarget.releasePointerCapture(e.pointerId);
+      } catch (_) {}
+    }
+    if (hasMovedMobileRef.current) {
+      setTimeout(() => {
+        hasMovedMobileRef.current = false;
+      }, 120);
+    }
+  };
+
+  const handleMobileTouchStart = (e: React.TouchEvent) => {
+    if (e.touches.length === 1) {
+      mobileTouchStartXRef.current = e.touches[0].clientX;
+      mobileTouchStartYRef.current = e.touches[0].clientY;
+      isMobileSwipingRef.current = false;
+    }
+  };
+
+  const handleMobileTouchMove = (e: React.TouchEvent) => {
+    if (e.touches.length === 1) {
+      const dx = Math.abs(e.touches[0].clientX - mobileTouchStartXRef.current);
+      const dy = Math.abs(e.touches[0].clientY - mobileTouchStartYRef.current);
+      if (dx > 8 || dy > 8) {
+        isMobileSwipingRef.current = true;
+      }
+    }
+  };
+
+  const handleMobileCardClick = (e: React.MouseEvent) => {
+    if (hasMovedMobileRef.current || isDraggingMobileRef.current || isMobileSwipingRef.current) {
+      e.preventDefault();
+      e.stopPropagation();
+      return;
+    }
+  };
+
+  const handleMobileScroll = () => {
+    if (!mobileSwiperRef.current) return;
+    const el = mobileSwiperRef.current;
+    const cardEl = el.firstElementChild?.firstElementChild as HTMLElement;
+    const cardWidth = cardEl ? cardEl.offsetWidth + 12 : 300;
+    const scrollPos = el.scrollLeft;
+    const newIdx = Math.min(total - 1, Math.max(0, Math.round(scrollPos / cardWidth)));
+    if (newIdx !== activeIndex) {
+      setActiveIndex(newIdx);
+    }
+  };
+
   // Navigate to slide using functional state updates to eliminate stale closures
   const goToSlide = useCallback((newIdx: number, dir: 'next' | 'prev') => {
     setActiveIndex(prev => {
@@ -144,6 +236,13 @@ export default function ArrivalsSection() {
       setSlideDir(dir);
       return newIdx;
     });
+    if (mobileSwiperRef.current) {
+      const container = mobileSwiperRef.current;
+      const cardEl = container.firstElementChild?.children[newIdx] as HTMLElement;
+      if (cardEl) {
+        container.scrollTo({ left: cardEl.offsetLeft - 16, behavior: 'smooth' });
+      }
+    }
   }, []);
 
   const goNext = useCallback(() => {
@@ -551,17 +650,28 @@ export default function ArrivalsSection() {
           </ul>
         </div>
 
-        {/* Mobile Swipe Carousel (< 768px) */}
+        {/* Mobile Swipe Carousel (< 1024px) */}
         <div
+          ref={mobileSwiperRef}
           className="arrivals-section__swiper-mob"
+          onScroll={handleMobileScroll}
+          onPointerDown={handleMobilePointerDown}
+          onPointerMove={handleMobilePointerMove}
+          onPointerUp={handleMobilePointerUp}
+          onPointerCancel={handleMobilePointerUp}
+          onPointerLeave={handleMobilePointerUp}
+          onTouchStart={handleMobileTouchStart}
+          onTouchMove={handleMobileTouchMove}
           style={{
-            display: 'none',
             overflowX: 'auto',
             scrollSnapType: 'x mandatory',
             scrollbarWidth: 'none',
             WebkitOverflowScrolling: 'touch',
+            touchAction: 'pan-x pan-y',
             marginTop: '3rem',
             paddingBottom: '1rem',
+            cursor: 'grab',
+            userSelect: 'none',
           }}
         >
           <div
@@ -583,6 +693,7 @@ export default function ArrivalsSection() {
               >
                 <Link
                   href={item.href}
+                  onClick={handleMobileCardClick}
                   className="arrivals-card"
                   style={{ display: 'block' }}
                 >

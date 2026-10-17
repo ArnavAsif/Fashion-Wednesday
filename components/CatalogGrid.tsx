@@ -41,6 +41,9 @@ export default function CatalogGrid({
   const [activeSort, setActiveSort] = useState<string>('FEATURED');
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [hoveredProduct, setHoveredProduct] = useState<number | null>(null);
+  const [gridCols, setGridCols] = useState<'4' | '2'>('4');
+  const [sizeOpen, setSizeOpen] = useState(false);
+  const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
 
   // Read URL search params on mount or when searchParams change
   useEffect(() => {
@@ -95,8 +98,15 @@ export default function CatalogGrid({
       });
     }
 
+    // Filter by selected sizes
+    if (selectedSizes.length > 0) {
+      pool = pool.filter((p) => {
+        return p.size && p.size.some((s) => selectedSizes.includes(s));
+      });
+    }
+
     return pool;
-  }, [collectionSlug, activeCategory]);
+  }, [collectionSlug, activeCategory, selectedSizes]);
 
   // Sort products
   const sortedProducts = useMemo(() => {
@@ -134,114 +144,287 @@ export default function CatalogGrid({
 
   return (
     <div ref={gridTopRef} style={{ width: '100%', minHeight: '60vh' }}>
-      {/* Header and Controls */}
-      <div style={{ marginBottom: '3.5rem' }}>
+      {/* Categories Bar & Filter Controls (Matching Reference Video) */}
+      <div style={{ marginBottom: '2.5rem' }}>
         <div
           style={{
             display: 'flex',
             justifyContent: 'space-between',
-            alignItems: 'flex-end',
+            alignItems: 'center',
             flexWrap: 'wrap',
             gap: '1.5rem',
-            marginBottom: '1.5rem',
+            paddingBottom: '1.8rem',
+            borderBottom: '1px solid #e5dedb',
+            position: 'relative',
           }}
         >
-          <div>
+          {/* Left: Category Title in signature red brackets */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
             <h1
               style={{
-                fontFamily: 'Thunder, sans-serif',
-                fontSize: 'clamp(4rem, 6.5vw, 8rem)',
-                fontWeight: 900,
-                textTransform: 'uppercase',
-                margin: '0 0 0.5rem 0',
-                letterSpacing: '-0.02em',
-                lineHeight: 0.85,
-              }}
-            >
-              {displayTitle}
-            </h1>
-            <div
-              style={{
                 fontFamily: 'PP Fraktion Mono, monospace',
-                fontSize: '1.15rem',
-                color: '#666666',
-                display: 'flex',
-                gap: '1.5rem',
-                flexWrap: 'wrap',
+                fontSize: 'clamp(1.4rem, 1.5vw, 1.9rem)',
+                fontWeight: 700,
+                color: '#ed3833',
+                textTransform: 'uppercase',
+                letterSpacing: '0.02em',
+                margin: 0,
               }}
             >
-              <span>[ {baseProducts.length} ITEMS TOTAL ]</span>
-              {baseProducts.length > 0 && (
-                <span>
-                  [ SHOWING {pagination.startItem}–{pagination.endItem} ]
-                </span>
-              )}
-            </div>
+              [ {activeCategory !== 'ALL' ? activeCategory : displayTitle} ]
+            </h1>
           </div>
 
-          {/* Sort Selector */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
-            <span
-              style={{
-                fontFamily: 'PP Fraktion Mono, monospace',
-                fontSize: '1.1rem',
-                color: '#888',
-                textTransform: 'uppercase',
-              }}
-            >
-              SORT:
-            </span>
-            <select
-              value={activeSort}
-              onChange={(e) => {
-                setActiveSort(e.target.value);
-                setCurrentPage(1);
-              }}
-              aria-label="Sort products by"
-              style={{
-                fontFamily: 'PP Fraktion Mono, monospace',
-                fontSize: '1.15rem',
-                backgroundColor: '#ffffff',
-                border: '1px solid #e0d7d4',
-                padding: '0.5rem 1rem',
-                cursor: 'pointer',
-                outline: 'none',
-                textTransform: 'uppercase',
-                fontWeight: 600,
-              }}
-            >
-              <option value="FEATURED">Featured</option>
-              <option value="PRICE_ASC">Price: Low to High</option>
-              <option value="PRICE_DESC">Price: High to Low</option>
-              <option value="NEWEST">Newest</option>
-              <option value="BESTSELLER">Bestsellers</option>
-            </select>
+          {/* Center: Total Items Count */}
+          <div
+            style={{
+              fontFamily: 'PP Fraktion Mono, monospace',
+              fontSize: '1.25rem',
+              fontWeight: 600,
+              color: '#111111',
+              textTransform: 'uppercase',
+            }}
+          >
+            [ {baseProducts.length} - ITEMS ]
+          </div>
+
+          {/* Right: SIZE filter, SORT BY filter, and 2-col/4-col View Switcher */}
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '1.4rem',
+              flexWrap: 'wrap',
+              position: 'relative',
+            }}
+          >
+            {/* Size Filter Button + Dropdown */}
+            <div style={{ position: 'relative' }}>
+              <button
+                type="button"
+                onClick={() => setSizeOpen((prev) => !prev)}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  fontFamily: 'PP Fraktion Mono, monospace',
+                  fontSize: '1.2rem',
+                  fontWeight: 700,
+                  color: '#000000',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.5rem',
+                  textTransform: 'uppercase',
+                }}
+              >
+                <span>SIZE+</span>
+                <span
+                  style={{
+                    backgroundColor: '#000000',
+                    color: '#ffffff',
+                    padding: '0.2rem 0.65rem',
+                    borderRadius: '12px',
+                    fontSize: '1.05rem',
+                    fontWeight: 700,
+                  }}
+                >
+                  {selectedSizes.length > 0 ? selectedSizes.join(', ') : 'ALL'}
+                </span>
+              </button>
+
+              {/* Size Dropdown Box */}
+              {sizeOpen && (
+                <div
+                  style={{
+                    position: 'absolute',
+                    top: 'calc(100% + 0.8rem)',
+                    right: 0,
+                    backgroundColor: '#ffffff',
+                    border: '1px dashed #000000',
+                    padding: '1.4rem',
+                    width: '18rem',
+                    zIndex: 150,
+                    boxShadow: '0 8px 24px rgba(0,0,0,0.12)',
+                  }}
+                >
+                  <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '1rem' }}>
+                    <button
+                      type="button"
+                      onClick={() => setSelectedSizes([])}
+                      style={{
+                        background: 'none',
+                        border: 'none',
+                        fontFamily: 'PP Fraktion Mono, monospace',
+                        fontSize: '1.1rem',
+                        color: '#666',
+                        cursor: 'pointer',
+                      }}
+                    >
+                      [ CLEAR ]
+                    </button>
+                  </div>
+
+                  <div
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: '0.8rem',
+                      maxHeight: '220px',
+                      overflowY: 'auto',
+                    }}
+                  >
+                    {['XS-S', 'S-M', 'M-L', 'XS', 'S', 'M', 'L', 'XL', 'XXL', 'ONE SIZE'].map((sz) => {
+                      const isChecked = selectedSizes.includes(sz);
+                      return (
+                        <label
+                          key={sz}
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '0.8rem',
+                            fontFamily: 'PP Fraktion Mono, monospace',
+                            fontSize: '1.2rem',
+                            cursor: 'pointer',
+                          }}
+                        >
+                          <input
+                            type="checkbox"
+                            checked={isChecked}
+                            onChange={() => {
+                              if (isChecked) {
+                                setSelectedSizes(selectedSizes.filter((s) => s !== sz));
+                              } else {
+                                setSelectedSizes([...selectedSizes, sz]);
+                              }
+                              setCurrentPage(1);
+                            }}
+                            style={{ cursor: 'pointer', accentColor: '#000000' }}
+                          />
+                          <span>{sz}</span>
+                        </label>
+                      );
+                    })}
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => setSizeOpen(false)}
+                    style={{
+                      width: '100%',
+                      backgroundColor: '#000000',
+                      color: '#ffffff',
+                      border: 'none',
+                      padding: '0.75rem',
+                      fontFamily: 'PP Fraktion Mono, monospace',
+                      fontSize: '1.15rem',
+                      fontWeight: 700,
+                      textTransform: 'uppercase',
+                      cursor: 'pointer',
+                      marginTop: '1.2rem',
+                    }}
+                  >
+                    [ APPLY ]
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {/* Sort Selector with dark brush capsule */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+              <span
+                style={{
+                  fontFamily: 'PP Fraktion Mono, monospace',
+                  fontSize: '1.2rem',
+                  fontWeight: 700,
+                  color: '#000000',
+                  textTransform: 'uppercase',
+                }}
+              >
+                SORT BY+
+              </span>
+              <select
+                value={activeSort}
+                onChange={(e) => {
+                  setActiveSort(e.target.value);
+                  setCurrentPage(1);
+                }}
+                aria-label="Sort products by"
+                style={{
+                  fontFamily: 'PP Fraktion Mono, monospace',
+                  fontSize: '1.1rem',
+                  backgroundColor: '#000000',
+                  color: '#ffffff',
+                  border: 'none',
+                  padding: '0.35rem 0.85rem',
+                  borderRadius: '14px',
+                  cursor: 'pointer',
+                  outline: 'none',
+                  textTransform: 'uppercase',
+                  fontWeight: 700,
+                }}
+              >
+                <option value="FEATURED">Best Sellers</option>
+                <option value="PRICE_ASC">Price: Low to High</option>
+                <option value="PRICE_DESC">Price: High to Low</option>
+                <option value="NEWEST">Newest</option>
+                <option value="BESTSELLER">Featured</option>
+              </select>
+            </div>
+
+            {/* Grid Layout Switcher (2-column vs 4-column) */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <button
+                type="button"
+                aria-label="2 Columns View"
+                onClick={() => setGridCols('2')}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  padding: '3px',
+                  opacity: gridCols === '2' ? 1 : 0.35,
+                  transition: 'opacity 0.2s',
+                  color: '#000000',
+                }}
+              >
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect x="2" y="2" width="6.5" height="16" stroke="currentColor" strokeWidth="1.8" fill={gridCols === '2' ? 'currentColor' : 'none'} />
+                  <rect x="11.5" y="2" width="6.5" height="16" stroke="currentColor" strokeWidth="1.8" fill={gridCols === '2' ? 'currentColor' : 'none'} />
+                </svg>
+              </button>
+
+              <button
+                type="button"
+                aria-label="4 Columns View"
+                onClick={() => setGridCols('4')}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  padding: '3px',
+                  opacity: gridCols === '4' ? 1 : 0.35,
+                  transition: 'opacity 0.2s',
+                  color: '#000000',
+                }}
+              >
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect x="2" y="2" width="6.5" height="6.5" stroke="currentColor" strokeWidth="1.8" fill={gridCols === '4' ? 'currentColor' : 'none'} />
+                  <rect x="11.5" y="2" width="6.5" height="6.5" stroke="currentColor" strokeWidth="1.8" fill={gridCols === '4' ? 'currentColor' : 'none'} />
+                  <rect x="2" y="11.5" width="6.5" height="6.5" stroke="currentColor" strokeWidth="1.8" fill={gridCols === '4' ? 'currentColor' : 'none'} />
+                  <rect x="11.5" y="11.5" width="6.5" height="6.5" stroke="currentColor" strokeWidth="1.8" fill={gridCols === '4' ? 'currentColor' : 'none'} />
+                </svg>
+              </button>
+            </div>
           </div>
         </div>
 
-        {displayDesc && (
-          <p
-            style={{
-              fontFamily: 'Inter, sans-serif',
-              fontSize: '1.35rem',
-              color: '#444444',
-              maxWidth: '680px',
-              margin: '0 0 2rem 0',
-              lineHeight: 1.5,
-            }}
-          >
-            {displayDesc}
-          </p>
-        )}
-
-        {/* Filter Pills */}
+        {/* Quick Category Jump Pills */}
         <div
           style={{
             display: 'flex',
             gap: '0.8rem',
             flexWrap: 'wrap',
-            paddingTop: '0.5rem',
-            borderTop: '1px solid #ebe2de',
+            paddingTop: '0.8rem',
           }}
         >
           {CATEGORY_LIST.map((cat) => {
@@ -284,7 +467,10 @@ export default function CatalogGrid({
           className="catalog-grid"
           style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+            gridTemplateColumns:
+              gridCols === '2'
+                ? 'repeat(2, 1fr)'
+                : 'repeat(auto-fill, minmax(280px, 1fr))',
             gap: '3.5rem 2.2rem',
           }}
         >
@@ -305,7 +491,6 @@ export default function CatalogGrid({
                   flexDirection: 'column',
                   position: 'relative',
                   contentVisibility: 'auto',
-                  containIntrinsicSize: '280px 420px',
                 }}
               >
                 <Link
@@ -321,8 +506,8 @@ export default function CatalogGrid({
                   <div
                     style={{
                       width: '100%',
-                      aspectRatio: '0.73',
-                      backgroundColor: '#f3edea',
+                      aspectRatio: '0.74',
+                      backgroundColor: '#ffffff',
                       position: 'relative',
                       overflow: 'hidden',
                       marginBottom: '1rem',
@@ -341,6 +526,29 @@ export default function CatalogGrid({
                       }}
                       className="catalog-img"
                     />
+
+                    {/* Available sizes preview on hover at bottom left of photo */}
+                    {isHovered && product.size && (
+                      <div
+                        style={{
+                          position: 'absolute',
+                          bottom: '0.8rem',
+                          left: '0.8rem',
+                          display: 'flex',
+                          gap: '0.4rem',
+                          fontFamily: 'PP Fraktion Mono, monospace',
+                          fontSize: '1.1rem',
+                          fontWeight: 700,
+                          color: '#000000',
+                          backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                          padding: '0.2rem 0.6rem',
+                          borderRadius: '3px',
+                          zIndex: 3,
+                        }}
+                      >
+                        {product.size.slice(0, 3).map((s) => `(${s})`).join(' ')}
+                      </div>
+                    )}
 
                     {product.bestseller && (
                       <div
@@ -364,84 +572,35 @@ export default function CatalogGrid({
                     )}
                   </div>
 
-                  <div
-                    style={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      alignItems: 'baseline',
-                      marginBottom: '0.3rem',
-                    }}
-                  >
+                  {/* Product Title and Price below photo */}
+                  <div style={{ marginTop: '0.4rem' }}>
                     <h2
                       style={{
-                        fontFamily: 'Thunder, sans-serif',
-                        fontSize: 'clamp(2rem, 1.8vw, 2.5rem)',
-                        fontWeight: 800,
+                        fontFamily: 'PP Fraktion Mono, monospace',
+                        fontSize: '1.35rem',
+                        fontWeight: 700,
                         textTransform: 'uppercase',
-                        margin: 0,
-                        letterSpacing: '-0.01em',
-                        lineHeight: 0.95,
-                        maxWidth: '75%',
+                        margin: '0 0 0.35rem 0',
+                        letterSpacing: '-0.02em',
+                        lineHeight: 1.25,
+                        color: '#000000',
                       }}
                     >
                       {product.title}
                     </h2>
-                    <span
+                    <p
                       style={{
                         fontFamily: 'PP Fraktion Mono, monospace',
-                        fontSize: '1.25rem',
-                        fontWeight: 700,
-                        color: '#ed3833',
-                        whiteSpace: 'nowrap',
+                        fontSize: '1.3rem',
+                        fontWeight: 600,
+                        color: '#111111',
+                        margin: 0,
                       }}
                     >
-                      ({product.price.toFixed(2).replace('.', ',')}_€)
-                    </span>
+                      {product.price.toFixed(2).replace('.', ',')}_€
+                    </p>
                   </div>
                 </Link>
-
-                {/* Quick Add and Sizes */}
-                <div
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    marginTop: '0.4rem',
-                  }}
-                >
-                  <div style={{ display: 'flex', gap: '0.5rem' }}>
-                    {(product.size?.slice(0, 3) || ['S', 'M']).map((s) => (
-                      <MarkerButton
-                        key={s}
-                        text={s}
-                        brackets
-                        fontSize="1.05rem"
-                        onClick={() => {
-                          addToCart({
-                            id: product.id,
-                            title: `${product.title} (${s})`,
-                            price: product.price,
-                            quantity: 1,
-                            size: [s],
-                            color: product.color || [],
-                            images: [[img]],
-                            href: `/products/${slug}`,
-                            bestseller: product.bestseller,
-                            createdAt: product.createdAt,
-                          });
-                          setIsCartOpen(true);
-                        }}
-                      />
-                    ))}
-                  </div>
-
-                  <MarkerButton
-                    text="VIEW"
-                    brackets
-                    fontSize="1.05rem"
-                    href={`/products/${slug}`}
-                  />
-                </div>
               </div>
             );
           })}

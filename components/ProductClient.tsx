@@ -118,7 +118,7 @@ export default function ProductClient({ product, slug }: ProductClientProps) {
   const related = PRODUCTS.filter((p) => p.id !== product.id).slice(0, 4);
 
   return (
-    <div className="product-page-root" style={{ backgroundColor: '#fff9f7', minHeight: '100vh', color: '#000' }}>
+    <div className="product-page-root site-wrapper" style={{ position: 'relative', width: '100%', minHeight: '100vh', overflowX: 'clip', backgroundColor: '#fff9f7', color: '#000' }}>
       <Header />
       <CartDrawer />
       <MenuModal />
@@ -608,8 +608,10 @@ export default function ProductClient({ product, slug }: ProductClientProps) {
         style={{
           borderTop: '1px solid rgba(0,0,0,0.08)',
           paddingTop: '6rem',
-          paddingBottom: '8rem',
+          paddingBottom: '2.5rem',
           backgroundColor: '#fff9f7',
+          position: 'relative',
+          zIndex: 1,
         }}
       >
         <div style={{ maxWidth: '1580px', margin: '0 auto', padding: '0 3rem' }}>

@@ -2146,6 +2146,7 @@ export const CATEGORY_LIST = [
   'TOPS',
   'JACKETS',
   'PANTS',
+  'BOTTOMS',
   'SKIRTS',
   'BODYS',
   'COATS',
@@ -2165,7 +2166,10 @@ export function getProductCategories(p: Product): string[] {
   if (t.includes('top') || t.includes('tee') || t.includes('shrug') || t.includes('sweater') || t.includes('hoodie') || t.includes('cardigan') || t.includes('longsleeve') || t.includes('tank')) cats.push('TOPS');
   if (t.includes('jacket') || t.includes('bomber') || t.includes('biker') || t.includes('trucker')) cats.push('JACKETS');
   if (t.includes('bodysuit')) cats.push('BODYS');
-  if (t.includes('pant') || t.includes('jeans') || t.includes('shorts')) cats.push('PANTS');
+  if (t.includes('pant') || t.includes('jeans') || t.includes('shorts') || t.includes('trouser')) {
+    cats.push('PANTS');
+    cats.push('BOTTOMS');
+  }
   if (t.includes('coat')) cats.push('COATS');
   if (t.includes('necklace') || t.includes('choker') || t.includes('ring') || t.includes('belt') || t.includes('harness') || t.includes('clip') || t.includes('chain')) cats.push('ACCESSORIES');
   if (p.bestseller || [3, 8, 15, 23, 35].includes(p.id)) cats.push('SPECIAL EDITION');

@@ -8301,22 +8301,95 @@ body {
   opacity: 0 !important;
   pointer-events: none !important;
 }
+/* Global Cursor Architecture */
 html,
-body,
-* {
-  cursor: auto !important;
+body {
+  cursor: default;
 }
+
+/* Ensure all clickable links, buttons, interactive controls, and their descendant elements show the hand pointer */
 a,
+a *,
 button,
+button *,
 [role="button"],
+[role="button"] *,
 input[type="submit"],
+input[type="button"],
+input[type="reset"],
+input[type="checkbox"],
+input[type="radio"],
+input[type="file"],
 select,
+select *,
+summary,
+summary *,
 .button,
+.button *,
+.link,
+.link *,
 .menu__item,
+.menu__item *,
+.menu__list button,
+.menu__list button *,
+.menu__contact-list a,
+.menu__contact-list a *,
+.menu__contact-list button,
+.menu__contact-list button *,
 .header__nav-link,
+.header__nav-link *,
+.header__nav-button,
+.header__nav-button *,
 .arrivals-card,
-.categories-card {
+.arrivals-card *,
+.arrivals-card__size li,
+.arrivals-card__size li *,
+.categories-card,
+.categories-card *,
+.catalog-card-wrap,
+.catalog-card-wrap *,
+.catalog-card,
+.catalog-card *,
+.collection-hub-card,
+.collection-hub-card *,
+.marker-btn-root,
+.marker-btn-root *,
+.inner-label-box,
+.inner-label-box *,
+.footer__logo,
+.footer__logo *,
+.footer__nav a,
+.footer__nav a *,
+.footer__soc a,
+.footer__soc a *,
+.footer__info button,
+.footer__info button *,
+.footer__discount,
+.footer__discount * {
   cursor: pointer !important;
+}
+
+/* Text inputs, search fields, textareas, and editable text retain the text selection cursor */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="search"],
+input[type="number"],
+input[type="tel"],
+input[type="url"],
+textarea,
+[contenteditable="true"] {
+  cursor: text !important;
+}
+
+/* Disabled elements display not-allowed */
+[disabled],
+[disabled] *,
+.disabled,
+.disabled *,
+.disable,
+.disable * {
+  cursor: not-allowed !important;
 }
 
 /* Ensure smooth scrolling */

@@ -2,6 +2,7 @@
 
 import React, { useRef, useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import MarkerButton from '@/components/MarkerButton';
@@ -30,12 +31,14 @@ const CATEGORIES: CatItem[] = [
 ];
 
 export default function CategoriesSection() {
+  const router = useRouter();
   const trackRef = useRef<HTMLDivElement>(null);
   const [progress, setProgress] = useState(0);
 
   // Drag interaction states
   const isDraggingRef = useRef(false);
   const startXRef = useRef(0);
+  const startYRef = useRef(0);
   const scrollLeftStartRef = useRef(0);
   const hasMovedRef = useRef(false);
   const [isGrabbing, setIsGrabbing] = useState(false);
@@ -92,21 +95,29 @@ export default function CategoriesSection() {
     isDraggingRef.current = true;
     hasMovedRef.current = false;
     startXRef.current = e.clientX;
+    startYRef.current = e.clientY;
     scrollLeftStartRef.current = trackRef.current.scrollLeft;
 
-    trackRef.current.setPointerCapture(e.pointerId);
+    // Notice: Do NOT call setPointerCapture here.
+    // Capturing pointer on pointerdown blocks the synthetic 'click' event on child <a> links.
   };
 
   const handlePointerMove = (e: React.PointerEvent) => {
     if (!isDraggingRef.current || !trackRef.current) return;
 
     const dx = e.clientX - startXRef.current;
-    if (Math.abs(dx) > 6) {
-      hasMovedRef.current = true;
-      if (!isGrabbing) setIsGrabbing(true);
-    }
+    const dy = e.clientY - startYRef.current;
 
-    if (hasMovedRef.current) {
+    // Only initiate dragging if horizontal displacement exceeds threshold
+    if (Math.abs(dx) > 10 && Math.abs(dx) > Math.abs(dy)) {
+      if (!hasMovedRef.current) {
+        hasMovedRef.current = true;
+        // User has intentionally moved > 10px: capture pointer for the drag
+        try {
+          trackRef.current.setPointerCapture(e.pointerId);
+        } catch (_) {}
+      }
+      if (!isGrabbing) setIsGrabbing(true);
       trackRef.current.scrollLeft = scrollLeftStartRef.current - dx;
       updateProgress();
     }
@@ -117,22 +128,31 @@ export default function CategoriesSection() {
     isDraggingRef.current = false;
     setIsGrabbing(false);
 
-    if (trackRef.current) {
+    if (trackRef.current && trackRef.current.hasPointerCapture(e.pointerId)) {
       try {
         trackRef.current.releasePointerCapture(e.pointerId);
       } catch (_) {}
     }
 
-    setTimeout(() => {
-      hasMovedRef.current = false;
-    }, 60);
+    if (hasMovedRef.current) {
+      // Hold hasMovedRef briefly so any trailing click event triggered by mouseup is intercepted
+      setTimeout(() => {
+        hasMovedRef.current = false;
+      }, 120);
+    }
   };
 
-  const handleCardClick = (e: React.MouseEvent) => {
+  const handleCardClick = (e: React.MouseEvent, catTitle: string) => {
+    // If user dragged horizontally to scroll, cancel navigation
     if (hasMovedRef.current) {
       e.preventDefault();
       e.stopPropagation();
+      return;
     }
+
+    // Direct, reliable client-side navigation
+    e.preventDefault();
+    router.push(`/products?category=${encodeURIComponent(catTitle)}`);
   };
 
   return (
@@ -166,34 +186,51 @@ export default function CategoriesSection() {
               touchAction: 'pan-y',
             }}
           >
-            {CATEGORIES.map((cat, idx) => (
-              <Link
-                key={idx}
-                href={`/products?category=${encodeURIComponent(cat.title)}`}
-                onClick={handleCardClick}
-                className="categories-card"
-                style={{
-                  flex: '0 0 clamp(28rem, 26vw, 34rem)',
-                  scrollSnapAlign: 'start',
-                  position: 'relative',
-                  display: 'block',
-                  cursor: isGrabbing ? 'grabbing' : 'pointer',
-                  textDecoration: 'none',
-                }}
-              >
-                <div className="categories-card__img-wrapper">
-                  <picture className="categories-card__img">
-                    <img src={cat.img} alt={cat.title} draggable={false} />
-                  </picture>
-                </div>
+            {CATEGORIES.map((cat, idx) => {
+              const categoryUrl = `/products?category=${encodeURIComponent(cat.title)}`;
+              return (
+                <Link
+                  key={idx}
+                  href={categoryUrl}
+                  onClick={(e) => handleCardClick(e, cat.title)}
+                  className="categories-card"
+                  style={{
+                    flex: '0 0 clamp(28rem, 26vw, 34rem)',
+                    scrollSnapAlign: 'start',
+                    position: 'relative',
+                    display: 'block',
+                    cursor: isGrabbing ? 'grabbing' : 'pointer',
+                    textDecoration: 'none',
+                  }}
+                >
+                  <div className="categories-card__img-wrapper">
+                    <picture className="categories-card__img">
+                      <img
+                        src={cat.img}
+                        alt={cat.title}
+                        draggable={false}
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    </picture>
+                  </div>
 
-                <h3 className="categories-card__title">{cat.title}</h3>
+                  <h3
+                    className="categories-card__title"
+                    style={{ pointerEvents: 'none' }}
+                  >
+                    {cat.title}
+                  </h3>
 
-                <p className="categories-card__text">
-                  <strong>{cat.count}</strong>
-                </p>
-              </Link>
-            ))}
+                  <p
+                    className="categories-card__text"
+                    style={{ pointerEvents: 'none' }}
+                  >
+                    <strong>{cat.count}</strong>
+                  </p>
+                </Link>
+              );
+            })}
           </div>
 
           {/* Scroll progress fill */}

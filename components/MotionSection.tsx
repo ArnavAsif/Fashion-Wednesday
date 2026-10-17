@@ -66,13 +66,22 @@ export default function MotionSection() {
         maskRef.current.style.setProperty('--maskW', `${initW}%`);
         maskRef.current.style.transform = 'translateY(40px)';
 
+        // 1. Pin the film scene until the footer reaches the bottom of the screen (no pinSpacing so footer slides over)
+        ScrollTrigger.create({
+          trigger: pinRef.current,
+          start: 'top top',
+          endTrigger: '#footer',
+          end: 'bottom bottom',
+          pin: pinRef.current,
+          pinSpacing: false,
+        });
+
+        // 2. Timeline for mask expansion and text transitions while scrolling through container
         const tl = gsap.timeline({
           scrollTrigger: {
             trigger: containerRef.current,
             start: 'top top',
-            end: '+=200%',
-            pin: pinRef.current,
-            pinSpacing: true,
+            end: 'bottom top',
             scrub: 0.5,
             onUpdate: (self) => {
               const p = self.progress;
@@ -91,7 +100,7 @@ export default function MotionSection() {
                 tipRef.current.style.opacity = `${tipOpacity}`;
               }
 
-              // 3. Mask size grows only after scrolling from initial (30%) up to 440%
+              // 3. Mask size grows from initial up to 440%
               const currentInit = getInitialMaskW();
               const maskScale = currentInit + p * (440 - currentInit);
               if (maskRef.current) {

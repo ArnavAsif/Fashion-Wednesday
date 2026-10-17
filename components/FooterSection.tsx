@@ -31,10 +31,19 @@ export default function FooterSection({ onOpenCredits }: { onOpenCredits?: () =>
           path: '/lottie/FOOTER_LOTTIE_v1.json',
         });
         animRef.current = anim;
+        const isMobile = typeof window !== 'undefined' && (window.innerWidth < 768 || !window.matchMedia('(hover: hover) and (pointer: fine)').matches);
         anim.addEventListener('DOMLoaded', () => {
-          anim.goToAndStop(58, true);
+          if (isMobile) {
+            anim.goToAndStop(118, true);
+          } else {
+            anim.goToAndStop(58, true);
+          }
         });
-        anim.goToAndStop(58, true);
+        if (isMobile) {
+          anim.goToAndStop(118, true);
+        } else {
+          anim.goToAndStop(58, true);
+        }
       })
       .catch(() => {});
 
@@ -129,14 +138,14 @@ export default function FooterSection({ onOpenCredits }: { onOpenCredits?: () =>
 
   return (
     <footer className="footer" id="footer" style={{ position: 'relative', width: '100%', overflow: 'hidden' }}>
-      {/* Torn paper top doodles (lips and crown from Screenshot 15) */}
-      <div className="hidden md:block" style={{ position: 'absolute', top: '1.2rem', left: '26%', zIndex: 12, pointerEvents: 'none' }}>
+      {/* Torn paper top doodles (lips and crown from Screenshot 15) - hidden on mobile */}
+      <div className="footer__doodle hidden md:block" style={{ position: 'absolute', top: '1.2rem', left: '26%', zIndex: 12, pointerEvents: 'none' }}>
         <svg width="48" height="24" viewBox="0 0 48 24" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M4 12 C12 6, 20 6, 24 10 C28 6, 36 6, 44 12 C36 18, 28 18, 24 14 C20 18, 12 18, 4 12 Z" stroke="white" strokeWidth="2.5" fill="none" strokeLinecap="round" />
           <path d="M12 12 C20 10, 28 10, 36 12" stroke="white" strokeWidth="1.5" strokeLinecap="round" />
         </svg>
       </div>
-      <div className="hidden md:block" style={{ position: 'absolute', top: '0.8rem', left: '46%', zIndex: 12, pointerEvents: 'none' }}>
+      <div className="footer__doodle hidden md:block" style={{ position: 'absolute', top: '0.8rem', left: '46%', zIndex: 12, pointerEvents: 'none' }}>
         <svg width="60" height="35" viewBox="0 0 60 35" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M5 28 L15 10 L28 20 L40 6 L52 28 Z" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" fill="none" />
         </svg>
@@ -149,7 +158,7 @@ export default function FooterSection({ onOpenCredits }: { onOpenCredits?: () =>
         <img src="/images/img_166.webp" alt="" />
       </picture>
 
-      {/* Model Cutout */}
+      {/* Model Cutout (BONEZ Model) */}
       <picture className="footer__img" style={{ pointerEvents: 'none' }}>
         <img src="/images/footer_model.png" alt="BONEZ Model" />
       </picture>
@@ -189,7 +198,7 @@ export default function FooterSection({ onOpenCredits }: { onOpenCredits?: () =>
         />
       </div>
 
-      <div className="container" style={{ position: 'relative', zIndex: 10 }}>
+      <div className="container" style={{ position: 'relative' }}>
         {/* Top Navigation Links */}
         <div className="footer__top">
           <ul className="footer__nav">
@@ -273,11 +282,11 @@ export default function FooterSection({ onOpenCredits }: { onOpenCredits?: () =>
 
         {/* Mid Section: Logo, Title, and Form */}
         <div className="footer__mid">
-          <a href="/" className="footer__logo" style={{ justifyContent: 'center' }}>
+          <a href="/" className="footer__logo">
             <img
               src="/images/bonez-logo-white.png"
               alt="BONEZ"
-              style={{ maxWidth: '420px', width: '100%', height: 'auto', display: 'block', margin: '0 auto' }}
+              className="footer__logo-img"
             />
           </a>
 

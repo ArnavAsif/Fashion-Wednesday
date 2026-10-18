@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import Link from 'next/link';
 import Header from '@/components/Header';
 import FooterSection from '@/components/FooterSection';
@@ -10,12 +10,51 @@ import SearchModal from '@/components/SearchModal';
 import CreditsModal from '@/components/CreditsModal';
 import NewsletterModal from '@/components/NewsletterModal';
 import { useCart } from '@/lib/cartContext';
-import { Product, PRODUCTS, getProductSlug } from '@/lib/products';
+import { Product, PRODUCTS, getProductSlug, getProductCollections, getProductCategories } from '@/lib/products';
 import { ARRIVAL_PRODUCTS } from '@/components/ArrivalsSection';
 
 export interface ProductClientProps {
   product: Product;
   slug: string;
+}
+
+function getCollectionCandidates(currentProduct: Product): { primaryCol: string; candidates: Product[] } {
+  const myCols = getProductCollections(currentProduct);
+  const primaryCol =
+    myCols.find((c) => ['berlin', 'life-force', 'quarpa-capsule'].includes(c)) ||
+    myCols[0] ||
+    'berlin';
+
+  // 1. Same collection products (excluding current product)
+  let matches = PRODUCTS.filter((p) => p.id !== currentProduct.id && getProductCollections(p).includes(primaryCol));
+
+  // 2. Same category fallback if fewer than 4
+  if (matches.length < 4) {
+    const myCats = getProductCategories(currentProduct);
+    const catMatches = PRODUCTS.filter(
+      (p) => p.id !== currentProduct.id && !matches.some((m) => m.id === p.id) && getProductCategories(p).some((c) => myCats.includes(c))
+    );
+    matches = [...matches, ...catMatches];
+  }
+
+  // 3. Fallback to others if still fewer than 4
+  if (matches.length < 4) {
+    const others = PRODUCTS.filter((p) => p.id !== currentProduct.id && !matches.some((m) => m.id === p.id));
+    matches = [...matches, ...others];
+  }
+
+  return { primaryCol, candidates: matches };
+}
+
+function getDeterministicRelated(currentProduct: Product, candidates: Product[]): Product[] {
+  if (candidates.length <= 4) return candidates.slice(0, 4);
+  // Staggered index based on product ID to ensure every product has a different unique set of items
+  const offset = (currentProduct.id * 5) % candidates.length;
+  const result: Product[] = [];
+  for (let i = 0; i < 4; i++) {
+    result.push(candidates[(offset + i) % candidates.length]);
+  }
+  return result;
 }
 
 export default function ProductClient({ product, slug }: ProductClientProps) {
@@ -113,8 +152,17 @@ export default function ProductClient({ product, slug }: ProductClientProps) {
 
   const formattedPrice = `(${product.price.toFixed(2).replace('.', ',')}_€)`;
 
-  // Related products
-  const related = PRODUCTS.filter((p) => p.id !== product.id).slice(0, 4);
+  // Related products from collection
+  const { primaryCol, candidates } = useMemo(() => getCollectionCandidates(product), [product]);
+  const [related, setRelated] = useState<Product[]>(() => getDeterministicRelated(product, candidates));
+
+  // Rotate/shuffle collection items on client mount so viewing at different times shows fresh different products
+  useEffect(() => {
+    if (candidates.length > 4) {
+      const shuffled = [...candidates].sort(() => Math.random() - 0.5);
+      setRelated(shuffled.slice(0, 4));
+    }
+  }, [product.id, candidates]);
 
   return (
     <div className="product-page-root site-wrapper" style={{ position: 'relative', width: '100%', minHeight: '100vh', overflowX: 'clip', backgroundColor: '#fff9f7', color: '#000' }}>

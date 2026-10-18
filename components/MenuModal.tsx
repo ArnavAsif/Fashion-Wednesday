@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { useCart } from '@/lib/cartContext';
 
 export interface MenuItemProduct {
@@ -27,8 +27,8 @@ const DEFAULT_PRODUCTS: MenuItemProduct[] = [
     image: '/images/products/product-1/image_01.jpg',
   },
   {
-    title: 'BONEZ Signature Leather Lace-Up Corset',
-    href: '/products/bonez-signature-leather-lace-up-corset/',
+    title: 'ELVAREN Signature Leather Lace-Up Corset',
+    href: '/products/elvaren-signature-leather-lace-up-corset/',
     image: '/images/products/product-3/image_01.jpg',
   },
   {
@@ -66,8 +66,8 @@ const CATEGORIES_DATA: CategoryData[] = [
         image: '/images/products/product-2/image_01.jpg',
       },
       {
-        title: 'BONEZ Signature Leather Lace-Up Corset',
-        href: '/products/bonez-signature-leather-lace-up-corset/',
+        title: 'ELVAREN Signature Leather Lace-Up Corset',
+        href: '/products/elvaren-signature-leather-lace-up-corset/',
         image: '/images/products/product-3/image_01.jpg',
       },
       {
@@ -221,8 +221,8 @@ const CATEGORIES_DATA: CategoryData[] = [
     poster: '/videos/menu/posters/Make_fashion_aesthetic_video_1080p_20261017165300.jpg',
     products: [
       {
-        title: 'BONEZ Signature Leather Lace-Up Corset',
-        href: '/products/bonez-signature-leather-lace-up-corset/',
+        title: 'ELVAREN Signature Leather Lace-Up Corset',
+        href: '/products/elvaren-signature-leather-lace-up-corset/',
         image: '/images/products/product-3/image_01.jpg',
       },
       {
@@ -386,8 +386,8 @@ const CATEGORIES_DATA: CategoryData[] = [
     poster: '/videos/menu/posters/Making_fashion_aesthetic_video_1080p_20261017165527.jpg',
     products: [
       {
-        title: 'BONEZ Signature Leather Lace-Up Corset',
-        href: '/products/bonez-signature-leather-lace-up-corset/',
+        title: 'ELVAREN Signature Leather Lace-Up Corset',
+        href: '/products/elvaren-signature-leather-lace-up-corset/',
         image: '/images/products/product-3/image_01.jpg',
       },
       {
@@ -466,11 +466,17 @@ const MENU_ITEMS = [
 
 export default function MenuModal() {
   const router = useRouter();
+  const pathname = usePathname();
   const { isMenuOpen, setIsMenuOpen, menuTab } = useCart();
   const [hoveredCatIndex, setHoveredCatIndex] = useState<number>(-1);
   const [hoveredMenuIndex, setHoveredMenuIndex] = useState<number>(-1);
   const [hasOpened, setHasOpened] = useState<boolean>(false);
   const [loadedCatIndices, setLoadedCatIndices] = useState<{ [key: number]: boolean }>({});
+
+  // Auto-close menu when route changes (e.g. SHOP ALL, collections, products)
+  useEffect(() => {
+    setIsMenuOpen(false);
+  }, [pathname, setIsMenuOpen]);
 
   // References for HTML5 video playback
   const menuVideoRef = useRef<HTMLVideoElement | null>(null);
@@ -933,7 +939,7 @@ export default function MenuModal() {
             </li>
             <li>
               <a
-                href="https://www.instagram.com/bonez_official/"
+                href="https://www.instagram.com/elvaren_official/"
                 target="_blank"
                 rel="noopener noreferrer"
                 style={{ color: 'inherit', textDecoration: 'none' }}

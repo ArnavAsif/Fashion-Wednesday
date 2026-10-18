@@ -19,7 +19,7 @@ export default function RootLoading() {
     >
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
         <span style={{ color: '#ed3833' }}>●</span>
-        <span>[ BONEZ // LOADING ]</span>
+        <span>[ ELVAREN // LOADING ]</span>
       </div>
     </div>
   );

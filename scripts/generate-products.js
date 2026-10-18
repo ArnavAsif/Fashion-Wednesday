@@ -4,7 +4,7 @@ const path = require('path');
 const PRODUCTS_META = [
   { id: 1, title: 'Error 404 Streetwear Zip Hoodie', price: 185, size: ['S', 'M', 'L', 'XL'], color: ['Washed Black'], bestseller: false },
   { id: 2, title: 'Distressed Mohair Shrug & Silver Chain Top', price: 145, size: ['S', 'M', 'L'], color: ['Charcoal Grey'], bestseller: false },
-  { id: 3, title: 'BONEZ Signature Leather Lace-Up Corset', price: 265, size: ['S', 'M', 'L'], color: ['Onyx Black'], bestseller: true },
+  { id: 3, title: 'ELVAREN Signature Leather Lace-Up Corset', price: 265, size: ['S', 'M', 'L'], color: ['Onyx Black'], bestseller: true },
   { id: 4, title: 'Saturn Orb Pendant Silver Chain Necklace', price: 95, size: ['ONE SIZE'], color: ['Silver'], bestseller: false },
   { id: 5, title: 'Washed Distressed Denim Jacket & Gothic Cross', price: 295, size: ['S', 'M', 'L'], color: ['Acid Blue'], bestseller: false },
   { id: 6, title: 'White High-Neck Corset Bodysuit', price: 165, size: ['S', 'M', 'L'], color: ['Optic White'], bestseller: true },
@@ -193,7 +193,7 @@ export const COLLECTIONS: CollectionInfo[] = [
   {
     slug: 'new-drop',
     name: 'NEW DROP',
-    description: 'The latest seasonal drop from BONEZ. Where glam meets grunge.',
+    description: 'The latest seasonal drop from ELVAREN. Where glam meets grunge.',
     tag: 'new-drop',
   },
   {

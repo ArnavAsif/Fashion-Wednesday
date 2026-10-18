@@ -266,6 +266,7 @@ export default function MarkerButton({
         href={href}
         target={target}
         rel={rel}
+        onClick={onClick}
         style={{
           display: 'inline-flex',
           textDecoration: 'none',

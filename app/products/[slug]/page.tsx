@@ -11,11 +11,11 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: { params: { slug: string } }) {
   const product = getProductBySlug(params.slug);
   if (!product) {
-    return { title: 'Product Not Found — BONEZ' };
+    return { title: 'Product Not Found — ELVAREN' };
   }
   return {
-    title: `${product.title} — BONEZ`,
-    description: `${product.title} available on BONEZ Official Store. Where Glam Meets Grunge.`,
+    title: `${product.title} — ELVAREN`,
+    description: `${product.title} available on ELVAREN Official Store. Where Glam Meets Grunge.`,
   };
 }
 

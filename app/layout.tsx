@@ -5,10 +5,10 @@ import Preloader from '@/components/Preloader';
 import RouteProgressBar from '@/components/RouteProgressBar';
 
 export const metadata: Metadata = {
-  title: 'BONEZ',
-  description: 'Where Glam Meets Grunge - BONEZ Official Store',
+  title: 'ELVAREN',
+  description: 'Where Glam Meets Grunge - ELVAREN Official Store',
   icons: {
-    icon: '/images/bonez-logo.png',
+    icon: '/images/elvaren-logo.png',
   },
 };
 

@@ -11,8 +11,8 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   const col = getCollectionBySlug(params.slug);
   const name = col ? col.name : params.slug.toUpperCase().replace(/-/g, ' ');
   return {
-    title: `${name} — BONEZ Collection`,
-    description: col?.description || `Explore ${name} by BONEZ. Where Glam Meets Grunge.`,
+    title: `${name} — ELVAREN Collection`,
+    description: col?.description || `Explore ${name} by ELVAREN. Where Glam Meets Grunge.`,
   };
 }
 

@@ -244,9 +244,9 @@ export default function FooterSection({ onOpenCredits }: { onOpenCredits?: () =>
         <img src="/images/img_166.webp" alt="" />
       </picture>
 
-      {/* Model Cutout (BONEZ Model) */}
+      {/* Model Cutout (ELVAREN Model) */}
       <picture className="footer__img" style={{ pointerEvents: 'none' }}>
-        <img src="/images/footer_model.png" alt="BONEZ Model" />
+        <img src="/images/footer_model.png" alt="ELVAREN Model" />
       </picture>
 
       {/* DISCOUNT 10% Torn Paper Badge - Interactive Hover Controlled Lottie */}
@@ -397,8 +397,8 @@ export default function FooterSection({ onOpenCredits }: { onOpenCredits?: () =>
         <div className="footer__mid">
           <Link href="/" className="footer__logo">
             <img
-              src="/images/bonez-logo-white.png"
-              alt="BONEZ"
+              src="/images/elvaren-logo-white.png"
+              alt="ELVAREN"
               className="footer__logo-img"
             />
           </Link>
@@ -428,7 +428,7 @@ export default function FooterSection({ onOpenCredits }: { onOpenCredits?: () =>
 
         {/* Bottom Bar */}
         <div className="footer__bottom">
-          <div>©2026_BONEZ</div>
+          <div>©2026_ELVAREN</div>
 
           <MarkerButton
             text="PRIVACY POLICY (DSGVO)"
@@ -447,7 +447,7 @@ export default function FooterSection({ onOpenCredits }: { onOpenCredits?: () =>
           <MarkerButton
             text="IG"
             cloneLastChar
-            href="https://www.instagram.com/bonez_official/"
+            href="https://www.instagram.com/elvaren_official/"
             target="_blank"
             rel="noopener noreferrer"
             fontSize="1.3rem"

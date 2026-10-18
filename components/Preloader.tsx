@@ -14,7 +14,7 @@ export default function Preloader() {
     if (typeof window === 'undefined') return;
 
     // Check if user has already seen the preloader in this session
-    const seen = sessionStorage.getItem('bonez_preloader_seen');
+    const seen = sessionStorage.getItem('elvaren_preloader_seen');
     if (seen === 'true') {
       setShouldRender(false);
       return;
@@ -50,14 +50,14 @@ export default function Preloader() {
       } else if (current < 95) {
         setPhaseText('COMPILING TEXTURES & HARDWARE');
       } else {
-        setPhaseText('READY // ENTER BONEZ');
+        setPhaseText('READY // ENTER ELVAREN');
       }
 
       if (ratio < 1) {
         animationFrameId = requestAnimationFrame(step);
       } else {
         setProgress(100);
-        setPhaseText('READY // ENTER BONEZ');
+        setPhaseText('READY // ENTER ELVAREN');
 
         // Hold 100% briefly, then slide out
         setTimeout(() => {
@@ -67,7 +67,7 @@ export default function Preloader() {
             setIsCompleted(true);
             setShouldRender(false);
             document.body.style.overflow = originalOverflow;
-            sessionStorage.setItem('bonez_preloader_seen', 'true');
+            sessionStorage.setItem('elvaren_preloader_seen', 'true');
           }, 850); // Matches the curtain transition duration
         }, 180);
       }
@@ -83,7 +83,7 @@ export default function Preloader() {
         setIsCompleted(true);
         setShouldRender(false);
         document.body.style.overflow = originalOverflow;
-        sessionStorage.setItem('bonez_preloader_seen', 'true');
+        sessionStorage.setItem('elvaren_preloader_seen', 'true');
       }, 850);
     }, 2800);
 
@@ -100,7 +100,7 @@ export default function Preloader() {
 
   return (
     <div
-      id="bonez-preloader"
+      id="elvaren-preloader"
       style={{
         position: 'fixed',
         inset: 0,
@@ -145,7 +145,7 @@ export default function Preloader() {
         }}
       >
         <div>
-          <span>[ BONEZ SYSTEM // SS_26 ]</span>
+          <span>[ ELVAREN SYSTEM // SS_26 ]</span>
           <div style={{ fontSize: '0.8em', color: '#888', marginTop: '0.2rem' }}>
             WHERE GLAM MEETS GRUNGE
           </div>
@@ -172,21 +172,21 @@ export default function Preloader() {
           width: '100%',
         }}
       >
-        {/* Massive Bold BONEZ Logotype */}
+        {/* Massive Bold ELVAREN Logotype */}
         <div style={{ overflow: 'hidden', marginBottom: '1.5rem' }}>
           <h1
             style={{
               fontFamily: 'Thunder, sans-serif',
               fontSize: 'clamp(5.5rem, 16vw, 15rem)',
-              fontWeight: 900,
+              fontWeight: 700,
               textTransform: 'uppercase',
-              letterSpacing: '-0.025em',
+              letterSpacing: '0.08em',
               lineHeight: 0.82,
               margin: 0,
               color: '#000000',
             }}
           >
-            BONEZ
+            ELVAREN
           </h1>
         </div>
 

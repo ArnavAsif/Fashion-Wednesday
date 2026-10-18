@@ -32,18 +32,35 @@ export interface ArrivalItem {
 export const ARRIVAL_PRODUCTS: ArrivalItem[] = [
   {
     id: 3,
-    title: 'BONEZ SIGNATURE LEATHER CORSET',
+    title: 'ELVAREN SIGNATURE LEATHER CORSET',
     price: '265,00_€',
     rawPrice: 265,
     collection: 'berlin',
     bestseller: true,
     sizes: ['S', 'M', 'L'],
     colorSwatch: '#111111',
-    href: '/products/bonez-signature-leather-lace-up-corset/',
+    href: '/products/elvaren-signature-leather-lace-up-corset/',
     images: {
       col1: ['/images/products/product-3/image_01.jpg', '/images/products/product-3/image_02.jpg'],
       col2: ['/images/products/product-3/image_03.jpg', '/images/products/product-3/image_04.jpg'],
       col3: ['/images/products/product-3/image_05.jpg', '/images/products/product-3/image_06.jpg'],
+    },
+    video: undefined,
+  },
+  {
+    id: 1,
+    title: 'ERROR 404 STREETWEAR ZIP HOODIE',
+    price: '180,00_€',
+    rawPrice: 180,
+    collection: 'new drop',
+    bestseller: true,
+    sizes: ['S', 'M', 'L'],
+    colorSwatch: '#1a1a1a',
+    href: '/products/error-404-streetwear-zip-hoodie/',
+    images: {
+      col1: ['/images/products/product-1/image_01.jpg', '/images/products/product-1/image_02.jpg'],
+      col2: ['/images/products/product-1/image_03.jpg', '/images/products/product-1/image_04.jpg'],
+      col3: ['/images/products/product-1/image_05.jpg', '/images/products/product-1/image_01.jpg'],
     },
     video: undefined,
   },
@@ -65,6 +82,23 @@ export const ARRIVAL_PRODUCTS: ArrivalItem[] = [
     video: undefined,
   },
   {
+    id: 5,
+    title: 'WASHED DISTRESSED DENIM JACKET',
+    price: '320,00_€',
+    rawPrice: 320,
+    collection: 'berlin',
+    bestseller: true,
+    sizes: ['S', 'M', 'L'],
+    colorSwatch: '#3a4b60',
+    href: '/products/washed-distressed-denim-jacket-gothic-cross/',
+    images: {
+      col1: ['/images/products/product-5/image_01.jpg', '/images/products/product-5/image_02.jpg'],
+      col2: ['/images/products/product-5/image_03.jpg', '/images/products/product-5/image_04.jpg'],
+      col3: ['/images/products/product-5/image_05.jpg', '/images/products/product-5/image_06.jpg'],
+    },
+    video: undefined,
+  },
+  {
     id: 8,
     title: 'ANGEL BODYSUIT & FUR SHRUG SET',
     price: '195,00_€',
@@ -78,6 +112,23 @@ export const ARRIVAL_PRODUCTS: ArrivalItem[] = [
       col1: ['/images/products/product-8/image_01.jpg', '/images/products/product-8/image_02.jpg'],
       col2: ['/images/products/product-8/image_03.jpg', '/images/products/product-8/image_04.jpg'],
       col3: ['/images/products/product-8/image_05.jpg', '/images/products/product-8/image_06.jpg'],
+    },
+    video: undefined,
+  },
+  {
+    id: 18,
+    title: 'GOTHIC CHAIN-LINK HALTER MAXI DRESS',
+    price: '280,00_€',
+    rawPrice: 280,
+    collection: 'life force',
+    bestseller: true,
+    sizes: ['S', 'M', 'L'],
+    colorSwatch: '#0a0a0a',
+    href: '/products/gothic-chain-link-cutout-halter-maxi-dress/',
+    images: {
+      col1: ['/images/products/product-18/image_01.jpg', '/images/products/product-18/image_02.jpg'],
+      col2: ['/images/products/product-18/image_03.jpg', '/images/products/product-18/image_04.jpg'],
+      col3: ['/images/products/product-18/image_05.jpg', '/images/products/product-18/image_06.jpg'],
     },
     video: undefined,
   },
@@ -99,6 +150,23 @@ export const ARRIVAL_PRODUCTS: ArrivalItem[] = [
     video: undefined,
   },
   {
+    id: 23,
+    title: 'HEAVY METAL STUDDED MOTO BIKER JACKET',
+    price: '420,00_€',
+    rawPrice: 420,
+    collection: 'berlin',
+    bestseller: true,
+    sizes: ['S', 'M', 'L'],
+    colorSwatch: '#181818',
+    href: '/products/heavy-metal-studded-moto-biker-jacket/',
+    images: {
+      col1: ['/images/products/product-23/image_01.jpg', '/images/products/product-23/image_02.jpg'],
+      col2: ['/images/products/product-23/image_03.jpg', '/images/products/product-23/image_04.jpg'],
+      col3: ['/images/products/product-23/image_05.jpg', '/images/products/product-23/image_06.jpg'],
+    },
+    video: undefined,
+  },
+  {
     id: 16,
     title: 'STRAPLESS RAW-HEM DENIM CORSET',
     price: '185,00_€',
@@ -115,6 +183,23 @@ export const ARRIVAL_PRODUCTS: ArrivalItem[] = [
     },
     video: undefined,
   },
+  {
+    id: 40,
+    title: 'SCULPTED METAL HARDWARE CORSET TOP',
+    price: '295,00_€',
+    rawPrice: 295,
+    collection: 'berlin',
+    bestseller: false,
+    sizes: ['S', 'M', 'L'],
+    colorSwatch: '#222222',
+    href: '/products/sculpted-metal-hardware-zip-up-corset-top/',
+    images: {
+      col1: ['/images/products/product-40/image_01.jpg', '/images/products/product-40/image_02.jpg'],
+      col2: ['/images/products/product-40/image_03.jpg', '/images/products/product-40/image_04.jpg'],
+      col3: ['/images/products/product-40/image_05.jpg', '/images/products/product-40/image_06.jpg'],
+    },
+    video: undefined,
+  },
 ];
 
 export default function ArrivalsSection() {
@@ -125,6 +210,9 @@ export default function ArrivalsSection() {
   const [selectedSizes, setSelectedSizes] = useState<Record<number, string>>({});
   const [addedItem, setAddedItem] = useState<number | null>(null);
   const [scrollProgress, setScrollProgress] = useState(0);
+  const [isSectionHovered, setIsSectionHovered] = useState(false);
+  const isHoveredRef = useRef(false);
+  const sectionRef = useRef<HTMLElement>(null);
 
   // Drag interaction refs
   const groupRef = useRef<HTMLDivElement>(null);
@@ -251,26 +339,82 @@ export default function ArrivalsSection() {
   };
 
   const goNext = useCallback(() => {
-    console.log('[ArrivalsSection] goNext triggered');
     setActiveIndex(prev => {
       const nextIdx = (prev + 1) % total;
-      console.log('[ArrivalsSection] changing activeIndex from', prev, 'to', nextIdx);
       setPrevIndex(prev);
       setSlideDir('next');
+      if (swiperInstanceRef.current) {
+        swiperInstanceRef.current.slideTo(nextIdx);
+      }
       return nextIdx;
     });
   }, [total]);
 
   const goPrev = useCallback(() => {
-    console.log('[ArrivalsSection] goPrev triggered');
     setActiveIndex(prev => {
       const prevIdx = (prev - 1 + total) % total;
-      console.log('[ArrivalsSection] changing activeIndex from', prev, 'to', prevIdx);
       setPrevIndex(prev);
       setSlideDir('prev');
+      if (swiperInstanceRef.current) {
+        swiperInstanceRef.current.slideTo(prevIdx);
+      }
       return prevIdx;
     });
   }, [total]);
+
+  // Display different initial product based on current time
+  useEffect(() => {
+    const currentMinute = Math.floor(Date.now() / 60000);
+    const startIdx = currentMinute % total;
+    if (startIdx !== 0) {
+      setActiveIndex(startIdx);
+      if (swiperInstanceRef.current) {
+        swiperInstanceRef.current.slideTo(startIdx, 0);
+      }
+    }
+  }, [total]);
+
+  // Periodic automatic rotation to showcase different products over time (pauses on hover or dragging)
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (el) {
+      const onEnter = () => {
+        isHoveredRef.current = true;
+        setIsSectionHovered(true);
+      };
+      const onLeave = (e?: MouseEvent | PointerEvent) => {
+        if (e && (e as any).relatedTarget && el.contains((e as any).relatedTarget as Node)) {
+          return;
+        }
+        isHoveredRef.current = false;
+        setIsSectionHovered(false);
+      };
+      el.addEventListener('mouseenter', onEnter);
+      el.addEventListener('mouseleave', onLeave);
+      el.addEventListener('pointerenter', onEnter);
+      el.addEventListener('pointerleave', onLeave);
+      el.addEventListener('mouseover', onEnter);
+      el.addEventListener('mouseout', onLeave as EventListener);
+      return () => {
+        el.removeEventListener('mouseenter', onEnter);
+        el.removeEventListener('mouseleave', onLeave);
+        el.removeEventListener('pointerenter', onEnter);
+        el.removeEventListener('pointerleave', onLeave);
+        el.removeEventListener('mouseover', onEnter);
+        el.removeEventListener('mouseout', onLeave as EventListener);
+      };
+    }
+  }, []);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      if (!isHoveredRef.current && !isDraggingRef.current && !hasMovedRef.current) {
+        goNext();
+      }
+    }, 4500);
+
+    return () => clearInterval(timer);
+  }, [goNext]);
 
   // Video playback management on activeIndex change
   useEffect(() => {
@@ -461,7 +605,7 @@ export default function ArrivalsSection() {
     }
   };
 
-  const currentItem = ARRIVAL_PRODUCTS[activeIndex];
+  const currentItem = ARRIVAL_PRODUCTS[activeIndex] || ARRIVAL_PRODUCTS[0];
 
   // Helper to render product card inside a column
   const renderCard = (
@@ -602,7 +746,19 @@ export default function ArrivalsSection() {
   const fillTranslatePercent = activeIndex * 100;
 
   return (
-    <section className="arrivals-section" id="arrivals">
+    <section
+      ref={sectionRef}
+      className="arrivals-section"
+      id="arrivals"
+      onMouseEnter={() => {
+        isHoveredRef.current = true;
+        setIsSectionHovered(true);
+      }}
+      onMouseLeave={() => {
+        isHoveredRef.current = false;
+        setIsSectionHovered(false);
+      }}
+    >
       <div className="container">
         {/* Header: Section Title and Collection Drop Indicator */}
         <div className="arrivals-section__header-row">

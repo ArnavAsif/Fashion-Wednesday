@@ -92,6 +92,7 @@ export default function Header({ isProductPage = false }: { isProductPage?: bool
               text="SHOP ALL"
               cloneLastChar
               href="/products"
+              onClick={() => setIsMenuOpen(false)}
               fontSize={headerFontSize}
               style={{ fontWeight: 600 }}
             />
@@ -126,13 +127,14 @@ export default function Header({ isProductPage = false }: { isProductPage?: bool
             brackets
             cloneLastChar
             href="/"
+            onClick={() => setIsMenuOpen(false)}
             fontSize={headerFontSize}
             style={{ fontWeight: 600 }}
           />
         </div>
       </div>
 
-      {/* Center Section: BONEZ Logo */}
+      {/* Center Section: ELVAREN Logo */}
       <div
         style={{
           position: 'absolute',
@@ -150,8 +152,8 @@ export default function Header({ isProductPage = false }: { isProductPage?: bool
           style={{ display: 'block', visibility: 'inherit', opacity: 1, textAlign: 'center' }}
         >
           <img
-            src="/images/bonez-logo-white.png"
-            alt="BONEZ"
+            src="/images/elvaren-logo-white.png"
+            alt="ELVAREN"
             style={{
               maxHeight: '32px',
               width: 'auto',

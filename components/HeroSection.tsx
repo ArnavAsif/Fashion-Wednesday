@@ -193,7 +193,7 @@ export default function HeroSection() {
         ))}
       </ul>
 
-      {/* Left Headline: BONEZ */}
+      {/* Left Headline: ELVAREN */}
       <h1
         className="hero-side-title-left"
         style={{
@@ -202,16 +202,17 @@ export default function HeroSection() {
           top: '50%',
           transform: 'translateY(-50%)',
           zIndex: 20,
+          fontFamily: 'Thunder, sans-serif',
           fontSize: 'clamp(3.5rem, 5.5vw, 6.8rem)',
-          fontWeight: 800,
+          fontWeight: 700,
           textTransform: 'uppercase',
           lineHeight: 0.85,
-          letterSpacing: '-0.02em',
+          letterSpacing: '0.06em',
           pointerEvents: 'none',
           color: '#000',
         }}
       >
-        BONEZ
+        ELVAREN
       </h1>
 
       {/* Right Headline: WHERE GLAM MEETS GRUNGE */}

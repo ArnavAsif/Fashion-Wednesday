@@ -98,10 +98,10 @@ export const PRODUCTS: Product[] = [
   },
   {
     "id": 3,
-    "title": "BONEZ Signature Leather Lace-Up Corset",
+    "title": "ELVAREN Signature Leather Lace-Up Corset",
     "price": 265,
     "basePrice": 0,
-    "href": "/products/bonez-signature-leather-lace-up-corset/",
+    "href": "/products/elvaren-signature-leather-lace-up-corset/",
     "quantity": 1,
     "bestseller": true,
     "createdAt": "2026-03-01T12:00:00.000Z",
@@ -1851,6 +1851,9 @@ export function getProductSlug(product: Product): string {
 export function getProductBySlug(slug: string): Product | undefined {
   if (!slug) return undefined;
   const clean = slug.toLowerCase().replace(/^\/+|\/+$/g, '').replace(/^products\//, '');
+  if (clean === 'elvaren-signature-leather-lace-up-corset') {
+    return PRODUCTS.find(p => p.id === 3);
+  }
 
   const byHref = PRODUCTS.find((p) => {
     const s = getProductSlug(p);
@@ -1938,7 +1941,7 @@ export const COLLECTIONS: CollectionInfo[] = [
   {
     slug: 'new-drop',
     name: 'NEW DROP',
-    description: 'The latest seasonal drop from BONEZ. Where glam meets grunge.',
+    description: 'The latest seasonal drop from ELVAREN. Where glam meets grunge.',
     tag: 'new-drop',
   },
   {

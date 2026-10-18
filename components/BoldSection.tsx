@@ -68,7 +68,7 @@ export default function BoldSection() {
         </div>
 
         <picture className="bold-section__img">
-          <img src="/images/space_transformation.png" alt="BONEZ Model" />
+          <img src="/images/space_transformation.png" alt="ELVAREN Model" />
         </picture>
 
         {/* Garment Care Symbols */}
@@ -101,7 +101,7 @@ export default function BoldSection() {
             FREEDOM <i><strong>(</strong>creative<strong>)</strong></i>
           </h3>
           <p className="bold-section__bottom-text">
-            <strong>BONEZ</strong> is about wearing what empowers you – what mirrors your <strong>emotions,</strong> your <strong>energy,</strong> your <strong>essence.</strong>
+            <strong>ELVAREN</strong> is about wearing what empowers you – what mirrors your <strong>emotions,</strong> your <strong>energy,</strong> your <strong>essence.</strong>
           </p>
         </div>
       </div>

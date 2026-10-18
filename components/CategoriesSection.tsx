@@ -16,24 +16,31 @@ interface CatItem {
 }
 
 const CATEGORIES: CatItem[] = [
-  { title: 'SALE', count: '[ 5 ]', img: '/images/categories/cat_1.jpg' },
-  { title: 'ACCESSORIES', count: '[ 4 ]', img: '/images/categories/cat_2.jpg' },
+  { title: 'SALE', count: '[ 17 ]', img: '/images/categories/cat_1.jpg' },
+  { title: 'ACCESSORIES', count: '[ 8 ]', img: '/images/categories/cat_2.jpg' },
   { title: 'BODYS', count: '[ 3 ]', img: '/images/categories/cat_3.jpg' },
-  { title: 'BOTTOMS', count: '[ 4 ]', img: '/images/categories/cat_4.jpg' },
+  { title: 'BOTTOMS', count: '[ 6 ]', img: '/images/categories/cat_4.jpg' },
   { title: 'COATS', count: '[ 3 ]', img: '/images/categories/cat_5.jpg' },
-  { title: 'CORSETS', count: '[ 7 ]', img: '/images/categories/cat_6.jpg' },
+  { title: 'CORSETS', count: '[ 8 ]', img: '/images/categories/cat_6.jpg' },
   { title: 'DRESSES', count: '[ 8 ]', img: '/images/categories/cat_7.jpg' },
   { title: 'JACKETS', count: '[ 5 ]', img: '/images/categories/cat_8.jpg' },
   { title: 'SKIRTS', count: '[ 3 ]', img: '/images/categories/cat_9.jpg' },
-  { title: 'SPECIAL EDITION', count: '[ 4 ]', img: '/images/categories/cat_10.jpg' },
-  { title: 'TOPS', count: '[ 12 ]', img: '/images/categories/cat_11.jpg' },
-  { title: 'NEW DROP', count: '[ 10 ]', img: '/images/categories/cat_12.jpg' },
+  { title: 'SPECIAL EDITION', count: '[ 8 ]', img: '/images/categories/cat_10.jpg' },
+  { title: 'TOPS', count: '[ 17 ]', img: '/images/categories/cat_11.jpg' },
+  { title: 'NEW DROP', count: '[ 14 ]', img: '/images/categories/cat_12.jpg' },
 ];
+
+const DISPLAY_CATEGORIES: CatItem[] = [...CATEGORIES, ...CATEGORIES];
 
 export default function CategoriesSection() {
   const router = useRouter();
   const trackRef = useRef<HTMLDivElement>(null);
   const [progress, setProgress] = useState(0);
+
+  // Marquee hover and animation state
+  const isHoveredRef = useRef(false);
+  const animFrameRef = useRef<number | null>(null);
+  const scrollPosRef = useRef(0);
 
   // Desktop mouse drag interaction states
   const isMouseDownRef = useRef(false);
@@ -47,6 +54,91 @@ export default function CategoriesSection() {
   const touchStartYRef = useRef(0);
   const isTouchScrollingRef = useRef(false);
 
+  const updateProgress = useCallback(() => {
+    if (trackRef.current) {
+      const { scrollLeft, scrollWidth, clientWidth } = trackRef.current;
+      const halfWidth = scrollWidth / 2;
+      const maxScroll = halfWidth > 0 ? halfWidth : scrollWidth - clientWidth;
+      const current = halfWidth > 0 ? scrollLeft % halfWidth : scrollLeft;
+      setProgress(maxScroll > 0 ? (current / maxScroll) * 100 : 0);
+    }
+  }, []);
+
+  // Native hover listener to immediately stop movement on hover
+  useEffect(() => {
+    const track = trackRef.current;
+    if (!track) return;
+
+    const onEnter = () => {
+      isHoveredRef.current = true;
+    };
+    const onLeave = () => {
+      isHoveredRef.current = false;
+    };
+
+    track.addEventListener('mouseenter', onEnter);
+    track.addEventListener('mouseleave', onLeave);
+    track.addEventListener('pointerenter', onEnter);
+    track.addEventListener('pointerleave', onLeave);
+
+    return () => {
+      track.removeEventListener('mouseenter', onEnter);
+      track.removeEventListener('mouseleave', onLeave);
+      track.removeEventListener('pointerenter', onEnter);
+      track.removeEventListener('pointerleave', onLeave);
+    };
+  }, []);
+
+  // Smooth continuous marquee effect (stops on hover or user drag)
+  useEffect(() => {
+    let lastTime: number | null = null;
+    const SPEED_PX_PER_SEC = 60; // faster, smooth and lively marquee scroll
+
+    const step = (now: number) => {
+      if (lastTime === null) {
+        lastTime = now;
+        if (trackRef.current) {
+          scrollPosRef.current = trackRef.current.scrollLeft;
+        }
+      }
+      const dt = (now - lastTime) / 1000;
+      lastTime = now;
+
+      const track = trackRef.current;
+      if (
+        track &&
+        !isHoveredRef.current &&
+        !isMouseDownRef.current &&
+        !isTouchScrollingRef.current
+      ) {
+        scrollPosRef.current += SPEED_PX_PER_SEC * dt;
+
+        // Seamless wrap when reaching the midpoint of duplicated categories
+        const halfWidth = track.scrollWidth / 2;
+        if (halfWidth > 0 && scrollPosRef.current >= halfWidth) {
+          scrollPosRef.current -= halfWidth;
+        }
+
+        track.scrollLeft = scrollPosRef.current;
+        updateProgress();
+      } else if (track) {
+        // Keep scrollPosRef synced during manual interaction
+        scrollPosRef.current = track.scrollLeft;
+      }
+
+      animFrameRef.current = requestAnimationFrame(step);
+    };
+
+    animFrameRef.current = requestAnimationFrame(step);
+
+    return () => {
+      if (animFrameRef.current !== null) {
+        cancelAnimationFrame(animFrameRef.current);
+      }
+    };
+  }, [updateProgress]);
+
+  // Entrance scroll trigger
   useEffect(() => {
     const ctx = gsap.context(() => {
       gsap.fromTo(
@@ -63,33 +155,9 @@ export default function CategoriesSection() {
           },
         }
       );
-
-      gsap.fromTo(
-        '.categories-card',
-        { y: 60, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 0.9,
-          stagger: 0.05,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: '.categories-section__inner',
-            start: 'top 85%',
-          },
-        }
-      );
     });
 
     return () => ctx.revert();
-  }, []);
-
-  const updateProgress = useCallback(() => {
-    if (trackRef.current) {
-      const { scrollLeft, scrollWidth, clientWidth } = trackRef.current;
-      const total = scrollWidth - clientWidth;
-      setProgress(total > 0 ? (scrollLeft / total) * 100 : 0);
-    }
   }, []);
 
   // Unified Pointer & Mouse Drag Handling
@@ -186,7 +254,7 @@ export default function CategoriesSection() {
             <MarkerButton text="SEE ALL" brackets cloneLastChar href="/products" />
           </div>
 
-          {/* Draggable Category Cards Track */}
+          {/* Draggable & Marquee Category Cards Track */}
           <div
             ref={trackRef}
             onScroll={updateProgress}
@@ -197,12 +265,18 @@ export default function CategoriesSection() {
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
+            onMouseEnter={() => {
+              isHoveredRef.current = true;
+            }}
+            onMouseLeave={() => {
+              isHoveredRef.current = false;
+            }}
             className="categories-section__list"
             style={{
               display: 'flex',
               gap: '1.5rem',
               overflowX: 'auto',
-              scrollSnapType: isGrabbing ? 'none' : 'x proximity',
+              scrollSnapType: 'none',
               scrollbarWidth: 'none',
               WebkitOverflowScrolling: 'touch',
               touchAction: 'pan-x pan-y',
@@ -211,17 +285,22 @@ export default function CategoriesSection() {
               userSelect: isGrabbing ? 'none' : 'auto',
             }}
           >
-            {CATEGORIES.map((cat, idx) => {
+            {DISPLAY_CATEGORIES.map((cat, idx) => {
               const categoryUrl = `/products?category=${encodeURIComponent(cat.title)}`;
               return (
                 <Link
                   key={idx}
                   href={categoryUrl}
                   onClick={(e) => handleCardClick(e, cat.title)}
+                  onMouseEnter={() => {
+                    isHoveredRef.current = true;
+                  }}
+                  onMouseLeave={() => {
+                    isHoveredRef.current = false;
+                  }}
                   className="categories-card"
                   style={{
                     flex: '0 0 clamp(28rem, 26vw, 34rem)',
-                    scrollSnapAlign: 'start',
                     position: 'relative',
                     display: 'block',
                     cursor: isGrabbing ? 'grabbing' : 'pointer',

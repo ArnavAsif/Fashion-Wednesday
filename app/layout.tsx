@@ -3,6 +3,7 @@ import './globals.css';
 import { CartProvider } from '@/lib/cartContext';
 import Preloader from '@/components/Preloader';
 import RouteProgressBar from '@/components/RouteProgressBar';
+import MenuModal from '@/components/MenuModal';
 
 export const metadata: Metadata = {
   title: 'ELVAREN',
@@ -43,6 +44,7 @@ export default function RootLayout({
         <CartProvider>
           <Preloader />
           <RouteProgressBar />
+          <MenuModal />
           {children}
         </CartProvider>
       </body>

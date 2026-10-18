@@ -5,7 +5,6 @@ import Link from 'next/link';
 import Header from '@/components/Header';
 import FooterSection from '@/components/FooterSection';
 import CartDrawer from '@/components/CartDrawer';
-import MenuModal from '@/components/MenuModal';
 import SearchModal from '@/components/SearchModal';
 import CreditsModal from '@/components/CreditsModal';
 import NewsletterModal from '@/components/NewsletterModal';
@@ -20,7 +19,6 @@ export default function CollectionsPage() {
     <div className="site-wrapper" style={{ position: 'relative', width: '100%', minHeight: '100vh', overflowX: 'clip', backgroundColor: '#fff9f7', color: '#000' }}>
       <Header />
       <CartDrawer />
-      <MenuModal />
       <SearchModal />
       <CreditsModal isOpen={creditsOpen} onClose={() => setCreditsOpen(false)} />
       <NewsletterModal />

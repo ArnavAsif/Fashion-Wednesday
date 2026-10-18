@@ -515,10 +515,15 @@ export default function MenuModal() {
     return () => clearTimeout(timer);
   }, [isMenuOpen, menuTab]);
 
-  // Reset hover state when modal closes or switches tabs
+  // Reset hover state after modal closing animation completes
   useEffect(() => {
-    setHoveredCatIndex(-1);
-    setHoveredMenuIndex(-1);
+    if (!isMenuOpen) {
+      const timer = setTimeout(() => {
+        setHoveredCatIndex(-1);
+        setHoveredMenuIndex(-1);
+      }, 750);
+      return () => clearTimeout(timer);
+    }
   }, [isMenuOpen, menuTab]);
 
   // Handle ESC key to close
@@ -548,11 +553,13 @@ export default function MenuModal() {
     };
 
     if (!isMenuOpen) {
-      // Pause all videos when menu is closed
-      menuVideoRef.current?.pause();
-      defaultVideoRef.current?.pause();
-      Object.values(categoryVideoRefs.current).forEach((vid) => vid?.pause());
-      return;
+      // Pause videos after menu has finished collapsing elements
+      const timer = setTimeout(() => {
+        menuVideoRef.current?.pause();
+        defaultVideoRef.current?.pause();
+        Object.values(categoryVideoRefs.current).forEach((vid) => vid?.pause());
+      }, 750);
+      return () => clearTimeout(timer);
     }
 
     if (menuTab === 'menu') {
@@ -588,12 +595,14 @@ export default function MenuModal() {
 
   const handleCategoryClick = (cat: CategoryData, index: number) => {
     if (cat.disabled) return;
+    const url = `/products?category=${encodeURIComponent(cat.name)}`;
     const isTouch = typeof window !== 'undefined' && (window.matchMedia('(hover: none)').matches || window.innerWidth < 1024);
     if (isTouch) {
       if (hoveredCatIndex === index) {
         setIsMenuOpen(false);
-        router.push(`/products?category=${encodeURIComponent(cat.name)}`);
+        router.push(url);
       } else {
+        router.prefetch(url);
         setHoveredCatIndex(index);
         const vid = categoryVideoRefs.current[index];
         if (vid) {
@@ -606,8 +615,9 @@ export default function MenuModal() {
         }
       }
     } else {
+      setHoveredCatIndex(index);
       setIsMenuOpen(false);
-      router.push(`/products?category=${encodeURIComponent(cat.name)}`);
+      router.push(url);
     }
   };
 
@@ -660,9 +670,24 @@ export default function MenuModal() {
                   <button
                     type="button"
                     onClick={() => handleNavigate(item.href)}
-                    onMouseEnter={() => setHoveredMenuIndex(idx)}
-                    onMouseOver={() => setHoveredMenuIndex(idx)}
-                    onPointerEnter={() => setHoveredMenuIndex(idx)}
+                    onMouseEnter={() => {
+                      setHoveredMenuIndex(idx);
+                      if (!item.href.startsWith('/#')) {
+                        router.prefetch(item.href);
+                      }
+                    }}
+                    onMouseOver={() => {
+                      setHoveredMenuIndex(idx);
+                      if (!item.href.startsWith('/#')) {
+                        router.prefetch(item.href);
+                      }
+                    }}
+                    onPointerEnter={() => {
+                      setHoveredMenuIndex(idx);
+                      if (!item.href.startsWith('/#')) {
+                        router.prefetch(item.href);
+                      }
+                    }}
                     onMouseLeave={() => setHoveredMenuIndex(-1)}
                     style={{
                       background: 'none',
@@ -855,9 +880,24 @@ export default function MenuModal() {
                   <button
                     type="button"
                     onClick={() => handleCategoryClick(cat, idx)}
-                    onMouseEnter={() => !cat.disabled && setHoveredCatIndex(idx)}
-                    onMouseOver={() => !cat.disabled && setHoveredCatIndex(idx)}
-                    onPointerEnter={() => !cat.disabled && setHoveredCatIndex(idx)}
+                    onMouseEnter={() => {
+                      if (!cat.disabled) {
+                        setHoveredCatIndex(idx);
+                        router.prefetch(`/products?category=${encodeURIComponent(cat.name)}`);
+                      }
+                    }}
+                    onMouseOver={() => {
+                      if (!cat.disabled) {
+                        setHoveredCatIndex(idx);
+                        router.prefetch(`/products?category=${encodeURIComponent(cat.name)}`);
+                      }
+                    }}
+                    onPointerEnter={() => {
+                      if (!cat.disabled) {
+                        setHoveredCatIndex(idx);
+                        router.prefetch(`/products?category=${encodeURIComponent(cat.name)}`);
+                      }
+                    }}
                     style={{
                       background: 'none',
                       border: 'none',

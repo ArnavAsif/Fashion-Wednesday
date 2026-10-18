@@ -16,7 +16,6 @@ import MotionSection from '@/components/MotionSection';
 import FooterSection from '@/components/FooterSection';
 import CartDrawer from '@/components/CartDrawer';
 import SearchModal from '@/components/SearchModal';
-import MenuModal from '@/components/MenuModal';
 import NewsletterModal from '@/components/NewsletterModal';
 import CreditsModal from '@/components/CreditsModal';
 
@@ -87,7 +86,6 @@ export default function HomePage() {
       {/* Interactive Drawers & Overlays */}
       <CartDrawer />
       <SearchModal />
-      <MenuModal />
       <NewsletterModal />
       <CreditsModal isOpen={creditsOpen} onClose={() => setCreditsOpen(false)} />
     </div>

@@ -469,12 +469,45 @@ export default function MenuModal() {
   const { isMenuOpen, setIsMenuOpen, menuTab } = useCart();
   const [hoveredCatIndex, setHoveredCatIndex] = useState<number>(-1);
   const [hoveredMenuIndex, setHoveredMenuIndex] = useState<number>(-1);
+  const [hasOpened, setHasOpened] = useState<boolean>(false);
+  const [loadedCatIndices, setLoadedCatIndices] = useState<{ [key: number]: boolean }>({});
 
   // References for HTML5 video playback
   const menuVideoRef = useRef<HTMLVideoElement | null>(null);
   const defaultVideoRef = useRef<HTMLVideoElement | null>(null);
   const categoryVideoRefs = useRef<{ [key: number]: HTMLVideoElement | null }>({});
   const isHoveringProductListRef = useRef<boolean>(false);
+
+  // Activate loading once modal has been opened
+  useEffect(() => {
+    if (isMenuOpen && !hasOpened) {
+      setHasOpened(true);
+    }
+  }, [isMenuOpen, hasOpened]);
+
+  // Mark hovered category as loaded so it retains its buffer
+  useEffect(() => {
+    if (hoveredCatIndex >= 0) {
+      setLoadedCatIndices((prev) => (prev[hoveredCatIndex] ? prev : { ...prev, [hoveredCatIndex]: true }));
+    }
+  }, [hoveredCatIndex]);
+
+  // On desktop with broad bandwidth, idle-preload other categories after modal is open
+  useEffect(() => {
+    if (!isMenuOpen || menuTab !== 'categories') return;
+    const isDesktop = typeof window !== 'undefined' && window.matchMedia('(hover: hover) and (min-width: 1024px)').matches;
+    if (!isDesktop) return;
+
+    const timer = setTimeout(() => {
+      const allLoaded: { [key: number]: boolean } = {};
+      CATEGORIES_DATA.forEach((_, idx) => {
+        allLoaded[idx] = true;
+      });
+      setLoadedCatIndices((prev) => ({ ...allLoaded, ...prev }));
+    }, 1500);
+
+    return () => clearTimeout(timer);
+  }, [isMenuOpen, menuTab]);
 
   // Reset hover state when modal closes or switches tabs
   useEffect(() => {
@@ -495,6 +528,19 @@ export default function MenuModal() {
 
   // Video playback management on open, tab switch, and category hover
   useEffect(() => {
+    const playSafe = (vid: HTMLVideoElement | null) => {
+      if (!vid) return;
+      vid.muted = true;
+      vid.defaultMuted = true;
+      try {
+        vid.currentTime = 0;
+      } catch (_) {}
+      const p = vid.play();
+      if (p !== undefined) {
+        p.catch(() => {});
+      }
+    };
+
     if (!isMenuOpen) {
       // Pause all videos when menu is closed
       menuVideoRef.current?.pause();
@@ -507,10 +553,7 @@ export default function MenuModal() {
       // Menu tab active: play menu video, pause categories
       defaultVideoRef.current?.pause();
       Object.values(categoryVideoRefs.current).forEach((vid) => vid?.pause());
-      if (menuVideoRef.current) {
-        menuVideoRef.current.currentTime = 0;
-        menuVideoRef.current.play().catch(() => {});
-      }
+      playSafe(menuVideoRef.current);
     } else if (menuTab === 'categories') {
       // Categories tab active: pause menu video
       menuVideoRef.current?.pause();
@@ -521,10 +564,7 @@ export default function MenuModal() {
         CATEGORIES_DATA.forEach((_, idx) => {
           const vid = categoryVideoRefs.current[idx];
           if (idx === hoveredCatIndex) {
-            if (vid) {
-              vid.currentTime = 0;
-              vid.play().catch(() => {});
-            }
+            playSafe(vid);
           } else {
             vid?.pause();
           }
@@ -532,10 +572,7 @@ export default function MenuModal() {
       } else {
         // No category hovered: pause all categories, play default video
         Object.values(categoryVideoRefs.current).forEach((vid) => vid?.pause());
-        if (defaultVideoRef.current) {
-          defaultVideoRef.current.currentTime = 0;
-          defaultVideoRef.current.play().catch(() => {});
-        }
+        playSafe(defaultVideoRef.current);
       }
     }
   }, [isMenuOpen, menuTab, hoveredCatIndex]);
@@ -545,13 +582,22 @@ export default function MenuModal() {
 
   const handleCategoryClick = (cat: CategoryData, index: number) => {
     if (cat.disabled) return;
-    const isTouch = typeof window !== 'undefined' && window.matchMedia('(hover: none)').matches;
+    const isTouch = typeof window !== 'undefined' && (window.matchMedia('(hover: none)').matches || window.innerWidth < 1024);
     if (isTouch) {
       if (hoveredCatIndex === index) {
         setIsMenuOpen(false);
         router.push(`/products?category=${encodeURIComponent(cat.name)}`);
       } else {
         setHoveredCatIndex(index);
+        const vid = categoryVideoRefs.current[index];
+        if (vid) {
+          vid.muted = true;
+          vid.defaultMuted = true;
+          try {
+            vid.currentTime = 0;
+          } catch (_) {}
+          vid.play().catch(() => {});
+        }
       }
     } else {
       setIsMenuOpen(false);
@@ -731,7 +777,8 @@ export default function MenuModal() {
                 muted
                 loop
                 playsInline
-                preload="auto"
+                autoPlay={isMenuOpen && menuTab === 'menu'}
+                preload={isMenuOpen && menuTab === 'menu' ? 'auto' : 'none'}
                 style={{
                   position: 'absolute',
                   inset: 0,
@@ -914,7 +961,8 @@ export default function MenuModal() {
                 muted
                 loop
                 playsInline
-                preload="auto"
+                autoPlay={isMenuOpen && menuTab === 'categories' && hoveredCatIndex === -1}
+                preload={isMenuOpen && menuTab === 'categories' && hoveredCatIndex === -1 ? 'auto' : 'none'}
                 style={{
                   position: 'absolute',
                   inset: 0,
@@ -962,6 +1010,7 @@ export default function MenuModal() {
           {/* Individual Category items */}
           {CATEGORIES_DATA.map((cat, idx) => {
             const isActive = isMenuOpen && menuTab === 'categories' && hoveredCatIndex === idx;
+            const isLoaded = hasOpened && (isActive || !!loadedCatIndices[idx]);
             const prods = cat.products.length > 0 ? cat.products : DEFAULT_PRODUCTS;
             return (
               <li key={idx} className={`menu__item ${isActive ? 'active' : ''}`}>
@@ -980,7 +1029,8 @@ export default function MenuModal() {
                     muted
                     loop
                     playsInline
-                    preload="auto"
+                    autoPlay={isActive}
+                    preload={isActive ? 'auto' : 'none'}
                     style={{
                       position: 'absolute',
                       inset: 0,

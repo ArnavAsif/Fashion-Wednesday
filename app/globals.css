@@ -2972,6 +2972,8 @@ meter {
   .menu__inner {
     padding: 10.4rem 3.1rem 1.7rem 2.5rem;
     width: 53.4rem;
+    position: relative;
+    z-index: 5;
   }
   .menu__contact-list {
     padding: 0;
@@ -2988,15 +2990,18 @@ meter {
     position: absolute;
     top: 0;
     width: 53.4rem;
-    z-index: -1;
+    height: 100%;
+    z-index: 1;
+    transform: none !important;
+    overflow: hidden;
   }
   .menu__item-main img,
   .menu__item-main video {
     height: 100%;
     -o-object-fit: cover;
     object-fit: cover;
-    -o-object-position: top;
-    object-position: top;
+    -o-object-position: center;
+    object-position: center;
     width: 100%;
   }
   .menu__item-list {
@@ -3010,7 +3015,7 @@ meter {
     position: absolute;
     right: 3.43rem;
     top: 10.2rem;
-    z-index: -1;
+    z-index: 2;
   }
   .menu__item-list li {
     display: flex;

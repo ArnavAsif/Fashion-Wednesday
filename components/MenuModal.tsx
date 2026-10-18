@@ -1,106 +1,458 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useCart } from '@/lib/cartContext';
 
-interface CategoryData {
+export interface MenuItemProduct {
+  title: string;
+  href: string;
+  image: string;
+}
+
+export interface CategoryData {
   name: string;
   count: string;
-  model: string;
-  products: string[];
+  video: string;
+  poster: string;
+  products: MenuItemProduct[];
   disabled?: boolean;
 }
+
+const DEFAULT_PRODUCTS: MenuItemProduct[] = [
+  {
+    title: 'Error 404 Streetwear Zip Hoodie',
+    href: '/products/error-404-streetwear-zip-hoodie/',
+    image: '/images/products/product-1/image_01.jpg',
+  },
+  {
+    title: 'BONEZ Signature Leather Lace-Up Corset',
+    href: '/products/bonez-signature-leather-lace-up-corset/',
+    image: '/images/products/product-3/image_01.jpg',
+  },
+  {
+    title: 'Washed Distressed Denim Jacket & Gothic Cross',
+    href: '/products/washed-distressed-denim-jacket-gothic-cross/',
+    image: '/images/products/product-5/image_01.jpg',
+  },
+  {
+    title: 'Angel Graphic Bodysuit & Fur Shrug Set',
+    href: '/products/angel-graphic-bodysuit-fur-shrug-set/',
+    image: '/images/products/product-8/image_01.jpg',
+  },
+  {
+    title: 'Gothic Chain-Link Cutout Halter Maxi Dress',
+    href: '/products/gothic-chain-link-cutout-halter-maxi-dress/',
+    image: '/images/products/product-18/image_01.jpg',
+  },
+];
 
 const CATEGORIES_DATA: CategoryData[] = [
   {
     name: 'NEW DROP',
-    count: '7',
-    model: '/images/img_148.png',
-    products: ['/images/img_042.png', '/images/img_043.png', '/images/img_044.png', '/images/img_045.png', '/images/img_044.png'],
+    count: '14',
+    video: '/videos/menu/Create_fashion_aesthetic_video_1080p_20261017152019.mp4',
+    poster: '/videos/menu/posters/Create_fashion_aesthetic_video_1080p_20261017152019.jpg',
+    products: [
+      {
+        title: 'Error 404 Streetwear Zip Hoodie',
+        href: '/products/error-404-streetwear-zip-hoodie/',
+        image: '/images/products/product-1/image_01.jpg',
+      },
+      {
+        title: 'Distressed Mohair Shrug & Silver Chain Top',
+        href: '/products/distressed-mohair-shrug-silver-chain-top/',
+        image: '/images/products/product-2/image_01.jpg',
+      },
+      {
+        title: 'BONEZ Signature Leather Lace-Up Corset',
+        href: '/products/bonez-signature-leather-lace-up-corset/',
+        image: '/images/products/product-3/image_01.jpg',
+      },
+      {
+        title: 'Saturn Orb Pendant Silver Chain Necklace',
+        href: '/products/saturn-orb-pendant-silver-chain-necklace/',
+        image: '/images/products/product-4/image_01.jpg',
+      },
+      {
+        title: 'Washed Distressed Denim Jacket & Gothic Cross',
+        href: '/products/washed-distressed-denim-jacket-gothic-cross/',
+        image: '/images/products/product-5/image_01.jpg',
+      },
+    ],
   },
   {
     name: 'SALE',
-    count: '8',
-    model: '/images/img_050.png',
-    products: ['/images/img_046.png', '/images/img_047.png', '/images/img_048.png', '/images/img_049.png', '/images/img_050.png'],
+    count: '17',
+    video: '/videos/menu/Create_fashion_aesthetic_video_1080p_20261017155829.mp4',
+    poster: '/videos/menu/posters/Create_fashion_aesthetic_video_1080p_20261017155829.jpg',
+    products: [
+      {
+        title: 'Distressed Mohair Shrug & Silver Chain Top',
+        href: '/products/distressed-mohair-shrug-silver-chain-top/',
+        image: '/images/products/product-2/image_01.jpg',
+      },
+      {
+        title: 'Saturn Orb Pendant Silver Chain Necklace',
+        href: '/products/saturn-orb-pendant-silver-chain-necklace/',
+        image: '/images/products/product-4/image_01.jpg',
+      },
+      {
+        title: 'White High-Neck Corset Bodysuit',
+        href: '/products/white-high-neck-corset-bodysuit/',
+        image: '/images/products/product-6/image_01.jpg',
+      },
+      {
+        title: 'Baby Pink Lace-Up Collared Zip Halter Top',
+        href: '/products/baby-pink-lace-up-collared-zip-halter-top/',
+        image: '/images/products/product-9/image_01.jpg',
+      },
+      {
+        title: 'Rhinestone Cami Lace-Trim Silk Crop Top',
+        href: '/products/rhinestone-cami-lace-trim-silk-crop-top/',
+        image: '/images/products/product-11/image_01.jpg',
+      },
+    ],
   },
   {
     name: 'ACCESSORIES',
-    count: '4',
-    model: '/images/img_156.png',
-    products: ['/images/img_034.png', '/images/img_035.png', '/images/img_036.png', '/images/img_037.png', '/images/img_038.png'],
+    count: '8',
+    video: '/videos/menu/Make_fashion_aesthetic_video_1080p_20261017170042.mp4',
+    poster: '/videos/menu/posters/Make_fashion_aesthetic_video_1080p_20261017170042.jpg',
+    products: [
+      {
+        title: 'Saturn Orb Pendant Silver Chain Necklace',
+        href: '/products/saturn-orb-pendant-silver-chain-necklace/',
+        image: '/images/products/product-4/image_01.jpg',
+      },
+      {
+        title: 'Y2K Celestial Star Hair Clip & Rings Set',
+        href: '/products/y2k-celestial-star-hair-clip-rings-set/',
+        image: '/images/products/product-10/image_01.jpg',
+      },
+      {
+        title: 'Gothic Cross Charm Double Choker Necklace',
+        href: '/products/gothic-cross-charm-double-choker-necklace/',
+        image: '/images/products/product-27/image_01.jpg',
+      },
+      {
+        title: 'Silver Spiked Chain Link Leather Belt',
+        href: '/products/silver-spiked-chain-link-leather-belt/',
+        image: '/images/products/product-30/image_01.jpg',
+      },
+      {
+        title: 'Studded Leather Buckle Utility Platform Harness',
+        href: '/products/studded-leather-buckle-utility-platform-harness/',
+        image: '/images/products/product-35/image_01.jpg',
+      },
+    ],
   },
   {
     name: 'BODYS',
     count: '3',
-    model: '/images/img_142.png',
-    products: ['/images/img_051.png', '/images/img_052.png', '/images/img_053.png', '/images/img_054.png', '/images/img_055.png'],
+    video: '/videos/menu/bodys.mp4',
+    poster: '/videos/menu/posters/bodys.jpg',
+    products: [
+      {
+        title: 'White High-Neck Corset Bodysuit',
+        href: '/products/white-high-neck-corset-bodysuit/',
+        image: '/images/products/product-6/image_01.jpg',
+      },
+      {
+        title: 'Angel Graphic Bodysuit & Fur Shrug Set',
+        href: '/products/angel-graphic-bodysuit-fur-shrug-set/',
+        image: '/images/products/product-8/image_01.jpg',
+      },
+      {
+        title: 'Faux Leather Structured Lace-Up Bustier',
+        href: '/products/faux-leather-structured-lace-up-bustier/',
+        image: '/images/products/product-7/image_01.jpg',
+      },
+      {
+        title: 'Strapless Raw-Hem Denim Corset Tube Top',
+        href: '/products/strapless-raw-hem-denim-corset-tube-top/',
+        image: '/images/products/product-16/image_01.jpg',
+      },
+      {
+        title: 'Ruched Sheer Mesh Bodycon Halter Dress',
+        href: '/products/ruched-sheer-mesh-bodycon-halter-dress/',
+        image: '/images/products/product-26/image_01.jpg',
+      },
+    ],
   },
   {
     name: 'COATS',
-    count: '2',
-    model: '/images/img_146.png',
-    products: ['/images/img_056.png', '/images/img_057.png', '/images/img_058.png', '/images/img_059.png', '/images/img_060.png'],
+    count: '3',
+    video: '/videos/menu/coats.mp4',
+    poster: '/videos/menu/posters/coats.jpg',
+    products: [
+      {
+        title: 'Washed Distressed Denim Jacket & Gothic Cross',
+        href: '/products/washed-distressed-denim-jacket-gothic-cross/',
+        image: '/images/products/product-5/image_01.jpg',
+      },
+      {
+        title: 'Satin Varsity Bomber Jacket with 8-Ball Patches',
+        href: '/products/satin-varsity-bomber-jacket-with-8-ball-patches/',
+        image: '/images/products/product-15/image_01.jpg',
+      },
+      {
+        title: 'Heavy Metal Studded Moto Biker Jacket',
+        href: '/products/heavy-metal-studded-moto-biker-jacket/',
+        image: '/images/products/product-23/image_01.jpg',
+      },
+      {
+        title: 'Heavyweight Boxy Leather Racing Jacket',
+        href: '/products/heavyweight-boxy-leather-racing-jacket/',
+        image: '/images/products/product-37/image_01.jpg',
+      },
+      {
+        title: 'Vintage Wash Oversized Denim Trucker Jacket',
+        href: '/products/vintage-wash-oversized-denim-trucker-jacket/',
+        image: '/images/products/product-43/image_01.jpg',
+      },
+    ],
   },
   {
     name: 'CORSETS',
-    count: '7',
-    model: '/images/img_148.png',
-    products: ['/images/img_061.png', '/images/img_062.png', '/images/img_063.png', '/images/img_064.png', '/images/img_065.png'],
+    count: '9',
+    video: '/videos/menu/Make_fashion_aesthetic_video_1080p_20261017165300.mp4',
+    poster: '/videos/menu/posters/Make_fashion_aesthetic_video_1080p_20261017165300.jpg',
+    products: [
+      {
+        title: 'BONEZ Signature Leather Lace-Up Corset',
+        href: '/products/bonez-signature-leather-lace-up-corset/',
+        image: '/images/products/product-3/image_01.jpg',
+      },
+      {
+        title: 'White High-Neck Corset Bodysuit',
+        href: '/products/white-high-neck-corset-bodysuit/',
+        image: '/images/products/product-6/image_01.jpg',
+      },
+      {
+        title: 'Faux Leather Structured Lace-Up Bustier',
+        href: '/products/faux-leather-structured-lace-up-bustier/',
+        image: '/images/products/product-7/image_01.jpg',
+      },
+      {
+        title: 'Strapless Raw-Hem Denim Corset Tube Top',
+        href: '/products/strapless-raw-hem-denim-corset-tube-top/',
+        image: '/images/products/product-16/image_01.jpg',
+      },
+      {
+        title: 'Boned Satin Underbust Corset with Buckles',
+        href: '/products/boned-satin-underbust-corset-with-buckles/',
+        image: '/images/products/product-21/image_01.jpg',
+      },
+    ],
   },
   {
     name: 'DRESSES',
-    count: '26',
-    model: '/images/img_150.png',
-    products: ['/images/img_066.png', '/images/img_067.png', '/images/img_068.png', '/images/img_069.png', '/images/img_070.png'],
+    count: '8',
+    video: '/videos/menu/Make_fashion_aesthetic_video_1080p_20261017153802.mp4',
+    poster: '/videos/menu/posters/Make_fashion_aesthetic_video_1080p_20261017153802.jpg',
+    products: [
+      {
+        title: 'Gothic Chain-Link Cutout Halter Maxi Dress',
+        href: '/products/gothic-chain-link-cutout-halter-maxi-dress/',
+        image: '/images/products/product-18/image_01.jpg',
+      },
+      {
+        title: 'Minimalist Ribbed Knit Micro Tube Dress',
+        href: '/products/minimalist-ribbed-knit-micro-tube-dress/',
+        image: '/images/products/product-19/image_01.jpg',
+      },
+      {
+        title: 'Distressed Open-Knit Spiderweb Maxi Dress',
+        href: '/products/distressed-open-knit-spiderweb-maxi-dress/',
+        image: '/images/products/product-24/image_01.jpg',
+      },
+      {
+        title: 'Ruched Sheer Mesh Bodycon Halter Dress',
+        href: '/products/ruched-sheer-mesh-bodycon-halter-dress/',
+        image: '/images/products/product-26/image_01.jpg',
+      },
+      {
+        title: 'Draped Asymmetric Cowl Neck Evening Dress',
+        href: '/products/draped-asymmetric-cowl-neck-evening-dress/',
+        image: '/images/products/product-41/image_01.jpg',
+      },
+    ],
   },
   {
     name: 'JACKETS',
-    count: '1',
-    model: '/images/img_152.png',
-    products: ['/images/img_071.png', '/images/img_072.png', '/images/img_073.png', '/images/img_074.png', '/images/img_075.png'],
+    count: '5',
+    video: '/videos/menu/Make_fashion_aesthetic_video_1080p_20261017161845.mp4',
+    poster: '/videos/menu/posters/Make_fashion_aesthetic_video_1080p_20261017161845.jpg',
+    products: [
+      {
+        title: 'Washed Distressed Denim Jacket & Gothic Cross',
+        href: '/products/washed-distressed-denim-jacket-gothic-cross/',
+        image: '/images/products/product-5/image_01.jpg',
+      },
+      {
+        title: 'Satin Varsity Bomber Jacket with 8-Ball Patches',
+        href: '/products/satin-varsity-bomber-jacket-with-8-ball-patches/',
+        image: '/images/products/product-15/image_01.jpg',
+      },
+      {
+        title: 'Heavy Metal Studded Moto Biker Jacket',
+        href: '/products/heavy-metal-studded-moto-biker-jacket/',
+        image: '/images/products/product-23/image_01.jpg',
+      },
+      {
+        title: 'Heavyweight Boxy Leather Racing Jacket',
+        href: '/products/heavyweight-boxy-leather-racing-jacket/',
+        image: '/images/products/product-37/image_01.jpg',
+      },
+      {
+        title: 'Vintage Wash Oversized Denim Trucker Jacket',
+        href: '/products/vintage-wash-oversized-denim-trucker-jacket/',
+        image: '/images/products/product-43/image_01.jpg',
+      },
+    ],
   },
   {
     name: 'PANTS',
     count: '6',
-    model: '/images/img_144.png',
-    products: ['/images/img_076.png', '/images/img_077.png', '/images/img_078.png', '/images/img_079.png', '/images/img_076.png'],
+    video: '/videos/menu/Make_fashion_aesthetic_video_1080p_20261017155924.mp4',
+    poster: '/videos/menu/posters/Make_fashion_aesthetic_video_1080p_20261017155924.jpg',
+    products: [
+      {
+        title: 'Asymmetric Off-Shoulder Top & Eyelet Shorts',
+        href: '/products/asymmetric-off-shoulder-top-eyelet-shorts/',
+        image: '/images/products/product-13/image_01.jpg',
+      },
+      {
+        title: 'Acid-Wash Raw Edge Flare Denim Jeans',
+        href: '/products/acid-wash-raw-edge-flare-denim-jeans/',
+        image: '/images/products/product-28/image_01.jpg',
+      },
+      {
+        title: 'High-Waisted Buckled Cargo Parachute Pants',
+        href: '/products/high-waisted-buckled-cargo-parachute-pants/',
+        image: '/images/products/product-39/image_01.jpg',
+      },
+      {
+        title: 'Pleated Low-Rise Buckle Cargo Mini Skirt',
+        href: '/products/pleated-low-rise-buckle-cargo-mini-skirt/',
+        image: '/images/products/product-22/image_01.jpg',
+      },
+      {
+        title: 'Studded Leather Buckle Utility Platform Harness',
+        href: '/products/studded-leather-buckle-utility-platform-harness/',
+        image: '/images/products/product-35/image_01.jpg',
+      },
+    ],
   },
   {
     name: 'SKIRTS',
-    count: '6',
-    model: '/images/img_154.png',
-    products: ['/images/img_080.png', '/images/img_081.png', '/images/img_082.png', '/images/img_083.png', '/images/img_084.png'],
+    count: '3',
+    video: '/videos/menu/Make_fashion_aesthetic_skirt_video_20261017153922.mp4',
+    poster: '/videos/menu/posters/Make_fashion_aesthetic_skirt_video_20261017153922.jpg',
+    products: [
+      {
+        title: 'Pleated Low-Rise Buckle Cargo Mini Skirt',
+        href: '/products/pleated-low-rise-buckle-cargo-mini-skirt/',
+        image: '/images/products/product-22/image_01.jpg',
+      },
+      {
+        title: 'Layered Ruffle Tiered Grunge Mini Dress',
+        href: '/products/layered-ruffle-tiered-grunge-mini-dress/',
+        image: '/images/products/product-33/image_01.jpg',
+      },
+      {
+        title: 'Asymmetric Off-Shoulder Top & Eyelet Shorts',
+        href: '/products/asymmetric-off-shoulder-top-eyelet-shorts/',
+        image: '/images/products/product-13/image_01.jpg',
+      },
+      {
+        title: 'Ruched Sheer Mesh Bodycon Halter Dress',
+        href: '/products/ruched-sheer-mesh-bodycon-halter-dress/',
+        image: '/images/products/product-26/image_01.jpg',
+      },
+      {
+        title: 'Gothic Chain-Link Cutout Halter Maxi Dress',
+        href: '/products/gothic-chain-link-cutout-halter-maxi-dress/',
+        image: '/images/products/product-18/image_01.jpg',
+      },
+    ],
   },
   {
     name: 'SPECIAL EDITION',
-    count: '6',
-    model: '/images/img_156.png',
-    products: ['/images/img_085.png', '/images/img_086.png', '/images/img_087.png', '/images/img_088.png', '/images/img_089.png'],
+    count: '8',
+    video: '/videos/menu/Making_fashion_aesthetic_video_1080p_20261017165527.mp4',
+    poster: '/videos/menu/posters/Making_fashion_aesthetic_video_1080p_20261017165527.jpg',
+    products: [
+      {
+        title: 'BONEZ Signature Leather Lace-Up Corset',
+        href: '/products/bonez-signature-leather-lace-up-corset/',
+        image: '/images/products/product-3/image_01.jpg',
+      },
+      {
+        title: 'Angel Graphic Bodysuit & Fur Shrug Set',
+        href: '/products/angel-graphic-bodysuit-fur-shrug-set/',
+        image: '/images/products/product-8/image_01.jpg',
+      },
+      {
+        title: 'Satin Varsity Bomber Jacket with 8-Ball Patches',
+        href: '/products/satin-varsity-bomber-jacket-with-8-ball-patches/',
+        image: '/images/products/product-15/image_01.jpg',
+      },
+      {
+        title: 'Heavy Metal Studded Moto Biker Jacket',
+        href: '/products/heavy-metal-studded-moto-biker-jacket/',
+        image: '/images/products/product-23/image_01.jpg',
+      },
+      {
+        title: 'Studded Leather Buckle Utility Platform Harness',
+        href: '/products/studded-leather-buckle-utility-platform-harness/',
+        image: '/images/products/product-35/image_01.jpg',
+      },
+    ],
   },
   {
     name: 'TOPS',
-    count: '4',
-    model: '/images/img_087.png',
-    products: ['/images/img_085.png', '/images/img_087.png', '/images/img_088.png', '/images/img_089.png', '/images/img_086.png'],
+    count: '17',
+    video: '/videos/menu/Make_fashion_aesthetic_video_1080p_20261017151845.mp4',
+    poster: '/videos/menu/posters/Make_fashion_aesthetic_video_1080p_20261017151845.jpg',
+    products: [
+      {
+        title: 'Error 404 Streetwear Zip Hoodie',
+        href: '/products/error-404-streetwear-zip-hoodie/',
+        image: '/images/products/product-1/image_01.jpg',
+      },
+      {
+        title: 'Distressed Mohair Shrug & Silver Chain Top',
+        href: '/products/distressed-mohair-shrug-silver-chain-top/',
+        image: '/images/products/product-2/image_01.jpg',
+      },
+      {
+        title: 'Angel Graphic Bodysuit & Fur Shrug Set',
+        href: '/products/angel-graphic-bodysuit-fur-shrug-set/',
+        image: '/images/products/product-8/image_01.jpg',
+      },
+      {
+        title: 'Baby Pink Lace-Up Collared Zip Halter Top',
+        href: '/products/baby-pink-lace-up-collared-zip-halter-top/',
+        image: '/images/products/product-9/image_01.jpg',
+      },
+      {
+        title: 'Cyberpunk Techwear Mesh Panel Crop Top',
+        href: '/products/cyberpunk-techwear-mesh-panel-crop-top/',
+        image: '/images/products/product-36/image_01.jpg',
+      },
+    ],
   },
   {
     name: '5-HT',
     count: 'COMING SOON',
-    model: '/images/img_148.png',
+    video: '/videos/menu/Create_fashion_aesthetic_video_1080p_20261017152019.mp4',
+    poster: '/videos/menu/posters/Create_fashion_aesthetic_video_1080p_20261017152019.jpg',
     products: [],
     disabled: true,
   },
-];
-
-const DEFAULT_PRODUCTS = [
-  '/images/img_034.png',
-  '/images/img_035.png',
-  '/images/img_036.png',
-  '/images/img_037.png',
-  '/images/img_038.png',
 ];
 
 const MENU_ITEMS = [
@@ -114,9 +466,15 @@ const MENU_ITEMS = [
 
 export default function MenuModal() {
   const router = useRouter();
-  const { isMenuOpen, setIsMenuOpen, menuTab, openMenu } = useCart();
+  const { isMenuOpen, setIsMenuOpen, menuTab } = useCart();
   const [hoveredCatIndex, setHoveredCatIndex] = useState<number>(-1);
   const [hoveredMenuIndex, setHoveredMenuIndex] = useState<number>(-1);
+
+  // References for HTML5 video playback
+  const menuVideoRef = useRef<HTMLVideoElement | null>(null);
+  const defaultVideoRef = useRef<HTMLVideoElement | null>(null);
+  const categoryVideoRefs = useRef<{ [key: number]: HTMLVideoElement | null }>({});
+  const isHoveringProductListRef = useRef<boolean>(false);
 
   // Reset hover state when modal closes or switches tabs
   useEffect(() => {
@@ -134,6 +492,53 @@ export default function MenuModal() {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isMenuOpen, setIsMenuOpen]);
+
+  // Video playback management on open, tab switch, and category hover
+  useEffect(() => {
+    if (!isMenuOpen) {
+      // Pause all videos when menu is closed
+      menuVideoRef.current?.pause();
+      defaultVideoRef.current?.pause();
+      Object.values(categoryVideoRefs.current).forEach((vid) => vid?.pause());
+      return;
+    }
+
+    if (menuTab === 'menu') {
+      // Menu tab active: play menu video, pause categories
+      defaultVideoRef.current?.pause();
+      Object.values(categoryVideoRefs.current).forEach((vid) => vid?.pause());
+      if (menuVideoRef.current) {
+        menuVideoRef.current.currentTime = 0;
+        menuVideoRef.current.play().catch(() => {});
+      }
+    } else if (menuTab === 'categories') {
+      // Categories tab active: pause menu video
+      menuVideoRef.current?.pause();
+
+      if (hoveredCatIndex >= 0) {
+        // A specific category is hovered: play that category's video, pause default & others
+        defaultVideoRef.current?.pause();
+        CATEGORIES_DATA.forEach((_, idx) => {
+          const vid = categoryVideoRefs.current[idx];
+          if (idx === hoveredCatIndex) {
+            if (vid) {
+              vid.currentTime = 0;
+              vid.play().catch(() => {});
+            }
+          } else {
+            vid?.pause();
+          }
+        });
+      } else {
+        // No category hovered: pause all categories, play default video
+        Object.values(categoryVideoRefs.current).forEach((vid) => vid?.pause());
+        if (defaultVideoRef.current) {
+          defaultVideoRef.current.currentTime = 0;
+          defaultVideoRef.current.play().catch(() => {});
+        }
+      }
+    }
+  }, [isMenuOpen, menuTab, hoveredCatIndex]);
 
   const activeCat = hoveredCatIndex >= 0 ? CATEGORIES_DATA[hoveredCatIndex] : null;
   const currentTitle = activeCat ? activeCat.name : 'SELECT';
@@ -154,9 +559,17 @@ export default function MenuModal() {
     }
   };
 
-  const handleProductCardClick = (catName?: string) => {
+  const handleProductCardClick = (hrefOrCategory?: string) => {
     setIsMenuOpen(false);
-    router.push(`/products?category=${encodeURIComponent(catName || 'ALL')}`);
+    if (!hrefOrCategory) {
+      router.push('/products');
+      return;
+    }
+    if (hrefOrCategory.startsWith('/')) {
+      router.push(hrefOrCategory);
+    } else {
+      router.push(`/products?category=${encodeURIComponent(hrefOrCategory)}`);
+    }
   };
 
   const handleNavigate = (href: string) => {
@@ -180,7 +593,6 @@ export default function MenuModal() {
       <div
         className={`menu menu--menu is-mounted ${isMenuOpen && menuTab === 'menu' ? 'active' : ''}`}
         onClick={(e) => {
-          // If clicked directly on the menu overlay (backdrop), close it
           if (e.target === e.currentTarget) {
             setIsMenuOpen(false);
           }
@@ -303,29 +715,52 @@ export default function MenuModal() {
           </ul>
         </div>
 
-        {/* Collection items: Cutout model & 5 staggered product cards */}
+        {/* Collection items: Main video & 5 product cards */}
         <ul className="menu__collection">
           <li className={`menu__item default ${isMenuOpen && menuTab === 'menu' ? 'active' : ''}`}>
-            <div className="menu__item-main">
-              <img
-                src="/images/img_148.png"
-                alt="BONEZ Model"
-                loading="lazy"
-                decoding="async"
+            <div
+              className="menu__item-main"
+              style={{
+                overflow: 'hidden',
+              }}
+            >
+              <video
+                ref={menuVideoRef}
+                src="/videos/menu/Create_fashion_aesthetic_video_1080p_20261017152019.mp4"
+                poster="/videos/menu/posters/Create_fashion_aesthetic_video_1080p_20261017152019.jpg"
+                muted
+                loop
+                playsInline
+                preload="auto"
                 style={{
+                  position: 'absolute',
+                  inset: 0,
+                  width: '100%',
                   height: '100%',
-                  maxHeight: '85vh',
-                  width: 'auto',
-                  objectFit: 'contain',
-                  objectPosition: 'bottom center',
+                  objectFit: 'cover',
+                  objectPosition: 'center',
+                }}
+              />
+              <div
+                style={{
+                  position: 'absolute',
+                  inset: 0,
+                  background:
+                    'linear-gradient(to right, rgba(255,249,247,0.7) 0%, rgba(255,249,247,0.35) 35%, transparent 65%)',
+                  pointerEvents: 'none',
                 }}
               />
             </div>
             <ul className="menu__item-list">
               {DEFAULT_PRODUCTS.map((prod, pIdx) => (
-                <li key={pIdx} onClick={() => handleProductCardClick('NEW DROP')}>
+                <li
+                  key={pIdx}
+                  onClick={() => handleProductCardClick(prod.href)}
+                  style={{ cursor: 'pointer' }}
+                  title={prod.title}
+                >
                   <picture>
-                    <img src={prod} alt="BONEZ Product" loading="lazy" decoding="async" />
+                    <img src={prod.image} alt={prod.title} loading="lazy" decoding="async" />
                   </picture>
                 </li>
               ))}
@@ -350,7 +785,16 @@ export default function MenuModal() {
       >
         <div className="menu__inner">
           {/* Category List */}
-          <ul className="menu__list">
+          <ul
+            className="menu__list"
+            onMouseLeave={() => {
+              setTimeout(() => {
+                if (!isHoveringProductListRef.current) {
+                  setHoveredCatIndex(-1);
+                }
+              }, 60);
+            }}
+          >
             {CATEGORIES_DATA.map((cat, idx) => {
               const isHovered = hoveredCatIndex === idx;
               return (
@@ -361,7 +805,6 @@ export default function MenuModal() {
                     onMouseEnter={() => !cat.disabled && setHoveredCatIndex(idx)}
                     onMouseOver={() => !cat.disabled && setHoveredCatIndex(idx)}
                     onPointerEnter={() => !cat.disabled && setHoveredCatIndex(idx)}
-                    onMouseLeave={() => setHoveredCatIndex(-1)}
                     style={{
                       background: 'none',
                       border: 'none',
@@ -454,28 +897,62 @@ export default function MenuModal() {
           </ul>
         </div>
 
-        {/* Collection items: Staggered Model and 5 Product Cards */}
+        {/* Collection items: Category Videos and 5 Product Cards */}
         <ul className="menu__collection">
           {/* Default state item (when no category is hovered) */}
           <li className={`menu__item default ${isMenuOpen && menuTab === 'categories' && hoveredCatIndex === -1 ? 'active' : ''}`}>
-            <div className="menu__item-main">
-              <img
-                src="/images/img_148.png"
-                alt="BONEZ Model"
+            <div
+              className="menu__item-main"
+              style={{
+                overflow: 'hidden',
+              }}
+            >
+              <video
+                ref={defaultVideoRef}
+                src="/videos/menu/Create_fashion_aesthetic_video_1080p_20261017152019.mp4"
+                poster="/videos/menu/posters/Create_fashion_aesthetic_video_1080p_20261017152019.jpg"
+                muted
+                loop
+                playsInline
+                preload="auto"
                 style={{
+                  position: 'absolute',
+                  inset: 0,
+                  width: '100%',
                   height: '100%',
-                  maxHeight: '85vh',
-                  width: 'auto',
-                  objectFit: 'contain',
-                  objectPosition: 'bottom center',
+                  objectFit: 'cover',
+                  objectPosition: 'center',
+                }}
+              />
+              <div
+                style={{
+                  position: 'absolute',
+                  inset: 0,
+                  background:
+                    'linear-gradient(to right, rgba(255,249,247,0.7) 0%, rgba(255,249,247,0.35) 35%, transparent 65%)',
+                  pointerEvents: 'none',
                 }}
               />
             </div>
-            <ul className="menu__item-list">
+            <ul
+              className="menu__item-list"
+              onMouseEnter={() => {
+                isHoveringProductListRef.current = true;
+              }}
+              onMouseLeave={() => {
+                isHoveringProductListRef.current = false;
+                setHoveredCatIndex(-1);
+              }}
+            >
               {DEFAULT_PRODUCTS.map((prod, pIdx) => (
-                <li key={pIdx} onClick={() => handleProductCardClick('NEW DROP')}>
+                <li
+                  key={pIdx}
+                  onClick={() => handleProductCardClick(prod.href)}
+                  style={{ cursor: 'pointer' }}
+                  title={prod.title}
+                >
                   <picture>
-                    <img src={prod} alt="Product Card" />
+                    <img src={prod.image} alt={prod.title} loading="lazy" decoding="async" />
                   </picture>
                 </li>
               ))}
@@ -488,26 +965,60 @@ export default function MenuModal() {
             const prods = cat.products.length > 0 ? cat.products : DEFAULT_PRODUCTS;
             return (
               <li key={idx} className={`menu__item ${isActive ? 'active' : ''}`}>
-                <div className="menu__item-main">
-                  <img
-                    src={cat.model}
-                    alt={cat.name}
-                    loading="lazy"
-                    decoding="async"
+                <div
+                  className="menu__item-main"
+                  style={{
+                    overflow: 'hidden',
+                  }}
+                >
+                  <video
+                    ref={(el) => {
+                      categoryVideoRefs.current[idx] = el;
+                    }}
+                    src={cat.video}
+                    poster={cat.poster}
+                    muted
+                    loop
+                    playsInline
+                    preload="auto"
                     style={{
+                      position: 'absolute',
+                      inset: 0,
+                      width: '100%',
                       height: '100%',
-                      maxHeight: '85vh',
-                      width: 'auto',
-                      objectFit: 'contain',
-                      objectPosition: 'bottom center',
+                      objectFit: 'cover',
+                      objectPosition: 'center',
+                    }}
+                  />
+                  <div
+                    style={{
+                      position: 'absolute',
+                      inset: 0,
+                      background:
+                        'linear-gradient(to right, rgba(255,249,247,0.7) 0%, rgba(255,249,247,0.35) 35%, transparent 65%)',
+                      pointerEvents: 'none',
                     }}
                   />
                 </div>
-                <ul className="menu__item-list">
+                <ul
+                  className="menu__item-list"
+                  onMouseEnter={() => {
+                    isHoveringProductListRef.current = true;
+                  }}
+                  onMouseLeave={() => {
+                    isHoveringProductListRef.current = false;
+                    setHoveredCatIndex(-1);
+                  }}
+                >
                   {prods.map((prod, pIdx) => (
-                    <li key={pIdx} onClick={() => handleProductCardClick(cat.name)}>
+                    <li
+                      key={pIdx}
+                      onClick={() => handleProductCardClick(prod.href)}
+                      style={{ cursor: 'pointer' }}
+                      title={prod.title}
+                    >
                       <picture>
-                        <img src={prod} alt={`${cat.name} Product ${pIdx + 1}`} loading="lazy" decoding="async" />
+                        <img src={prod.image} alt={prod.title} loading="lazy" decoding="async" />
                       </picture>
                     </li>
                   ))}

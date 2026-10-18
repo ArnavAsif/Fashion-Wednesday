@@ -22,7 +22,6 @@ const PRODUCTS_META = [
   { id: 18, title: 'Gothic Chain-Link Cutout Halter Maxi Dress', price: 280, size: ['S', 'M', 'L'], color: ['Raven Black'], bestseller: true },
   { id: 19, title: 'Minimalist Ribbed Knit Micro Tube Dress', price: 140, size: ['S', 'M', 'L'], color: ['Obsidian'], bestseller: false },
   { id: 20, title: 'Deconstructed Mesh Panel Layered Longsleeve Top', price: 155, size: ['S', 'M', 'L'], color: ['Smoke Grey'], bestseller: false },
-  { id: 21, title: 'Boned Satin Underbust Corset with Buckles', price: 210, size: ['S', 'M', 'L'], color: ['Silver Satin'], bestseller: false },
   { id: 22, title: 'Pleated Low-Rise Buckle Cargo Mini Skirt', price: 165, size: ['S', 'M', 'L'], color: ['Washed Olive'], bestseller: false },
   { id: 23, title: 'Heavy Metal Studded Moto Biker Jacket', price: 420, size: ['S', 'M', 'L'], color: ['Distressed Black'], bestseller: true },
   { id: 24, title: 'Distressed Open-Knit Spiderweb Maxi Dress', price: 230, size: ['S', 'M', 'L'], color: ['Off-White'], bestseller: false },
@@ -163,6 +162,196 @@ export function getAllProductSlugs(): string[] {
   set.add('sparkling-mini-dress');
   set.add('velvet-bra-top');
   return Array.from(set);
+}
+
+export interface CollectionInfo {
+  slug: string;
+  name: string;
+  description: string;
+  tag: string;
+}
+
+export const COLLECTIONS: CollectionInfo[] = [
+  {
+    slug: 'berlin',
+    name: 'BERLIN VIBES',
+    description: 'Raw industrial tailoring, heavy hardware, and distressed silhouettes forged in Berlin underground culture.',
+    tag: 'berlin',
+  },
+  {
+    slug: 'life-force',
+    name: 'LIFE FORCE',
+    description: 'Angelic corsetry, ethereal sheer layers, and sculptural garments echoing vital feminine energy.',
+    tag: 'life-force',
+  },
+  {
+    slug: 'quarpa-capsule',
+    name: 'QUARPA CAPSULE',
+    description: 'Limited-run avant-garde garments engineered with high-contrast paneling and futuristic lines.',
+    tag: 'quarpa-capsule',
+  },
+  {
+    slug: 'new-drop',
+    name: 'NEW DROP',
+    description: 'The latest seasonal drop from BONEZ. Where glam meets grunge.',
+    tag: 'new-drop',
+  },
+  {
+    slug: 'sale',
+    name: 'SALE ARCHIVE',
+    description: 'Selected iconic garments and archival pieces available at curated promotional prices.',
+    tag: 'sale',
+  },
+];
+
+export const CATEGORY_LIST = [
+  'ALL',
+  'NEW DROP',
+  'SALE',
+  'DRESSES',
+  'CORSETS',
+  'TOPS',
+  'JACKETS',
+  'PANTS',
+  'BOTTOMS',
+  'SKIRTS',
+  'BODYS',
+  'COATS',
+  'ACCESSORIES',
+  'SPECIAL EDITION',
+] as const;
+
+export type CategoryType = (typeof CATEGORY_LIST)[number];
+
+export function getProductCategories(p: Product): string[] {
+  const t = p.title.toLowerCase();
+  const cats: string[] = ['ALL'];
+
+  if (t.includes('dress')) cats.push('DRESSES');
+  if (t.includes('skirt')) cats.push('SKIRTS');
+  if (t.includes('corset') || t.includes('bustier')) cats.push('CORSETS');
+  if (t.includes('top') || t.includes('tee') || t.includes('shrug') || t.includes('sweater') || t.includes('hoodie') || t.includes('cardigan') || t.includes('longsleeve') || t.includes('tank')) cats.push('TOPS');
+  if (t.includes('jacket') || t.includes('bomber') || t.includes('biker') || t.includes('trucker')) cats.push('JACKETS');
+  if (t.includes('bodysuit')) cats.push('BODYS');
+  if (t.includes('pant') || t.includes('jeans') || t.includes('shorts') || t.includes('trouser')) {
+    cats.push('PANTS');
+    cats.push('BOTTOMS');
+  }
+  if (t.includes('coat')) cats.push('COATS');
+  if (t.includes('necklace') || t.includes('choker') || t.includes('ring') || t.includes('belt') || t.includes('harness') || t.includes('clip') || t.includes('chain')) cats.push('ACCESSORIES');
+  if (p.bestseller || [3, 8, 15, 23, 35].includes(p.id)) cats.push('SPECIAL EDITION');
+  if (p.id <= 14) cats.push('NEW DROP');
+  if (p.price < 170 || [2, 6, 9, 11, 14, 22, 26, 31].includes(p.id)) cats.push('SALE');
+
+  return cats;
+}
+
+export function getProductCollections(p: Product): string[] {
+  const cols: string[] = [];
+  const t = p.title.toLowerCase();
+
+  // Berlin collection (product-21 removed)
+  if (t.includes('leather') || t.includes('moto') || t.includes('biker') || t.includes('bomber') || t.includes('cargo') || t.includes('studded') || t.includes('chain') || t.includes('gothic') || t.includes('racing') || [1, 2, 3, 5, 7, 9, 12, 14, 15, 17, 19, 22, 23, 25, 28, 30, 37, 39, 40, 43].includes(p.id)) {
+    cols.push('berlin');
+  }
+
+  // Life Force collection
+  if (t.includes('bodysuit') || t.includes('angel') || t.includes('mohair') || t.includes('lace') || t.includes('sheer') || t.includes('mesh') || t.includes('shrug') || t.includes('silk') || [6, 8, 11, 13, 16, 18, 20, 24, 26, 29, 31, 33, 36, 41].includes(p.id)) {
+    cols.push('life-force');
+  }
+
+  // Quarpa capsule
+  if (t.includes('deconstructed') || t.includes('cyberpunk') || t.includes('asymmetric') || t.includes('sculpted') || [4, 10, 13, 20, 27, 34, 35, 36, 40, 41].includes(p.id)) {
+    cols.push('quarpa-capsule');
+  }
+
+  // New drop
+  if (p.id <= 14) {
+    cols.push('new-drop');
+  }
+
+  // Sale
+  if (p.price < 170 || [2, 6, 9, 11, 14, 22, 26, 31].includes(p.id)) {
+    cols.push('sale');
+  }
+
+  return cols;
+}
+
+export function getProductsByCollection(collectionSlug: string): Product[] {
+  const norm = collectionSlug.toLowerCase().trim().replace(/_/g, '-');
+  return PRODUCTS.filter((p) => {
+    const cols = getProductCollections(p);
+    return cols.includes(norm) || (norm === 'berlin-vibes' && cols.includes('berlin')) || (norm === 'quarpa' && cols.includes('quarpa-capsule'));
+  });
+}
+
+export function getProductsByCategory(categoryName: string): Product[] {
+  const norm = categoryName.toUpperCase().trim();
+  if (!norm || norm === 'ALL') return PRODUCTS;
+  return PRODUCTS.filter((p) => getProductCategories(p).includes(norm));
+}
+
+export function sortProducts(products: Product[], sortBy: string): Product[] {
+  const copy = [...products];
+  switch (sortBy) {
+    case 'PRICE_ASC':
+      return copy.sort((a, b) => a.price - b.price);
+    case 'PRICE_DESC':
+      return copy.sort((a, b) => b.price - a.price);
+    case 'NEWEST':
+      return copy.sort((a, b) => b.id - a.id);
+    case 'BESTSELLER':
+      return copy.sort((a, b) => (b.bestseller ? 1 : 0) - (a.bestseller ? 1 : 0));
+    case 'FEATURED':
+    default:
+      return copy;
+  }
+}
+
+export function paginateProducts(products: Product[], page: number, pageSize: number = 12) {
+  const validPage = Math.max(1, page);
+  const totalItems = products.length;
+  const totalPages = Math.max(1, Math.ceil(totalItems / pageSize));
+  const currentPage = Math.min(validPage, totalPages);
+  const start = (currentPage - 1) * pageSize;
+  const items = products.slice(start, start + pageSize);
+
+  return {
+    items,
+    currentPage,
+    totalPages,
+    totalItems,
+    hasPrev: currentPage > 1,
+    hasNext: currentPage < totalPages,
+    startItem: totalItems === 0 ? 0 : start + 1,
+    endItem: Math.min(start + pageSize, totalItems),
+  };
+}
+
+export const COLLECTION_SLUGS = [
+  'berlin',
+  'life-force',
+  'quarpa-capsule',
+  'berlin-vibes',
+  'quarpa',
+  'new-drop',
+  'sale',
+] as const;
+
+export function getAllCollectionSlugs(): string[] {
+  return [...COLLECTION_SLUGS];
+}
+
+export function getCollectionBySlug(slug: string) {
+  const norm = slug.toLowerCase().trim().replace(/_/g, '-');
+  return COLLECTIONS.find(
+    (c) =>
+      c.slug === norm ||
+      c.tag === norm ||
+      (norm === 'berlin' && c.slug === 'berlin-vibes') ||
+      (norm === 'quarpa' && c.slug === 'quarpa-capsule')
+  );
 }
 `;
 

@@ -46,21 +46,6 @@ export const PRODUCTS: Product[] = [
       ],
       [
         "/images/products/product-1/image_05.jpg"
-      ],
-      [
-        "/images/products/product-1/pexels-tran-kien-2162576514-38317519.jpg"
-      ],
-      [
-        "/images/products/product-1/pexels-tran-kien-2162576514-38317521.jpg"
-      ],
-      [
-        "/images/products/product-1/pexels-tran-kien-2162576514-38317523.jpg"
-      ],
-      [
-        "/images/products/product-1/pexels-tran-kien-2162576514-38317524.jpg"
-      ],
-      [
-        "/images/products/product-1/pexels-tran-kien-2162576514-38317530.jpg"
       ]
     ]
   },
@@ -676,9 +661,6 @@ export const PRODUCTS: Product[] = [
       ],
       [
         "/images/products/product-14/image_06.jpg"
-      ],
-      [
-        "/images/products/product-14/image_07.jpg"
       ]
     ]
   },
@@ -730,9 +712,6 @@ export const PRODUCTS: Product[] = [
       ],
       [
         "/images/products/product-15/image_10.jpg"
-      ],
-      [
-        "/images/products/product-15/image_11.jpg"
       ]
     ]
   },
@@ -958,56 +937,6 @@ export const PRODUCTS: Product[] = [
     ]
   },
   {
-    "id": 21,
-    "title": "Boned Satin Underbust Corset with Buckles",
-    "price": 210,
-    "basePrice": 0,
-    "href": "/products/boned-satin-underbust-corset-with-buckles/",
-    "quantity": 1,
-    "bestseller": false,
-    "createdAt": "2026-03-01T12:00:00.000Z",
-    "size": [
-      "S",
-      "M",
-      "L"
-    ],
-    "color": [
-      "Silver Satin"
-    ],
-    "images": [
-      [
-        "/images/products/product-21/image_01.jpg"
-      ],
-      [
-        "/images/products/product-21/image_02.jpg"
-      ],
-      [
-        "/images/products/product-21/image_03.jpg"
-      ],
-      [
-        "/images/products/product-21/image_04.jpg"
-      ],
-      [
-        "/images/products/product-21/image_05.jpg"
-      ],
-      [
-        "/images/products/product-21/image_06.jpg"
-      ],
-      [
-        "/images/products/product-21/image_07.jpg"
-      ],
-      [
-        "/images/products/product-21/image_08.jpg"
-      ],
-      [
-        "/images/products/product-21/image_09.jpg"
-      ],
-      [
-        "/images/products/product-21/image_10.jpg"
-      ]
-    ]
-  },
-  {
     "id": 22,
     "title": "Pleated Low-Rise Buckle Cargo Mini Skirt",
     "price": 165,
@@ -1110,30 +1039,6 @@ export const PRODUCTS: Product[] = [
       ],
       [
         "/images/products/product-23/image_10.jpg"
-      ],
-      [
-        "/images/products/product-23/image_11.jpg"
-      ],
-      [
-        "/images/products/product-23/image_12.jpg"
-      ],
-      [
-        "/images/products/product-23/image_13.jpg"
-      ],
-      [
-        "/images/products/product-23/image_14.jpg"
-      ],
-      [
-        "/images/products/product-23/image_15.jpg"
-      ],
-      [
-        "/images/products/product-23/image_16.jpg"
-      ],
-      [
-        "/images/products/product-23/image_17.jpg"
-      ],
-      [
-        "/images/products/product-23/image_18.jpg"
       ]
     ]
   },
@@ -1184,9 +1089,6 @@ export const PRODUCTS: Product[] = [
       ],
       [
         "/images/products/product-24/image_10.jpg"
-      ],
-      [
-        "/images/products/product-24/image_11.jpg"
       ]
     ]
   },
@@ -1421,9 +1323,6 @@ export const PRODUCTS: Product[] = [
       ],
       [
         "/images/products/product-30/image_04.jpg"
-      ],
-      [
-        "/images/products/product-30/image_05.jpg"
       ]
     ]
   },
@@ -1465,12 +1364,6 @@ export const PRODUCTS: Product[] = [
       ],
       [
         "/images/products/product-31/image_07.jpg"
-      ],
-      [
-        "/images/products/product-31/image_08.jpg"
-      ],
-      [
-        "/images/products/product-31/image_09.jpg"
       ]
     ]
   },
@@ -1605,6 +1498,9 @@ export const PRODUCTS: Product[] = [
         "/images/products/product-35/image_01.jpg"
       ],
       [
+        "/images/products/product-35/image_02.jpg"
+      ],
+      [
         "/images/products/product-35/image_03.jpg"
       ],
       [
@@ -1624,24 +1520,6 @@ export const PRODUCTS: Product[] = [
       ],
       [
         "/images/products/product-35/image_09.jpg"
-      ],
-      [
-        "/images/products/product-35/image_10.jpg"
-      ],
-      [
-        "/images/products/product-35/image_11.jpg"
-      ],
-      [
-        "/images/products/product-35/image_12.jpg"
-      ],
-      [
-        "/images/products/product-35/image_13.jpg"
-      ],
-      [
-        "/images/products/product-35/image_14.jpg"
-      ],
-      [
-        "/images/products/product-35/image_15.jpg"
       ]
     ]
   },
@@ -1677,33 +1555,6 @@ export const PRODUCTS: Product[] = [
       ],
       [
         "/images/products/product-36/image_05.jpg"
-      ],
-      [
-        "/images/products/product-36/image_06.jpg"
-      ],
-      [
-        "/images/products/product-36/image_07.jpg"
-      ],
-      [
-        "/images/products/product-36/image_08.jpg"
-      ],
-      [
-        "/images/products/product-36/image_09.jpg"
-      ],
-      [
-        "/images/products/product-36/image_10.jpg"
-      ],
-      [
-        "/images/products/product-36/image_11.jpg"
-      ],
-      [
-        "/images/products/product-36/image_12.jpg"
-      ],
-      [
-        "/images/products/product-36/image_13.jpg"
-      ],
-      [
-        "/images/products/product-36/image_14.jpg"
       ]
     ]
   },
@@ -1752,18 +1603,6 @@ export const PRODUCTS: Product[] = [
       ],
       [
         "/images/products/product-37/image_09.jpg"
-      ],
-      [
-        "/images/products/product-37/image_10.jpg"
-      ],
-      [
-        "/images/products/product-37/image_11.jpg"
-      ],
-      [
-        "/images/products/product-37/image_12.jpg"
-      ],
-      [
-        "/images/products/product-37/image_13.jpg"
       ]
     ]
   },
@@ -1855,9 +1694,6 @@ export const PRODUCTS: Product[] = [
       ],
       [
         "/images/products/product-39/image_10.jpg"
-      ],
-      [
-        "/images/products/product-39/image_11.jpg"
       ]
     ]
   },
@@ -1914,9 +1750,6 @@ export const PRODUCTS: Product[] = [
       ],
       [
         "/images/products/product-40/image_12.jpg"
-      ],
-      [
-        "/images/products/product-40/image_13.jpg"
       ]
     ]
   },
@@ -1967,9 +1800,6 @@ export const PRODUCTS: Product[] = [
       ],
       [
         "/images/products/product-41/image_10.jpg"
-      ],
-      [
-        "/images/products/product-41/image_11.jpg"
       ]
     ]
   },
@@ -2005,24 +1835,6 @@ export const PRODUCTS: Product[] = [
       ],
       [
         "/images/products/product-43/image_05.jpg"
-      ],
-      [
-        "/images/products/product-43/image_06.jpg"
-      ],
-      [
-        "/images/products/product-43/image_07.jpg"
-      ],
-      [
-        "/images/products/product-43/image_08.jpg"
-      ],
-      [
-        "/images/products/product-43/image_09.jpg"
-      ],
-      [
-        "/images/products/product-43/image_10.jpg"
-      ],
-      [
-        "/images/products/product-43/image_11.jpg"
       ]
     ]
   }
@@ -2183,8 +1995,8 @@ export function getProductCollections(p: Product): string[] {
   const cols: string[] = [];
   const t = p.title.toLowerCase();
 
-  // Berlin collection
-  if (t.includes('leather') || t.includes('moto') || t.includes('biker') || t.includes('bomber') || t.includes('cargo') || t.includes('studded') || t.includes('chain') || t.includes('gothic') || t.includes('racing') || [1, 2, 3, 5, 7, 9, 12, 14, 15, 17, 19, 21, 22, 23, 25, 28, 30, 37, 39, 40, 43].includes(p.id)) {
+  // Berlin collection (product-21 removed)
+  if (t.includes('leather') || t.includes('moto') || t.includes('biker') || t.includes('bomber') || t.includes('cargo') || t.includes('studded') || t.includes('chain') || t.includes('gothic') || t.includes('racing') || [1, 2, 3, 5, 7, 9, 12, 14, 15, 17, 19, 22, 23, 25, 28, 30, 37, 39, 40, 43].includes(p.id)) {
     cols.push('berlin');
   }
 

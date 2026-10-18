@@ -216,7 +216,7 @@ const CATEGORIES_DATA: CategoryData[] = [
   },
   {
     name: 'CORSETS',
-    count: '9',
+    count: '8',
     video: '/videos/menu/Make_fashion_aesthetic_video_1080p_20261017165300.mp4',
     poster: '/videos/menu/posters/Make_fashion_aesthetic_video_1080p_20261017165300.jpg',
     products: [
@@ -241,9 +241,9 @@ const CATEGORIES_DATA: CategoryData[] = [
         image: '/images/products/product-16/image_01.jpg',
       },
       {
-        title: 'Boned Satin Underbust Corset with Buckles',
-        href: '/products/boned-satin-underbust-corset-with-buckles/',
-        image: '/images/products/product-21/image_01.jpg',
+        title: 'Sculpted Metal Hardware Zip-Up Corset Top',
+        href: '/products/sculpted-metal-hardware-zip-up-corset-top/',
+        image: '/images/products/product-40/image_01.jpg',
       },
     ],
   },

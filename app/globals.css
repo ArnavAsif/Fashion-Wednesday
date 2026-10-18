@@ -8424,45 +8424,271 @@ html {
 }
 @media (max-width: 1023px) {
   .arrivals-section {
-    padding: 8rem 0 6rem !important;
+    padding: 6rem 0 6rem !important;
     position: relative !important;
+    overflow: hidden !important;
   }
   .arrivals-section .container {
     padding: 0 1.5rem !important;
+    position: relative !important;
+  }
+  .arrivals-section__header-row {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    width: 100% !important;
+    position: relative !important;
+    margin-bottom: 2.2rem !important;
   }
   .arrivals-section__title {
     position: static !important;
-    font-size: 3.6rem !important;
-    margin-bottom: 1rem !important;
+    font-size: 2rem !important;
+    line-height: 2rem !important;
+    font-weight: 500 !important;
+    margin-bottom: 0 !important;
+    letter-spacing: -0.05rem !important;
   }
   .arrivals-section__lang {
     display: none !important;
   }
-  .arrivals-section__text {
+  .arrivals-section__text--desktop {
     display: none !important;
   }
-  .arrivals-section__button {
-    position: static !important;
-    display: inline-block !important;
-    margin-top: 1.5rem !important;
+  .arrivals-section__text--mobile {
+    display: block !important;
+    position: relative !important;
+    top: auto !important;
+    right: auto !important;
+    left: auto !important;
+    height: 1.6rem !important;
+    margin: 0 !important;
+    font-family: 'PP Fraktion Mono', monospace !important;
+    font-size: 1.3rem !important;
+    font-weight: 700 !important;
+    min-width: 9rem !important;
+    text-align: right !important;
+    color: #000 !important;
+    letter-spacing: -0.05rem !important;
+    text-transform: uppercase !important;
+    list-style: none !important;
+    padding: 0 !important;
   }
-  .arrivals-section__scroll {
-    position: static !important;
-    width: 100% !important;
-    margin-top: 1.5rem !important;
+  .arrivals-section__text--mobile > li {
+    position: absolute !important;
+    right: 0 !important;
+    top: 0 !important;
+    white-space: nowrap !important;
+    transform: scaleY(0) !important;
+    transform-origin: top center !important;
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  }
+  .arrivals-section__text--mobile > li.active {
+    transform: scaleY(1) !important;
+    transform-origin: bottom center !important;
+  }
+  .arrivals-section__button--desktop {
+    display: none !important;
+  }
+  .arrivals-section__scroll--desktop {
+    display: none !important;
   }
   .arrivals-section__group {
     display: none !important;
   }
-  .arrivals-section__swiper-mob {
+
+  /* Swiper Mobile */
+  .arrivals-section__swiper-mob.swiper {
     display: block !important;
-    touch-action: pan-x pan-y !important;
+    overflow: visible !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 1.8rem 0 0 !important;
+    position: relative !important;
+  }
+  .arrivals-section__swiper-mob .swiper-wrapper {
+    display: flex !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+  .arrivals-section__swiper-mob .swiper-slide {
+    width: clamp(280px, 80vw, 350px) !important;
+    max-width: 35rem !important;
+    flex-shrink: 0 !important;
+    box-sizing: border-box !important;
+    position: relative !important;
+  }
+  .arrivals-card {
+    display: block !important;
+    position: relative !important;
+    width: 100% !important;
+    text-decoration: none !important;
+    color: inherit !important;
+    user-select: none !important;
+    -webkit-user-select: none !important;
+    touch-action: pan-y !important;
   }
   .arrivals-card__best {
-    top: 0.8rem !important;
-    left: 0.8rem !important;
-    transform: scale(0.85) !important;
+    position: absolute !important;
+    top: -1.4rem !important;
+    left: -0.6rem !important;
+    width: 14.1rem !important;
+    height: 2.9rem !important;
+    transform: scale(0.9) !important;
     transform-origin: top left !important;
+    z-index: 10 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 1.6rem !important;
+    font-weight: 500 !important;
+    line-height: 1.6rem !important;
+    text-transform: uppercase !important;
+    color: #fff !important;
+    background: url("/images/best-seller-badge.webp") no-repeat 50%/100% 100% !important;
+  }
+  .arrivals-card__inner {
+    aspect-ratio: 25.5 / 36.3 !important;
+    width: 100% !important;
+    overflow: hidden !important;
+    position: relative !important;
+    margin-bottom: 0.8rem !important;
+    background: #f7f3f0 !important;
+  }
+  .arrivals-card__img,
+  .arrivals-card__img img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    display: block !important;
+    user-drag: none !important;
+    -webkit-user-drag: none !important;
+  }
+  .arrivals-card__icon {
+    position: absolute !important;
+    right: 0.8rem !important;
+    bottom: 0.8rem !important;
+    width: 1.4rem !important;
+    height: 1.4rem !important;
+    mix-blend-mode: difference !important;
+    z-index: 10 !important;
+    display: none !important;
+  }
+  .arrivals-card__info {
+    margin-top: 0.8rem !important;
+    position: relative !important;
+  }
+  .arrivals-card__top {
+    display: block !important;
+    transform: none !important;
+    opacity: 1 !important;
+  }
+  .arrivals-card__title {
+    font-family: 'Inter', sans-serif !important;
+    font-size: 1.15rem !important;
+    font-weight: 600 !important;
+    letter-spacing: -0.04rem !important;
+    line-height: 1.2 !important;
+    text-transform: uppercase !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    margin: 0 !important;
+    color: #000 !important;
+  }
+  .arrivals-card__prices {
+    display: flex !important;
+    gap: 0.6rem !important;
+    margin-top: 0.3rem !important;
+  }
+  .arrivals-card__price {
+    font-family: 'PP Fraktion Mono', monospace !important;
+    font-size: 1.3rem !important;
+    font-weight: 700 !important;
+    letter-spacing: -0.05rem !important;
+    line-height: 1.2 !important;
+    text-transform: uppercase !important;
+    color: #000 !important;
+    margin: 0 !important;
+  }
+  .arrivals-card__bottom {
+    display: none !important;
+  }
+
+  /* Bottom Row: Scrollbar & Button */
+  .arrivals-section__bottom-mob {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    margin-top: 3.2rem !important;
+    position: relative !important;
+    width: 100% !important;
+    min-height: 2.4rem !important;
+  }
+  .arrivals-section__scroll--mob {
+    position: relative !important;
+    width: clamp(16rem, 50vw, 25.6rem) !important;
+    height: 1.1rem !important;
+    margin: 0 !important;
+    overflow: hidden !important;
+    pointer-events: auto !important;
+    cursor: pointer !important;
+  }
+  .arrivals-section__scroll--mob:after {
+    content: "" !important;
+    background: #eedfdf !important;
+    height: 1px !important;
+    position: absolute !important;
+    left: 0 !important;
+    right: 0 !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    width: 100% !important;
+    z-index: 1 !important;
+  }
+  .arrivals-section__scroll--mob .scroll__fill {
+    position: absolute !important;
+    left: 0 !important;
+    top: 0 !important;
+    bottom: 0 !important;
+    height: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    z-index: 2 !important;
+    will-change: transform !important;
+  }
+  .arrivals-section__scroll--mob .scroll__fill img {
+    position: absolute !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    left: -0.1rem !important;
+    width: calc(100% + 0.2rem) !important;
+    height: auto !important;
+    aspect-ratio: 2 / 1 !important;
+    display: block !important;
+    max-width: none !important;
+  }
+  .arrivals-section__button-mob {
+    margin-left: auto !important;
+    position: relative !important;
+    z-index: 10 !important;
+  }
+}
+
+@media (min-width: 1024px) {
+  .arrivals-section__header-row {
+    display: contents !important;
+  }
+  .arrivals-section__text--mobile {
+    display: none !important;
+  }
+  .arrivals-section__text--desktop {
+    display: block !important;
+  }
+  .arrivals-section__swiper-mob {
+    display: none !important;
+  }
+  .arrivals-section__bottom-mob {
+    display: none !important;
   }
 }
 

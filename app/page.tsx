@@ -26,6 +26,17 @@ export default function HomePage() {
   const [creditsOpen, setCreditsOpen] = useState(false);
 
   useEffect(() => {
+    // Ensure browser starts at top on refresh
+    if ('scrollRestoration' in window.history) {
+      window.history.scrollRestoration = 'manual';
+    }
+    window.scrollTo(0, 0);
+
+    const handleBeforeUnload = () => {
+      window.scrollTo(0, 0);
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
     // Initialize Lenis smooth scroll
     const lenis = new Lenis({
       duration: 1.2,
@@ -33,6 +44,9 @@ export default function HomePage() {
       smoothWheel: true,
     });
     (window as any).__lenis = lenis;
+
+    // Immediately start at top
+    lenis.scrollTo(0, { immediate: true });
 
     lenis.on('scroll', () => {
       ScrollTrigger.update();
@@ -47,6 +61,7 @@ export default function HomePage() {
     gsap.ticker.lagSmoothing(500, 33);
 
     return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
       lenis.destroy();
       gsap.ticker.remove(rafCallback);
       ScrollTrigger.getAll().forEach((t) => t.kill());

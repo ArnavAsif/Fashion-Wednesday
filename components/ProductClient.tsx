@@ -674,7 +674,13 @@ export default function ProductClient({ product, slug }: ProductClientProps) {
               03. More From Collection
             </h2>
 
-            <MarkerButton text="SEE ALL" brackets cloneLastChar href="/products" fontSize="1.3rem" />
+            <MarkerButton
+              text="SEE ALL"
+              brackets
+              cloneLastChar
+              href={`/collections/${primaryCol}`}
+              fontSize="1.3rem"
+            />
           </div>
 
           <div

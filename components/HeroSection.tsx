@@ -40,11 +40,11 @@ export default function HeroSection() {
       const titles = item.querySelectorAll('.hero-card__title');
       if (idx === 0) {
         gsap.set(item, { scaleY: 1, transformOrigin: '50% 100%', force3D: true });
-        gsap.set(titles, { scaleY: 1, transformOrigin: '50% 100%', force3D: true });
+        gsap.set(titles, { xPercent: -50, scaleY: 1, transformOrigin: '50% 100%', force3D: true });
         item.classList.add('is-active');
       } else {
         gsap.set(item, { scaleY: 0, transformOrigin: '50% 100%', force3D: true });
-        gsap.set(titles, { scaleY: 0, transformOrigin: '50% 100%', force3D: true });
+        gsap.set(titles, { xPercent: -50, scaleY: 0, transformOrigin: '50% 100%', force3D: true });
       }
     });
 
@@ -92,7 +92,7 @@ export default function HeroSection() {
 
       // Reset next item origin and scale ready to rise from bottom
       gsap.set(nextItem, { scaleY: 0, transformOrigin: '50% 100%', force3D: true });
-      gsap.set(nextTitles, { scaleY: 0, transformOrigin: '50% 100%', force3D: true });
+      gsap.set(nextTitles, { xPercent: -50, scaleY: 0, transformOrigin: '50% 100%', force3D: true });
 
       currentItem.classList.remove('is-active');
       nextItem.classList.add('is-active');
@@ -123,13 +123,13 @@ export default function HeroSection() {
       // Current titles roll up to top
       tl.to(
         currentTitles,
-        { scaleY: 0, duration: 0.7, ease: 'power2.inOut', transformOrigin: '50% 0%', force3D: true },
+        { xPercent: -50, scaleY: 0, duration: 0.7, ease: 'power2.inOut', transformOrigin: '50% 0%', force3D: true },
         0
       );
       // Next titles roll up from bottom
       tl.to(
         nextTitles,
-        { scaleY: 1, duration: 0.7, ease: 'power2.inOut', transformOrigin: '50% 100%', force3D: true },
+        { xPercent: -50, scaleY: 1, duration: 0.7, ease: 'power2.inOut', transformOrigin: '50% 100%', force3D: true },
         0.7
       );
     };
@@ -225,7 +225,8 @@ export default function HeroSection() {
                     className="hero-card__title"
                     style={{
                       color: '#222',
-                      ...(isInitial ? {} : { transform: 'scaleY(0)', visibility: 'hidden' }),
+                      transform: isInitial ? 'translateX(-50%)' : 'translateX(-50%) scaleY(0)',
+                      ...(isInitial ? {} : { visibility: 'hidden' }),
                     }}
                   >
                     {drop.name}
@@ -246,7 +247,8 @@ export default function HeroSection() {
                     className="hero-card__title"
                     style={{
                       color: '#ed3833',
-                      ...(isInitial ? {} : { transform: 'scaleY(0)', visibility: 'hidden' }),
+                      transform: isInitial ? 'translateX(-50%)' : 'translateX(-50%) scaleY(0)',
+                      ...(isInitial ? {} : { visibility: 'hidden' }),
                     }}
                   >
                     {drop.name}

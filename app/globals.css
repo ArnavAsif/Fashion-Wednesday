@@ -8961,9 +8961,8 @@ html {
 .hero-card__title {
   position: absolute !important;
   bottom: 3.5rem !important;
-  left: 0 !important;
-  right: 0 !important;
-  margin: 0 auto !important;
+  left: 50% !important;
+  transform: translateX(-50%);
   font-family: Thunder, sans-serif !important;
   font-size: clamp(5rem, 8.5vw, 12rem) !important;
   font-weight: 800 !important;

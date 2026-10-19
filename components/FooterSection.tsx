@@ -371,13 +371,6 @@ export default function FooterSection({ onOpenCredits }: { onOpenCredits?: () =>
                 fontSize="1.3rem"
               />
             </li>
-            <li>
-              <MarkerButton
-                text="5-ht"
-                disabled
-                fontSize="1.3rem"
-              />
-            </li>
           </ul>
 
           <ul className="footer__nav">

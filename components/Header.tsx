@@ -127,24 +127,6 @@ export default function Header({ isProductPage = false }: { isProductPage?: bool
             </div>
           )}
         </div>
-
-        <div
-          className="header-desktop-only"
-          style={{
-            paddingTop: isHeaderCompact ? '0' : '2.2rem',
-            transition: 'padding 0.3s ease',
-          }}
-        >
-          <MarkerButton
-            text="5-HT"
-            brackets
-            cloneLastChar
-            href="/"
-            onClick={() => setIsMenuOpen(false)}
-            fontSize={headerFontSize}
-            style={{ fontWeight: 600 }}
-          />
-        </div>
       </div>
 
       {/* Center Section: ELVAREN Logo */}

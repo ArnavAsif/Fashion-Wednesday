@@ -42,17 +42,13 @@ export default function CategoriesSection() {
   const animFrameRef = useRef<number | null>(null);
   const scrollPosRef = useRef(0);
 
-  // Desktop mouse drag interaction states
+  // Desktop & mobile drag interaction states
   const isMouseDownRef = useRef(false);
+  const isDraggingRef = useRef(false);
   const mouseStartXRef = useRef(0);
+  const mouseStartYRef = useRef(0);
   const scrollLeftStartRef = useRef(0);
-  const hasMovedRef = useRef(false);
   const [isGrabbing, setIsGrabbing] = useState(false);
-
-  // Mobile touch swipe interaction states
-  const touchStartXRef = useRef(0);
-  const touchStartYRef = useRef(0);
-  const isTouchScrollingRef = useRef(false);
 
   const updateProgress = useCallback(() => {
     if (trackRef.current) {
@@ -109,7 +105,7 @@ export default function CategoriesSection() {
         track &&
         !isHoveredRef.current &&
         !isMouseDownRef.current &&
-        !isTouchScrollingRef.current
+        !isDraggingRef.current
       ) {
         scrollPosRef.current += SPEED_PX_PER_SEC * dt;
 
@@ -166,74 +162,45 @@ export default function CategoriesSection() {
     if (!trackRef.current) return;
 
     isMouseDownRef.current = true;
-    hasMovedRef.current = false;
+    isDraggingRef.current = false;
     mouseStartXRef.current = e.clientX;
+    mouseStartYRef.current = e.clientY;
     scrollLeftStartRef.current = trackRef.current.scrollLeft;
-    setIsGrabbing(true);
-    try {
-      e.currentTarget.setPointerCapture(e.pointerId);
-    } catch (_) {}
   };
 
   const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
     if (!isMouseDownRef.current || !trackRef.current) return;
 
     const dx = e.clientX - mouseStartXRef.current;
-    if (Math.abs(dx) > 4) {
-      hasMovedRef.current = true;
+    const dy = e.clientY - mouseStartYRef.current;
+
+    // Movement must exceed 12px to be treated as an intentional drag
+    if (Math.hypot(dx, dy) > 12) {
+      if (!isDraggingRef.current) {
+        isDraggingRef.current = true;
+        setIsGrabbing(true);
+      }
       trackRef.current.scrollLeft = scrollLeftStartRef.current - dx;
       updateProgress();
     }
   };
 
-  const handlePointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
+  const handlePointerUp = () => {
     if (!isMouseDownRef.current) return;
     isMouseDownRef.current = false;
     setIsGrabbing(false);
 
-    if (e.currentTarget && e.currentTarget.hasPointerCapture && e.currentTarget.hasPointerCapture(e.pointerId)) {
-      try {
-        e.currentTarget.releasePointerCapture(e.pointerId);
-      } catch (_) {}
-    }
-
-    if (hasMovedRef.current) {
+    // Keep isDraggingRef true for a short tick so onClick suppresses accidental drag-release clicks
+    if (isDraggingRef.current) {
       setTimeout(() => {
-        hasMovedRef.current = false;
-      }, 120);
-    }
-  };
-
-  // Mobile Touch Swipe Handling (Native smooth 120fps inertia)
-  const handleTouchStart = (e: React.TouchEvent) => {
-    if (e.touches.length === 1) {
-      touchStartXRef.current = e.touches[0].clientX;
-      touchStartYRef.current = e.touches[0].clientY;
-      isTouchScrollingRef.current = false;
-    }
-  };
-
-  const handleTouchMove = (e: React.TouchEvent) => {
-    if (e.touches.length === 1) {
-      const dx = Math.abs(e.touches[0].clientX - touchStartXRef.current);
-      const dy = Math.abs(e.touches[0].clientY - touchStartYRef.current);
-      if (dx > 8 || dy > 8) {
-        isTouchScrollingRef.current = true;
-      }
-    }
-  };
-
-  const handleTouchEnd = () => {
-    if (isTouchScrollingRef.current) {
-      setTimeout(() => {
-        isTouchScrollingRef.current = false;
-      }, 120);
+        isDraggingRef.current = false;
+      }, 100);
     }
   };
 
   const handleCardClick = (e: React.MouseEvent, catTitle: string) => {
     // If dragging on desktop or actively swiping on mobile, prevent accidental navigation
-    if (hasMovedRef.current || isTouchScrollingRef.current) {
+    if (isDraggingRef.current) {
       e.preventDefault();
       e.stopPropagation();
       return;
@@ -262,14 +229,12 @@ export default function CategoriesSection() {
             onPointerMove={handlePointerMove}
             onPointerUp={handlePointerUp}
             onPointerCancel={handlePointerUp}
-            onTouchStart={handleTouchStart}
-            onTouchMove={handleTouchMove}
-            onTouchEnd={handleTouchEnd}
             onMouseEnter={() => {
               isHoveredRef.current = true;
             }}
             onMouseLeave={() => {
               isHoveredRef.current = false;
+              handlePointerUp();
             }}
             className="categories-section__list"
             style={{
@@ -294,6 +259,7 @@ export default function CategoriesSection() {
                   onClick={(e) => handleCardClick(e, cat.title)}
                   onMouseEnter={() => {
                     isHoveredRef.current = true;
+                    router.prefetch(categoryUrl);
                   }}
                   onMouseLeave={() => {
                     isHoveredRef.current = false;

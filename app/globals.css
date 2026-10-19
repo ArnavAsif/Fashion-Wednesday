@@ -8933,6 +8933,13 @@ html {
   height: 100% !important;
   margin: 0 !important;
   padding: 0 !important;
+  transform-origin: 50% 100%;
+}
+
+.hero-section__list li.hero-slide-dormant {
+  transform: scaleY(0);
+  visibility: hidden;
+  pointer-events: none;
 }
 
 .hero-card {
@@ -8954,8 +8961,10 @@ html {
 .hero-card__title {
   position: absolute !important;
   bottom: 3.5rem !important;
-  left: 50% !important;
-  transform: translateX(-50%) !important;
+  left: 0 !important;
+  right: 0 !important;
+  margin: 0 auto !important;
+  font-family: Thunder, sans-serif !important;
   font-size: clamp(5rem, 8.5vw, 12rem) !important;
   font-weight: 800 !important;
   text-align: center !important;
@@ -8963,6 +8972,25 @@ html {
   line-height: 0.8 !important;
   width: 100% !important;
   pointer-events: none !important;
+  transform-origin: 50% 100%;
+}
+
+/* Anti-FOUC & Smooth Reveal Rules */
+body:not(.elvaren-ready) {
+  overflow: hidden !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #elvaren-preloader {
+    transition: none !important;
+    transform: none !important;
+  }
+  .hero-side-title-left,
+  .hero-side-title-right {
+    transition: none !important;
+    transform: translateY(-50%) scaleY(1) !important;
+    opacity: 1 !important;
+  }
 }
 
 .site-header {

@@ -48,12 +48,30 @@ export default function HeroSection() {
       }
     });
 
-    // Animate side titles entrance
-    gsap.fromTo(
-      '.hero-side-title-left, .hero-side-title-right',
-      { scaleY: 0, opacity: 0, transformOrigin: '50% 100%' },
-      { scaleY: 1, opacity: 1, duration: 1.1, ease: 'power3.out', delay: 0.3 }
-    );
+    let sideTitlesAnimated = false;
+    const animateSideTitles = () => {
+      if (sideTitlesAnimated) return;
+      sideTitlesAnimated = true;
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (prefersReducedMotion) {
+        gsap.set('.hero-side-title-left, .hero-side-title-right', { scaleY: 1, opacity: 1 });
+      } else {
+        gsap.to('.hero-side-title-left, .hero-side-title-right', {
+          scaleY: 1,
+          opacity: 1,
+          duration: 1.1,
+          ease: 'power3.out',
+          delay: 0.1,
+        });
+      }
+    };
+
+    if (document.body.classList.contains('elvaren-ready')) {
+      animateSideTitles();
+    } else {
+      window.addEventListener('elvaren:revealed', animateSideTitles, { once: true });
+      setTimeout(animateSideTitles, 2500);
+    }
 
     let timer: NodeJS.Timeout | null = null;
 
@@ -68,6 +86,10 @@ export default function HeroSection() {
 
       if (timelineRef.current) timelineRef.current.kill();
 
+      // Ensure next item and titles are visible in DOM before scaling up
+      nextItem.style.visibility = 'visible';
+      nextTitles.forEach((t) => ((t as HTMLElement).style.visibility = 'visible'));
+
       // Reset next item origin and scale ready to rise from bottom
       gsap.set(nextItem, { scaleY: 0, transformOrigin: '50% 100%', force3D: true });
       gsap.set(nextTitles, { scaleY: 0, transformOrigin: '50% 100%', force3D: true });
@@ -78,6 +100,9 @@ export default function HeroSection() {
       const tl = gsap.timeline({
         onComplete: () => {
           currentIndexRef.current = nextIdx;
+          // Hide dormant item to prevent lingering paint overhead
+          currentItem.style.visibility = 'hidden';
+          currentTitles.forEach((t) => ((t as HTMLElement).style.visibility = 'hidden'));
           timer = setTimeout(transitionToNext, 5000);
         },
       });
@@ -114,6 +139,7 @@ export default function HeroSection() {
     return () => {
       if (timer) clearTimeout(timer);
       if (timelineRef.current) timelineRef.current.kill();
+      window.removeEventListener('elvaren:revealed', animateSideTitles);
     };
   }, []);
 
@@ -152,12 +178,15 @@ export default function HeroSection() {
           return (
             <li
               key={drop.name}
+              className={isInitial ? 'is-active hero-slide-initial' : 'hero-slide-dormant'}
               style={{
                 position: 'absolute',
                 inset: 0,
                 width: '100%',
                 height: '100%',
                 listStyle: 'none',
+                transformOrigin: '50% 100%',
+                ...(isInitial ? {} : { transform: 'scaleY(0)', visibility: 'hidden' }),
               }}
             >
               <a
@@ -192,7 +221,13 @@ export default function HeroSection() {
                     // @ts-ignore
                     fetchPriority={isInitial ? 'high' : 'auto'}
                   />
-                  <h3 className="hero-card__title" style={{ color: '#222' }}>
+                  <h3
+                    className="hero-card__title"
+                    style={{
+                      color: '#222',
+                      ...(isInitial ? {} : { transform: 'scaleY(0)', visibility: 'hidden' }),
+                    }}
+                  >
                     {drop.name}
                   </h3>
                 </div>
@@ -207,7 +242,13 @@ export default function HeroSection() {
                     // @ts-ignore
                     fetchPriority={isInitial ? 'high' : 'auto'}
                   />
-                  <h3 className="hero-card__title" style={{ color: '#ed3833' }}>
+                  <h3
+                    className="hero-card__title"
+                    style={{
+                      color: '#ed3833',
+                      ...(isInitial ? {} : { transform: 'scaleY(0)', visibility: 'hidden' }),
+                    }}
+                  >
                     {drop.name}
                   </h3>
                 </div>
@@ -224,7 +265,9 @@ export default function HeroSection() {
           position: 'absolute',
           left: 'clamp(2rem, 3.5vw, 4.5rem)',
           top: '50%',
-          transform: 'translateY(-50%)',
+          transform: 'translateY(-50%) scaleY(0)',
+          opacity: 0,
+          transformOrigin: '50% 100%',
           zIndex: 20,
           fontFamily: 'Thunder, sans-serif',
           fontSize: 'clamp(3.5rem, 5.5vw, 6.8rem)',
@@ -246,8 +289,11 @@ export default function HeroSection() {
           position: 'absolute',
           right: 'clamp(2rem, 3.5vw, 4.5rem)',
           top: '50%',
-          transform: 'translateY(-50%)',
+          transform: 'translateY(-50%) scaleY(0)',
+          opacity: 0,
+          transformOrigin: '50% 100%',
           zIndex: 20,
+          fontFamily: 'Thunder, sans-serif',
           fontSize: 'clamp(3.5rem, 5.5vw, 6.8rem)',
           fontWeight: 800,
           textTransform: 'uppercase',

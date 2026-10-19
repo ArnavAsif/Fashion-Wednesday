@@ -33,6 +33,7 @@ export default function Header({ isProductPage = false }: { isProductPage?: bool
   }, []);
 
   const headerFontSize = 'clamp(1.4rem, 1.2vw, 1.65rem)';
+  const isHeaderCompact = isScrolled && !isMenuOpen;
 
   return (
     <header
@@ -44,32 +45,32 @@ export default function Header({ isProductPage = false }: { isProductPage?: bool
         right: 0,
         width: '100%',
         zIndex: 900,
-        padding: isScrolled ? '1.8rem 3.5rem' : '2.5rem 3.5rem 1rem 3.5rem',
+        padding: isHeaderCompact ? '1.8rem 3.5rem' : '2.5rem 3.5rem 1rem 3.5rem',
         backgroundColor: 'transparent',
         display: 'flex',
         justifyContent: 'space-between',
-        alignItems: isScrolled ? 'center' : 'flex-start',
+        alignItems: isHeaderCompact ? 'center' : 'flex-start',
         transition: 'padding 0.3s ease',
         pointerEvents: 'auto',
         mixBlendMode: 'difference',
         color: '#ffffff',
       }}
     >
-      {/* Left Section: MENU +, SHOP ALL, CATEGORIES +, [ 5-HT ] */}
+      {/* Left Section: MENU +, SHOP ALL, CATEGORIES +, CLOSE ✕, [ 5-HT ] */}
       <div
         style={{
           display: 'flex',
-          alignItems: isScrolled ? 'center' : 'flex-start',
-          gap: isScrolled ? '2.8rem' : '5.5rem',
+          alignItems: isHeaderCompact ? 'center' : 'flex-start',
+          gap: isHeaderCompact ? '2.8rem' : '5.5rem',
           transition: 'gap 0.3s ease',
         }}
       >
         <div
           style={{
             display: 'flex',
-            flexDirection: isScrolled ? 'row' : 'column',
-            gap: isScrolled ? '2.8rem' : '0.5rem',
-            alignItems: isScrolled ? 'center' : 'flex-start',
+            flexDirection: isHeaderCompact ? 'row' : 'column',
+            gap: isHeaderCompact ? '2.8rem' : '0.5rem',
+            alignItems: isHeaderCompact ? 'center' : 'flex-start',
             transition: 'gap 0.3s ease',
           }}
         >
@@ -113,12 +114,24 @@ export default function Header({ isProductPage = false }: { isProductPage?: bool
               style={{ fontWeight: 600 }}
             />
           </div>
+          {isMenuOpen && (
+            <div>
+              <MarkerButton
+                text="CLOSE"
+                suffix={<span style={{ marginLeft: '4px', fontSize: '1.2rem', lineHeight: 1 }}>✕</span>}
+                cloneLastChar
+                onClick={() => setIsMenuOpen(false)}
+                fontSize={headerFontSize}
+                style={{ fontWeight: 600 }}
+              />
+            </div>
+          )}
         </div>
 
         <div
           className="header-desktop-only"
           style={{
-            paddingTop: isScrolled ? '0' : '2.2rem',
+            paddingTop: isHeaderCompact ? '0' : '2.2rem',
             transition: 'padding 0.3s ease',
           }}
         >
@@ -139,8 +152,8 @@ export default function Header({ isProductPage = false }: { isProductPage?: bool
         style={{
           position: 'absolute',
           left: '50%',
-          transform: isScrolled ? 'translate(-50%, -50%)' : 'translateX(-50%)',
-          top: isScrolled ? '50%' : '2.5rem',
+          transform: isHeaderCompact ? 'translate(-50%, -50%)' : 'translateX(-50%)',
+          top: isHeaderCompact ? '50%' : '2.5rem',
           pointerEvents: 'auto',
           transition: 'top 0.3s ease, transform 0.3s ease',
         }}
@@ -168,14 +181,14 @@ export default function Header({ isProductPage = false }: { isProductPage?: bool
       <div
         style={{
           display: 'flex',
-          flexDirection: isScrolled ? 'row' : 'column',
-          gap: isScrolled ? '2.8rem' : '0.5rem',
-          alignItems: isScrolled ? 'center' : 'flex-end',
+          flexDirection: isHeaderCompact ? 'row' : 'column',
+          gap: isHeaderCompact ? '2.8rem' : '0.5rem',
+          alignItems: isHeaderCompact ? 'center' : 'flex-end',
           textAlign: 'right',
           transition: 'gap 0.3s ease',
         }}
       >
-        {isScrolled ? (
+        {isHeaderCompact ? (
           <>
             <div className="header-tablet-only">
               <MarkerButton

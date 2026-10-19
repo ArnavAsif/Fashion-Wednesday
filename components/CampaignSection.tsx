@@ -1,25 +1,57 @@
 'use client';
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
 
 export default function CampaignSection() {
+  const sectionRef = useRef<HTMLElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const [shouldLoad, setShouldLoad] = useState(false);
 
   useEffect(() => {
-    if (videoRef.current) {
+    const el = sectionRef.current;
+    if (!el) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setShouldLoad(true);
+            if (videoRef.current) {
+              videoRef.current.muted = true;
+              videoRef.current.defaultMuted = true;
+              videoRef.current.playsInline = true;
+              const p = videoRef.current.play();
+              if (p && typeof p.catch === 'function') p.catch(() => {});
+            }
+          } else {
+            if (videoRef.current) {
+              videoRef.current.pause();
+            }
+          }
+        });
+      },
+      { rootMargin: '350px 0px' }
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (shouldLoad && videoRef.current) {
       videoRef.current.muted = true;
       videoRef.current.defaultMuted = true;
       videoRef.current.playsInline = true;
-      const playPromise = videoRef.current.play();
-      if (playPromise && typeof playPromise.catch === 'function') {
-        playPromise.catch(() => {});
-      }
+      const p = videoRef.current.play();
+      if (p && typeof p.catch === 'function') p.catch(() => {});
     }
+  }, [shouldLoad]);
 
+  useEffect(() => {
     const ctx = gsap.context(() => {
       // Text line reveal animation matching We() in main.js
       gsap.fromTo(
@@ -60,16 +92,15 @@ export default function CampaignSection() {
   }, []);
 
   return (
-    <section className="campaign-section" id="campaign">
+    <section ref={sectionRef} className="campaign-section" id="campaign">
       <div className="campaign-section__content">
         <div className="campaign-section__bg" style={{ overflow: 'hidden' }}>
           <video
             ref={videoRef}
-            autoPlay
             muted
             loop
             playsInline
-            preload="auto"
+            preload="none"
             style={{
               width: '100%',
               height: '100%',
@@ -79,7 +110,7 @@ export default function CampaignSection() {
               display: 'block',
             }}
           >
-            <source src="/videos/campaign_model.mp4" type="video/mp4" />
+            {shouldLoad && <source src="/videos/campaign_model.mp4" type="video/mp4" />}
           </video>
         </div>
 

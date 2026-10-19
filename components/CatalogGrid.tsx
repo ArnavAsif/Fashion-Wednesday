@@ -474,11 +474,12 @@ export default function CatalogGrid({
             gap: '3.5rem 2.2rem',
           }}
         >
-          {pagination.items.map((product) => {
+          {pagination.items.map((product, pIdx) => {
             const slug = getProductSlug(product);
             const img = product.images?.[0]?.[0] || '/images/products/product-3/image_01.jpg';
             const hoverImg = product.images?.[1]?.[0] || img;
             const isHovered = hoveredProduct === product.id;
+            const isAboveFold = pIdx < 4;
 
             return (
               <div
@@ -516,8 +517,10 @@ export default function CatalogGrid({
                     <img
                       src={isHovered ? hoverImg : img}
                       alt={product.title}
-                      loading="lazy"
-                      decoding="async"
+                      loading={isAboveFold ? 'eager' : 'lazy'}
+                      decoding={isAboveFold ? 'sync' : 'async'}
+                      // @ts-ignore
+                      fetchPriority={pIdx === 0 ? 'high' : 'auto'}
                       style={{
                         width: '100%',
                         height: '100%',

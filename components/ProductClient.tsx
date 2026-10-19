@@ -247,6 +247,10 @@ export default function ProductClient({ product, slug }: ProductClientProps) {
               <img
                 src={images[activeImgIndex]}
                 alt={product.title}
+                loading="eager"
+                // @ts-ignore
+                fetchPriority="high"
+                decoding="sync"
                 style={{
                   width: '100%',
                   height: '100%',
@@ -320,6 +324,8 @@ export default function ProductClient({ product, slug }: ProductClientProps) {
                     <img
                       src={img}
                       alt={`Angle ${idx + 1}`}
+                      loading="lazy"
+                      decoding="async"
                       style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                     />
                   </button>

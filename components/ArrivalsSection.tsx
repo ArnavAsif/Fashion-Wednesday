@@ -569,6 +569,11 @@ export default function ArrivalsSection() {
     const img2 = cardEl.querySelector('.card-hover-img-2') as HTMLElement;
     if (!img1 || !img2) return;
 
+    const imgTag = img2.querySelector('img');
+    if (imgTag && !imgTag.getAttribute('src') && imgTag.dataset.hoverSrc) {
+      imgTag.src = imgTag.dataset.hoverSrc;
+    }
+
     const tl = gsap.timeline();
     tl.to(img1, { scaleX: 0, transformOrigin: 'left center', duration: 0.35, ease: 'power2.inOut' }, 0)
       .to(img2, { scaleX: 1, opacity: 1, transformOrigin: 'right center', duration: 0.35, ease: 'power2.inOut' }, 0)
@@ -649,7 +654,8 @@ export default function ArrivalsSection() {
                   src={imgMain}
                   alt={item.title}
                   draggable={false}
-                  loading={idx === 0 ? 'eager' : 'lazy'}
+                  loading={isActive ? 'eager' : 'lazy'}
+                  decoding={isActive ? 'sync' : 'async'}
                 />
               </picture>
 
@@ -664,10 +670,12 @@ export default function ArrivalsSection() {
                 }}
               >
                 <img
-                  src={imgHover}
+                  src={isActive ? imgHover : undefined}
+                  data-hover-src={imgHover}
                   alt={`${item.title} detail`}
                   draggable={false}
                   loading="lazy"
+                  decoding="async"
                 />
               </picture>
 

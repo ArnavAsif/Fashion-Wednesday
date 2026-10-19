@@ -540,7 +540,7 @@ export default function MenuModal() {
   // Video playback management on open, tab switch, and category hover
   useEffect(() => {
     const playSafe = (vid: HTMLVideoElement | null) => {
-      if (!vid) return;
+      if (!vid || !vid.src) return;
       vid.muted = true;
       vid.defaultMuted = true;
       try {
@@ -803,8 +803,8 @@ export default function MenuModal() {
             >
               <video
                 ref={menuVideoRef}
-                src="/videos/menu/Create_fashion_aesthetic_video_1080p_20261017152019.mp4"
-                poster="/videos/menu/posters/Create_fashion_aesthetic_video_1080p_20261017152019.jpg"
+                src={hasOpened ? "/videos/menu/Create_fashion_aesthetic_video_1080p_20261017152019.mp4" : undefined}
+                poster={hasOpened ? "/videos/menu/posters/Create_fashion_aesthetic_video_1080p_20261017152019.jpg" : undefined}
                 muted
                 loop
                 playsInline
@@ -838,7 +838,7 @@ export default function MenuModal() {
                   title={prod.title}
                 >
                   <picture>
-                    <img src={prod.image} alt={prod.title} loading="lazy" decoding="async" />
+                    <img src={hasOpened ? prod.image : undefined} alt={prod.title} loading="lazy" decoding="async" />
                   </picture>
                 </li>
               ))}
@@ -1002,8 +1002,8 @@ export default function MenuModal() {
             >
               <video
                 ref={defaultVideoRef}
-                src="/videos/menu/Create_fashion_aesthetic_video_1080p_20261017152019.mp4"
-                poster="/videos/menu/posters/Create_fashion_aesthetic_video_1080p_20261017152019.jpg"
+                src={hasOpened ? "/videos/menu/Create_fashion_aesthetic_video_1080p_20261017152019.mp4" : undefined}
+                poster={hasOpened ? "/videos/menu/posters/Create_fashion_aesthetic_video_1080p_20261017152019.jpg" : undefined}
                 muted
                 loop
                 playsInline
@@ -1046,7 +1046,7 @@ export default function MenuModal() {
                   title={prod.title}
                 >
                   <picture>
-                    <img src={prod.image} alt={prod.title} loading="lazy" decoding="async" />
+                    <img src={hasOpened ? prod.image : undefined} alt={prod.title} loading="lazy" decoding="async" />
                   </picture>
                 </li>
               ))}
@@ -1070,8 +1070,8 @@ export default function MenuModal() {
                     ref={(el) => {
                       categoryVideoRefs.current[idx] = el;
                     }}
-                    src={cat.video}
-                    poster={cat.poster}
+                    src={isLoaded ? cat.video : undefined}
+                    poster={isLoaded ? cat.poster : undefined}
                     muted
                     loop
                     playsInline
@@ -1114,7 +1114,7 @@ export default function MenuModal() {
                       title={prod.title}
                     >
                       <picture>
-                        <img src={prod.image} alt={prod.title} loading="lazy" decoding="async" />
+                        <img src={isLoaded ? prod.image : undefined} alt={prod.title} loading="lazy" decoding="async" />
                       </picture>
                     </li>
                   ))}

@@ -49,6 +49,7 @@ export default function MarkerButton({
   const [extraChars, setExtraChars] = useState<string[]>([]);
   const timeoutsRef = useRef<NodeJS.Timeout[]>([]);
   const isHoveredRef = useRef(false);
+  const [shouldInitLottie, setShouldInitLottie] = useState(active);
 
   const markerData = color === 'turq' ? markerTurqData : markerRedData;
 
@@ -57,8 +58,15 @@ export default function MarkerButton({
     timeoutsRef.current = [];
   };
 
-  // Setup Lottie
   useEffect(() => {
+    if (active && !shouldInitLottie) {
+      setShouldInitLottie(true);
+    }
+  }, [active, shouldInitLottie]);
+
+  // Setup Lottie only when active or hovered
+  useEffect(() => {
+    if (!shouldInitLottie) return;
     let isMounted = true;
     const container = lottieContainerRef.current;
     if (!container) return;
@@ -85,6 +93,9 @@ export default function MarkerButton({
 
         if (active) {
           anim.goToAndStop(18, true);
+        } else if (isHoveredRef.current) {
+          anim.setDirection(1);
+          anim.play();
         }
       } catch (err) {
         console.error('Lottie load error:', err);
@@ -98,7 +109,7 @@ export default function MarkerButton({
         animRef.current = null;
       }
     };
-  }, []);
+  }, [shouldInitLottie]);
 
   // Update when active state changes
   useEffect(() => {
@@ -114,6 +125,10 @@ export default function MarkerButton({
     if (disabled) return;
     isHoveredRef.current = true;
     clearAllTimeouts();
+
+    if (!shouldInitLottie) {
+      setShouldInitLottie(true);
+    }
 
     if (animRef.current) {
       animRef.current.setDirection(1);

@@ -21,44 +21,67 @@ export default function FooterSection({ onOpenCredits }: { onOpenCredits?: () =>
   const tweenRef = useRef<any>(null);
   const tweenObj = useRef({ frame: 58 });
 
-  // Lottie Discount Badge Animation
+  // Lottie Discount Badge Animation (lazy loaded on scroll approach)
   useEffect(() => {
     let isMounted = true;
     let anim: any = null;
+    const footerEl = footerRef.current;
+    if (!footerEl) return;
 
-    import('lottie-web')
-      .then((lottie) => {
-        if (!isMounted || !discountLottieRef.current) return;
-        anim = lottie.default.loadAnimation({
-          container: discountLottieRef.current,
-          renderer: 'canvas',
-          loop: false,
-          autoplay: false,
-          path: '/lottie/FOOTER_LOTTIE_v1.json',
-        });
-        animRef.current = anim;
-        const isMobile =
-          typeof window !== 'undefined' &&
-          (window.innerWidth < 768 || !window.matchMedia('(hover: hover) and (pointer: fine)').matches);
+    let hasLoaded = false;
+    const loadLottie = () => {
+      if (hasLoaded) return;
+      hasLoaded = true;
 
-        anim.addEventListener('DOMLoaded', () => {
+      import('lottie-web')
+        .then((lottie) => {
+          if (!isMounted || !discountLottieRef.current) return;
+          anim = lottie.default.loadAnimation({
+            container: discountLottieRef.current,
+            renderer: 'canvas',
+            loop: false,
+            autoplay: false,
+            path: '/lottie/FOOTER_LOTTIE_v1.json',
+          });
+          animRef.current = anim;
+          const isMobile =
+            typeof window !== 'undefined' &&
+            (window.innerWidth < 768 || !window.matchMedia('(hover: hover) and (pointer: fine)').matches);
+
+          anim.addEventListener('DOMLoaded', () => {
+            if (isMobile) {
+              anim.goToAndStop(118, true);
+            } else {
+              anim.goToAndStop(58, true);
+            }
+          });
+
           if (isMobile) {
             anim.goToAndStop(118, true);
           } else {
             anim.goToAndStop(58, true);
           }
-        });
+        })
+        .catch(() => {});
+    };
 
-        if (isMobile) {
-          anim.goToAndStop(118, true);
-        } else {
-          anim.goToAndStop(58, true);
-        }
-      })
-      .catch(() => {});
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            loadLottie();
+            observer.disconnect();
+          }
+        });
+      },
+      { rootMargin: '450px 0px' }
+    );
+
+    observer.observe(footerEl);
 
     return () => {
       isMounted = false;
+      observer.disconnect();
       if (tweenRef.current) tweenRef.current.kill();
       if (anim) anim.destroy();
     };

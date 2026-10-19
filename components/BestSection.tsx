@@ -8,11 +8,13 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 gsap.registerPlugin(ScrollTrigger);
 
 export default function BestSection() {
+  const sectionRef = useRef<HTMLElement>(null);
   const innerRef = useRef<HTMLDivElement>(null);
   const cursorRef = useRef<HTMLDivElement>(null);
   const video1Ref = useRef<HTMLVideoElement>(null);
   const video2Ref = useRef<HTMLVideoElement>(null);
   const hoverStateRef = useRef<{ isHover1: boolean; isHover2: boolean }>({ isHover1: false, isHover2: false });
+  const [shouldLoad, setShouldLoad] = useState(false);
   const [isCursorVisible, setIsCursorVisible] = useState(false);
   const [isHovered1, setIsHovered1] = useState(false);
   const [isHovered2, setIsHovered2] = useState(false);
@@ -29,16 +31,34 @@ export default function BestSection() {
       video2Ref.current.playsInline = true;
     }
 
-    if (typeof window !== 'undefined' && window.innerWidth < 1024) {
-      if (video1Ref.current) {
-        const p1 = video1Ref.current.play();
-        if (p1 && typeof p1.catch === 'function') p1.catch(() => {});
-      }
-      if (video2Ref.current) {
-        const p2 = video2Ref.current.play();
-        if (p2 && typeof p2.catch === 'function') p2.catch(() => {});
-      }
-    }
+    const el = sectionRef.current;
+    if (!el) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setShouldLoad(true);
+            if (typeof window !== 'undefined' && window.innerWidth < 1024) {
+              if (video1Ref.current) {
+                const p1 = video1Ref.current.play();
+                if (p1 && typeof p1.catch === 'function') p1.catch(() => {});
+              }
+              if (video2Ref.current) {
+                const p2 = video2Ref.current.play();
+                if (p2 && typeof p2.catch === 'function') p2.catch(() => {});
+              }
+            }
+          } else {
+            if (video1Ref.current) video1Ref.current.pause();
+            if (video2Ref.current) video2Ref.current.pause();
+          }
+        });
+      },
+      { rootMargin: '350px 0px' }
+    );
+
+    observer.observe(el);
 
     const ctx = gsap.context(() => {
       const title = document.querySelector('.best-section__title');
@@ -59,7 +79,10 @@ export default function BestSection() {
       }
     });
 
-    return () => ctx.revert();
+    return () => {
+      observer.disconnect();
+      ctx.revert();
+    };
   }, []);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -125,7 +148,7 @@ export default function BestSection() {
   };
 
   return (
-    <section className="best-section" id="best" style={{ position: 'relative', width: '100%', padding: '4rem 0 16rem 0' }}>
+    <section ref={sectionRef} className="best-section" id="best" style={{ position: 'relative', width: '100%', padding: '4rem 0 16rem 0' }}>
       <div className="container" style={{ marginBottom: '3rem', overflow: 'visible' }}>
         <h2
           className="best-section__title h2"
@@ -163,7 +186,7 @@ export default function BestSection() {
               loop
               muted
               playsInline
-              preload="auto"
+              preload="none"
               style={{
                 position: 'absolute',
                 inset: 0,
@@ -176,7 +199,7 @@ export default function BestSection() {
                 backgroundColor: '#111',
               }}
             >
-              <source src="/videos/best_video_2.mp4" type="video/mp4" />
+              {shouldLoad && <source src="/videos/best_video_2.mp4" type="video/mp4" />}
             </video>
           </div>
         </div>
@@ -200,7 +223,7 @@ export default function BestSection() {
               loop
               muted
               playsInline
-              preload="auto"
+              preload="none"
               style={{
                 position: 'absolute',
                 inset: 0,
@@ -213,7 +236,7 @@ export default function BestSection() {
                 backgroundColor: '#111',
               }}
             >
-              <source src="/videos/best_video_1.mp4" type="video/mp4" />
+              {shouldLoad && <source src="/videos/best_video_1.mp4" type="video/mp4" />}
             </video>
           </div>
         </div>

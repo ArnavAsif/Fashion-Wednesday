@@ -16,6 +16,47 @@ export default function MotionSection() {
   const wingsRef = useRef<HTMLDivElement>(null);
 
   const [isFullScreen, setIsFullScreen] = useState(false);
+  const [shouldLoad, setShouldLoad] = useState(false);
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setShouldLoad(true);
+            if (videoRef.current) {
+              videoRef.current.muted = true;
+              videoRef.current.defaultMuted = true;
+              videoRef.current.playsInline = true;
+              const p = videoRef.current.play();
+              if (p && typeof p.catch === 'function') p.catch(() => {});
+            }
+          } else {
+            if (videoRef.current) {
+              videoRef.current.pause();
+            }
+          }
+        });
+      },
+      { rootMargin: '350px 0px' }
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (shouldLoad && videoRef.current) {
+      videoRef.current.muted = true;
+      videoRef.current.defaultMuted = true;
+      videoRef.current.playsInline = true;
+      const p = videoRef.current.play();
+      if (p && typeof p.catch === 'function') p.catch(() => {});
+    }
+  }, [shouldLoad]);
 
   useEffect(() => {
     const getInitialMaskW = () => {
@@ -203,7 +244,7 @@ export default function MotionSection() {
             loop
             muted
             playsInline
-            autoPlay
+            preload="none"
             poster="/images/motion_poster.webp"
             style={{
               width: '100%',
@@ -212,7 +253,7 @@ export default function MotionSection() {
               transform: 'scale(1.08)',
             }}
           >
-            <source src="/videos/video_2.mp4" type="video/mp4" />
+            {shouldLoad && <source src="/videos/video_2.mp4" type="video/mp4" />}
           </video>
 
 

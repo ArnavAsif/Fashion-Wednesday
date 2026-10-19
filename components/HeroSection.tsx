@@ -147,50 +147,74 @@ export default function HeroSection() {
           zIndex: 1,
         }}
       >
-        {DROPS.map((drop) => (
-          <li
-            key={drop.name}
-            style={{
-              position: 'absolute',
-              inset: 0,
-              width: '100%',
-              height: '100%',
-              listStyle: 'none',
-            }}
-          >
-            <a
-              href="#arrivals"
-              className="hero-card"
+        {DROPS.map((drop, idx) => {
+          const isInitial = idx === 0;
+          return (
+            <li
+              key={drop.name}
               style={{
-                display: 'block',
+                position: 'absolute',
+                inset: 0,
                 width: '100%',
                 height: '100%',
-                position: 'relative',
+                listStyle: 'none',
               }}
             >
-              {/* Central Torn Seam Graphic */}
-              <picture className="hero-card__img-line">
-                <img src={drop.line} alt="" />
-              </picture>
+              <a
+                href="#arrivals"
+                className="hero-card"
+                style={{
+                  display: 'block',
+                  width: '100%',
+                  height: '100%',
+                  position: 'relative',
+                }}
+              >
+                {/* Central Torn Seam Graphic */}
+                <picture className="hero-card__img-line">
+                  <img
+                    src={drop.line}
+                    alt=""
+                    loading={isInitial ? 'eager' : 'lazy'}
+                    decoding={isInitial ? 'sync' : 'async'}
+                    // @ts-ignore
+                    fetchPriority={isInitial ? 'high' : 'auto'}
+                  />
+                </picture>
 
-              {/* Right Grayscale Half */}
-              <div className="hero-card__img-bw">
-                <img src={drop.img} alt={drop.name} />
-                <h3 className="hero-card__title" style={{ color: '#222' }}>
-                  {drop.name}
-                </h3>
-              </div>
+                {/* Right Grayscale Half */}
+                <div className="hero-card__img-bw">
+                  <img
+                    src={drop.img}
+                    alt={drop.name}
+                    loading={isInitial ? 'eager' : 'lazy'}
+                    decoding={isInitial ? 'sync' : 'async'}
+                    // @ts-ignore
+                    fetchPriority={isInitial ? 'high' : 'auto'}
+                  />
+                  <h3 className="hero-card__title" style={{ color: '#222' }}>
+                    {drop.name}
+                  </h3>
+                </div>
 
-              {/* Left Color Masked Half */}
-              <div className="hero-card__img-color">
-                <img src={drop.img} alt={drop.name} />
-                <h3 className="hero-card__title" style={{ color: '#ed3833' }}>
-                  {drop.name}
-                </h3>
-              </div>
-            </a>
-          </li>
-        ))}
+                {/* Left Color Masked Half */}
+                <div className="hero-card__img-color">
+                  <img
+                    src={drop.img}
+                    alt={drop.name}
+                    loading={isInitial ? 'eager' : 'lazy'}
+                    decoding={isInitial ? 'sync' : 'async'}
+                    // @ts-ignore
+                    fetchPriority={isInitial ? 'high' : 'auto'}
+                  />
+                  <h3 className="hero-card__title" style={{ color: '#ed3833' }}>
+                    {drop.name}
+                  </h3>
+                </div>
+              </a>
+            </li>
+          );
+        })}
       </ul>
 
       {/* Left Headline: ELVAREN */}

@@ -18,6 +18,16 @@ export default function BestSection() {
   const [isCursorVisible, setIsCursorVisible] = useState(false);
   const [isHovered1, setIsHovered1] = useState(false);
   const [isHovered2, setIsHovered2] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(false);
+
+  useEffect(() => {
+    const updateIsDesktop = () => {
+      setIsDesktop(typeof window !== 'undefined' && window.innerWidth >= 1024);
+    };
+    updateIsDesktop();
+    window.addEventListener('resize', updateIsDesktop);
+    return () => window.removeEventListener('resize', updateIsDesktop);
+  }, []);
 
   useEffect(() => {
     if (video1Ref.current) {
@@ -94,6 +104,7 @@ export default function BestSection() {
     cursorRef.current.style.transform = `translate3d(${x}px, ${y}px, 0)`;
 
     if (window.innerWidth >= 1024) {
+      if (!shouldLoad) setShouldLoad(true);
       const isLeft = x < rect.width * 0.5;
       if (isLeft) {
         if (!hoverStateRef.current.isHover1) {
@@ -103,6 +114,9 @@ export default function BestSection() {
           setIsHovered2(false);
           if (video2Ref.current) {
             video2Ref.current.pause();
+            try {
+              video2Ref.current.currentTime = 0;
+            } catch (_) {}
           }
           if (video1Ref.current) {
             const p = video1Ref.current.play();
@@ -117,6 +131,9 @@ export default function BestSection() {
           setIsHovered1(false);
           if (video1Ref.current) {
             video1Ref.current.pause();
+            try {
+              video1Ref.current.currentTime = 0;
+            } catch (_) {}
           }
           if (video2Ref.current) {
             const p = video2Ref.current.play();
@@ -129,6 +146,7 @@ export default function BestSection() {
 
   const handleMouseEnter = (e: React.MouseEvent<HTMLDivElement>) => {
     if (window.innerWidth >= 1024) {
+      if (!shouldLoad) setShouldLoad(true);
       setIsCursorVisible(true);
       handleMouseMove(e);
     }
@@ -141,9 +159,15 @@ export default function BestSection() {
     hoverStateRef.current = { isHover1: false, isHover2: false };
     if (video1Ref.current) {
       video1Ref.current.pause();
+      try {
+        video1Ref.current.currentTime = 0;
+      } catch (_) {}
     }
     if (video2Ref.current) {
       video2Ref.current.pause();
+      try {
+        video2Ref.current.currentTime = 0;
+      } catch (_) {}
     }
   };
 
@@ -186,7 +210,8 @@ export default function BestSection() {
               loop
               muted
               playsInline
-              preload="none"
+              preload={shouldLoad ? 'auto' : 'none'}
+              poster="/images/best_video_2_poster.webp"
               style={{
                 position: 'absolute',
                 inset: 0,
@@ -201,6 +226,33 @@ export default function BestSection() {
             >
               {shouldLoad && <source src="/videos/best_video_2.mp4" type="video/mp4" />}
             </video>
+
+            {/* Corset Thumbnail Poster */}
+            <picture
+              style={{
+                position: 'absolute',
+                inset: 0,
+                width: '100%',
+                height: '100%',
+                zIndex: 3,
+                pointerEvents: 'none',
+                opacity: isDesktop ? (isHovered2 ? 0 : 1) : (shouldLoad ? 0 : 1),
+                transition: 'opacity 0.35s ease',
+              }}
+            >
+              <source srcSet="/images/best_video_2_poster.webp" type="image/webp" />
+              <img
+                src="/images/best_video_2_poster.jpg"
+                alt="Corsets Thumbnail"
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover',
+                  objectPosition: 'center 20%',
+                  display: 'block',
+                }}
+              />
+            </picture>
           </div>
         </div>
 
@@ -223,7 +275,8 @@ export default function BestSection() {
               loop
               muted
               playsInline
-              preload="none"
+              preload={shouldLoad ? 'auto' : 'none'}
+              poster="/images/best_video_1_poster.webp"
               style={{
                 position: 'absolute',
                 inset: 0,
@@ -238,6 +291,33 @@ export default function BestSection() {
             >
               {shouldLoad && <source src="/videos/best_video_1.mp4" type="video/mp4" />}
             </video>
+
+            {/* Dresses Thumbnail Poster */}
+            <picture
+              style={{
+                position: 'absolute',
+                inset: 0,
+                width: '100%',
+                height: '100%',
+                zIndex: 3,
+                pointerEvents: 'none',
+                opacity: isDesktop ? (isHovered1 ? 0 : 1) : (shouldLoad ? 0 : 1),
+                transition: 'opacity 0.35s ease',
+              }}
+            >
+              <source srcSet="/images/best_video_1_poster.webp" type="image/webp" />
+              <img
+                src="/images/best_video_1_poster.jpg"
+                alt="Dresses Thumbnail"
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover',
+                  objectPosition: 'center 20%',
+                  display: 'block',
+                }}
+              />
+            </picture>
           </div>
         </div>
 
@@ -348,11 +428,49 @@ export default function BestSection() {
             href="/products?category=DRESSES"
             className="best-section__link-dresses"
             aria-label="View Dresses Collection"
+            onMouseEnter={() => {
+              if (window.innerWidth >= 1024) {
+                if (!shouldLoad) setShouldLoad(true);
+                if (!hoverStateRef.current.isHover1) {
+                  hoverStateRef.current.isHover1 = true;
+                  hoverStateRef.current.isHover2 = false;
+                  setIsHovered1(true);
+                  setIsHovered2(false);
+                  if (video2Ref.current) {
+                    video2Ref.current.pause();
+                    try { video2Ref.current.currentTime = 0; } catch (_) {}
+                  }
+                  if (video1Ref.current) {
+                    const p = video1Ref.current.play();
+                    if (p && typeof p.catch === 'function') p.catch(() => {});
+                  }
+                }
+              }
+            }}
           />
           <Link
             href="/products?category=CORSETS"
             className="best-section__link-corsets"
             aria-label="View Corsets Collection"
+            onMouseEnter={() => {
+              if (window.innerWidth >= 1024) {
+                if (!shouldLoad) setShouldLoad(true);
+                if (!hoverStateRef.current.isHover2) {
+                  hoverStateRef.current.isHover2 = true;
+                  hoverStateRef.current.isHover1 = false;
+                  setIsHovered2(true);
+                  setIsHovered1(false);
+                  if (video1Ref.current) {
+                    video1Ref.current.pause();
+                    try { video1Ref.current.currentTime = 0; } catch (_) {}
+                  }
+                  if (video2Ref.current) {
+                    const p = video2Ref.current.play();
+                    if (p && typeof p.catch === 'function') p.catch(() => {});
+                  }
+                }
+              }
+            }}
           />
         </div>
 
